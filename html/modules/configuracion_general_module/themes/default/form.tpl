@@ -1,5 +1,6 @@
-<link href="modules/configuracion_general/themes/css/configuraciongeneral_module.css" rel="stylesheet" />
-<script type='text/javascript' src="modules/configuracion_general/themes/js/configuraciongeneral_module.js"></script>
+<link href="modules/configuracion_general_module/themes/css/configuraciongeneral_module.css" rel="stylesheet" />
+<script type='text/javascript' src="modules/configuracion_general_module/themes/js/configuraciongeneral_module.js">
+</script>
 <table width="100%" border="0" cellspacing="0" cellpadding="4" align="center">
     <tr class="letra12">
         {if $mode eq 'input'}
@@ -19,7 +20,7 @@
         {/if}
     </tr>
 </table>
-<!--
+
 <fieldset style="border-radius: 5px; padding: 5px; min-height:150px;  margin-top:20px;">
     <legend><span> Configuración de conexión Local o MariaDB </span> </legend>
     <table class="tabForm" style="font-size: 16px;" width="100%">
@@ -32,6 +33,7 @@
         <tr class="letra12">
             <td align="left"><b>{$motormariadb.LABEL}: <span class="required">*</span></b></td>
             <td align="left">
+                {$motormariadb.INPUT}
             </td>
             <td></td>
             <td></td>
@@ -51,15 +53,26 @@
             <td align="left">{$basedatosmariadb.INPUT}</td>
         </tr>
     </table>
-    <table style="width:90%; margin-top:20px;">
+    <table style="width:98%; margin-top:20px;">
         <tr>
             <td align="right">
+                <input class="button" type="button" name="probarconexionmariadb" value="Probar Conexión"
+                    id="btnprobarconexionmariadb">
                 <input class="button" type="button" name="btnguardardatosmariadb" id="btnguardardatosmariadb"
                     value="Guardar">
+
+                <div class="row" style="margin-top:5px; padding:10px">
+                    <div class="alert alert-danger mt-1" id="conexionnoexitosamariadb" style="display:none">Conexión no
+                        exitosa
+                    </div>
+                    <div class="alert alert-success mt-1" id="conexionexitosamariadb" style="display:none">Conexión
+                        exitosa
+                    </div>
+                </div>
             </td>
         </tr>
     </table>
-</fieldset>-->
+</fieldset>
 <fieldset style="border-radius: 5px; padding: 5px; min-height:150px;  margin-top:20px;">
     <legend><span> Cadena de conexión a base de datos OMS </span> </legend>
     <table class="tabForm" style="font-size: 16px;" width="100%">
@@ -104,23 +117,20 @@
             </td>
 
         </tr>
-        <tr class="letra12">
-            <td colspan="6" align="right">
+    </table>
+    <table style="width:98%; margin-top:20px;">
+        <tr>
+            <td align="right">
                 <input class="button" type="button" name="probarconexion" value="Probar Conexión"
                     id="btnprobarconexion">
+
+                <input class="button" type="button" name="btnguardardatos" id="btnguardardatos" value="Guardar">
                 <div class="row" style="margin-top:5px; padding:10px">
                     <div class="alert alert-danger mt-1" id="conexionnoexitosa" style="display:none">Conexión no exitosa
                     </div>
                     <div class="alert alert-success mt-1" id="conexionexitosa" style="display:none">Conexión exitosa
                     </div>
                 </div>
-            </td>
-        </tr>
-    </table>
-    <table style="width:90%; margin-top:20px;">
-        <tr>
-            <td align="right">
-                <input class="button" type="button" name="btnguardardatos" id="btnguardardatos" value="Guardar">
             </td>
         </tr>
     </table>

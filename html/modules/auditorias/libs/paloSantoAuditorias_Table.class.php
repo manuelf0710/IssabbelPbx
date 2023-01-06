@@ -46,16 +46,37 @@ class paloSantoAuditorias_Table{
 
     /*HERE YOUR FUNCTIONS*/
 
-    function getNumAuditorias_Table($filter_field, $filter_value)
+    function convertirToMysqlFormat($fecha){
+        $getDateAndTime = explode(" ",$fecha);
+        $dateFecha = explode("/",$getDateAndTime[0]);
+        $timeFecha = $getDateAndTime[1];
+        $newFecha = array_reverse($dateFecha);
+        $newFecha = join("-",$newFecha);
+        return $newFecha.' '.$timeFecha;
+
+    }
+
+    function getNumAuditorias_Table($filter_field, $filter_value, $postFilter)
     {
-        $where    = "";
         $arrParam = null;
-        if(isset($filter_field) & $filter_field !=""){
+        /*if(isset($filter_field) & $filter_field !=""){
             $where    = "where $filter_field like ?";
             $arrParam = array("$filter_value%");
         }
+        */
+        $where = '';
+        if($postFilter['fecha_inicial']!= ''){
+            echo("tiene valor fecha_inicial".$postFilter['fecha_inicial']);
+            $fechaInicial = $this->convertirToMysqlFormat($postFilter['fecha_inicial']);
+            $where .= ' and fecha >= '.$fechaInicial;
+        }
+        if($postFilter['fecha_final']!= ''){
+            $fechaFinal = $this->convertirToMysqlFormat($postFilter['fecha_final']);
+            $where .= ' and fecha <= '.$fechaFinal;
+        }        
 
-        $query   = "SELECT COUNT(*) FROM auditoriasissabel $where";
+
+        $query   = "SELECT COUNT(*) FROM auditoriasissabel where 1 $where";
 
         $result=$this->_DB->getFirstRowQuery($query, false, $arrParam);
 

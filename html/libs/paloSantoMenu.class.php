@@ -27,18 +27,19 @@ if (isset($arrConf['basePath'])) {
     include_once("libs/paloSantoDB.class.php");
 }
 
-class paloMenu {
+class paloMenu
+{
 
     var $_DB; // instancia de la clase paloDB
     var $mode;
     var $errMsg;
 
-    function paloMenu(&$pDB, $mode='sqlite')
+    function paloMenu(&$pDB, $mode = 'sqlite')
     {
         // Se recibe como parámetro una referencia a una conexión paloDB
         $this->mode = $mode;
         if (is_object($pDB)) {
-            $this->_DB =& $pDB;
+            $this->_DB = &$pDB;
             $this->errMsg = $this->_DB->errMsg;
         } else {
             $dsn = (string)$pDB;
@@ -51,22 +52,20 @@ class paloMenu {
                 // debo llenar alguna variable de error
             }
         }
-        print_r($this->_DB);
     }
 
     function cargar_menu()
     {
-       //leer el contenido de la tabla menu y devolver un arreglo con la estructura
-        $menu = array ();
-        $query="Select m1.*, (Select count(*) from menu m2 where m2.IdParent=m1.id) as HasChild from menu m1 order by order_no asc;";
+        //leer el contenido de la tabla menu y devolver un arreglo con la estructura
+        $menu = array();
+        $query = "Select m1.*, (Select count(*) from menu m2 where m2.IdParent=m1.id) as HasChild from menu m1 order by order_no asc;";
         $oRecordset = $this->_DB->fetchTable($query, true);
-        if ($oRecordset){
-            foreach($oRecordset as $key => $value)
-            {
-                if($value['HasChild']>0)
+        if ($oRecordset) {
+            foreach ($oRecordset as $key => $value) {
+                if ($value['HasChild'] > 0)
                     $value['HasChild'] = true;
                 else $value['HasChild'] = false;
-                $menu[$value['id']]= $value;
+                $menu[$value['id']] = $value;
             }
         }
         return $menu;
@@ -74,7 +73,7 @@ class paloMenu {
 
     function filterAuthorizedMenus($idUser)
     {
-    	global $arrConf;
+        global $arrConf;
 
         $uissabel = FALSE;
         if (isset($_SESSION)) {
@@ -90,7 +89,7 @@ class paloMenu {
 
         if ($uissabel && isset($_SESSION['issabel_user_permission']))
             return $_SESSION['issabel_user_permission'];
-/*
+        /*
         if (strpos($arrConf['issabel_dsn']['acl'], 'sqlite3:////') === 0 && $this->mode == 'sqlite') {
             // Adjuntar base de datos de ACL para acelerar búsqueda
             $bExito = $this->_DB->genQuery('ATTACH DATABASE ? AS acl',
@@ -123,20 +122,22 @@ INFO_AUTH_MODULO;
         $r = $this->_DB->fetchTable($sPeticionSQL, TRUE, array($idUser, $idUser));
         if (!is_array($r)) {
             $this->errMsg = $this->_DB->errMsg;
-        	return NULL;
+            return NULL;
         }
         /*if (strpos($arrConf['issabel_dsn']['acl'], 'sqlite3:////') === 0) {
             $this->_DB->genQuery('DETACH DATABASE acl');
         }*/
         foreach ($r as $tupla) {
-        	$tupla['HasChild'] = FALSE;
+            $tupla['HasChild'] = FALSE;
             $arrMenuFiltered[$tupla['id']] = $tupla;
         }
 
         // Leer los menús de primer nivel
         $r = $this->_DB->fetchTable(
-            'SELECT id, IdParent, Link, Name, Type, order_no, 1 AS HasChild '.
-            'FROM menu WHERE IdParent = "" ORDER BY order_no', TRUE);
+            'SELECT id, IdParent, Link, Name, Type, order_no, 1 AS HasChild ' .
+                'FROM menu WHERE IdParent = "" ORDER BY order_no',
+            TRUE
+        );
         if (!is_array($r)) {
             $this->errMsg = $this->_DB->errMsg;
             return NULL;
@@ -150,9 +151,9 @@ INFO_AUTH_MODULO;
         // Resolver internamente las referencias de menú superior
         $menuSuperior = array();
         foreach (array_keys($arrMenuFiltered) as $k) {
-        	$kp = $arrMenuFiltered[$k]['IdParent'];
+            $kp = $arrMenuFiltered[$k]['IdParent'];
             if (isset($arrMenuFiltered[$kp])) {
-            	$arrMenuFiltered[$kp]['HasChild'] = TRUE;
+                $arrMenuFiltered[$kp]['HasChild'] = TRUE;
             } elseif (isset($menuPrimerNivel[$kp])) {
                 $menuSuperior[$kp] = $kp;
             } else {
@@ -164,7 +165,8 @@ INFO_AUTH_MODULO;
         // Copiar al arreglo filtrado los menús de primer nivel EN EL ORDEN LEÍDO
         $arrMenuFiltered = array_merge(
             $arrMenuFiltered,
-            array_intersect_key($menuPrimerNivel, $menuSuperior));
+            array_intersect_key($menuPrimerNivel, $menuSuperior)
+        );
 
         if ($uissabel) $_SESSION['issabel_user_permission'] = $arrMenuFiltered;
         return $arrMenuFiltered;
@@ -183,12 +185,10 @@ INFO_AUTH_MODULO;
         $sQuery = "SELECT Id, Name FROM menu WHERE IdParent=''";
         $arrMenus = $this->_DB->fetchTable($sQuery);
         if (is_array($arrMenus)) {
-           foreach ($arrMenus as $menu)
-            {
-                $listaMenus[$menu[0]]=$menu[1];
+            foreach ($arrMenus as $menu) {
+                $listaMenus[$menu[0]] = $menu[1];
             }
-        }else
-        {
+        } else {
             $this->errMsg = $this->_DB->errMsg;
         }
         return $listaMenus;
@@ -237,7 +237,8 @@ INFO_AUTH_MODULO;
             return FALSE;
 
         // Verificación de existencia del menú
-        $e = $this->existeMenu($id); if (is_null($e)) return FALSE;
+        $e = $this->existeMenu($id);
+        if (is_null($e)) return FALSE;
         if ($e) {
             $this->errMsg = "Menu already exists";
             return FALSE;
@@ -245,7 +246,8 @@ INFO_AUTH_MODULO;
 
         // Verificación de existencia del padre
         if ($id_parent != '') {
-            $e = $this->existeMenu($id_parent); if (is_null($e)) return FALSE;
+            $e = $this->existeMenu($id_parent);
+            if (is_null($e)) return FALSE;
             if (!$e) {
                 $this->errMsg = "Requested parent does not exist";
                 return FALSE;
@@ -260,9 +262,9 @@ INFO_AUTH_MODULO;
             'IdParent'  =>  $id_parent,
         );
         if ($order != -1) $sqlfields['order_no'] = $order;
-        $sql = 'INSERT INTO menu ('.
-            implode(', ', array_keys($sqlfields)).') VALUES ('.
-            implode(', ', array_fill(0, count($sqlfields), '?')).')';
+        $sql = 'INSERT INTO menu (' .
+            implode(', ', array_keys($sqlfields)) . ') VALUES (' .
+            implode(', ', array_fill(0, count($sqlfields), '?')) . ')';
         $r = $this->_DB->genQuery($sql, array_values($sqlfields));
         if (!$r) {
             $this->errMsg = $this->_DB->errMsg;
@@ -286,11 +288,12 @@ INFO_AUTH_MODULO;
     function updateItemMenu($id, $name, $id_parent, $type = 'module', $link = '', $order = -1)
     {
         if (!$this->_validateMenuParams($id, $name, $id_parent, $type, $link))
-        return FALSE;
+            return FALSE;
 
         // Verificación de existencia del padre
         if ($id_parent != '') {
-            $e = $this->existeMenu($id_parent); if (is_null($e)) return FALSE;
+            $e = $this->existeMenu($id_parent);
+            if (is_null($e)) return FALSE;
             if (!$e) {
                 $this->errMsg = "Requested parent does not exist";
                 return FALSE;

@@ -26,13 +26,15 @@
         <tr class="letra12">
             <td align="left"><b>{$fecha_inicial.LABEL}: <span class="required">*</span></b></td>
             <td align="left">
-                <input type="text" name="fecha_inicial" id="fecha_inicial" value="" class="calendar-reports">
+                <!--<input type="text" name="fecha_inicial" id="fecha_inicial" value="" class="calendar-reports">-->
+                {$fecha_inicial.INPUT}
             </td>
         </tr>
         <tr class="letra12">
             <td align="left"><b>{$fecha_final.LABEL}: <span class="required">*</span></b></td>
             <td align="left">
-                <input type="text" name="fecha_final" id="fecha_final" value="" class="calendar-reports">
+                <!-- <input type="text" name="fecha_final" id="fecha_final" value="" class="calendar-reports">-->
+                {$fecha_final.INPUT}
             </td>
         </tr>
         <tr>

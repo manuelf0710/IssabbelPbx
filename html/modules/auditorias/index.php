@@ -71,6 +71,7 @@ function _moduleContent(&$smarty, $module_name)
             break;
         default: // view_form
             $content = viewFormAuditorias2($smarty, $module_name, $local_templates_dir, $pDB, $arrConf);
+            $content .= reportAuditorias_Table($smarty, $module_name, $local_templates_dir, $pDB, $arrConf);
             break;
     }
     return $content;
@@ -88,6 +89,8 @@ function viewFormAuditorias2($smarty, $module_name, $local_templates_dir, &$pDB,
     $id     = getParameter("id");
     $smarty->assign("ID", $id); //persistence id with input hidden in tpl
 
+    echo json_encode($_POST);
+
     if ($action == "view")
         $oForm->setViewMode();
     else if ($action == "view_edit" || getParameter("save_edit"))
@@ -96,6 +99,7 @@ function viewFormAuditorias2($smarty, $module_name, $local_templates_dir, &$pDB,
 
     if ($action == "view" || $action == "view_edit") { // the action is to view or view_edit.
         $dataAuditorias2 = $pAuditorias2->getAuditorias2ById($id);
+        echo json_encode($dataAuditorias2);
         if (is_array($dataAuditorias2) & count($dataAuditorias2) > 0)
             $_DATA = $dataAuditorias2;
         else {
@@ -151,6 +155,7 @@ function createFieldForm()
             "REQUIRED"               => "no",
             "INPUT_TYPE"             => "DATE",
             "INPUT_EXTRA_PARAM"      => array("TIME" => true, "FORMAT" => "%d %b %Y %H:%M", "TIMEFORMAT" => "12"),
+            "SUPPORT_VALUE"          => "si",
             "VALIDATION_TYPE"        => "",
             "EDITABLE"               => "si",
             "VALIDATION_EXTRA_PARAM" => ""
@@ -160,6 +165,7 @@ function createFieldForm()
             "REQUIRED"               => "no",
             "INPUT_TYPE"             => "DATE",
             "INPUT_EXTRA_PARAM"      => array("TIME" => true, "FORMAT" => "%d %b %Y %H:%M", "TIMEFORMAT" => "12"),
+            "SUPPORT_VALUE"          => "si",
             "VALIDATION_TYPE"        => "",
             "EDITABLE"               => "si",
             "VALIDATION_EXTRA_PARAM" => ""
@@ -204,16 +210,18 @@ function reportAuditorias_Table($smarty, $module_name, $local_templates_dir, &$p
     $oGrid->enableExport();   // enable export.
     $oGrid->setNameFile_Export(_tr("Auditorias_Table"));
 
+    $postFilter = $_POST;
     $url = array(
         "menu"         =>  $module_name,
         "filter_field" =>  $filter_field,
-        "filter_value" =>  $filter_value);
+        "filter_value" =>  $filter_value,
+    );
     $oGrid->setURL($url);
 
     $arrColumns = array(_tr("Fecha"),_tr("Usuario"),_tr("Descripción"),_tr("Modulo"),);
     $oGrid->setColumns($arrColumns);
 
-    $total   = $pAuditorias_Table->getNumAuditorias_Table($filter_field, $filter_value);
+    $total   = $pAuditorias_Table->getNumAuditorias_Table($filter_field, $filter_value, $postFilter);
     $arrData = null;
     if($oGrid->isExportAction()){
         $limit  = $total; // max number of rows.

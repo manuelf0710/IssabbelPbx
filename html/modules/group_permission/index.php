@@ -193,9 +193,6 @@ function reportGroupPermission($smarty, $module_name, $local_templates_dir)
     //$oMenu = new paloMenu($arrConf['issabel_dsn']['menu']);
     $oMenu = new paloMenu($dnsAsterisk);
     $fullmenu = $oMenu->cargar_menu();
-    echo("</br></br>");
-    echo(json_encode($fullmenu));
-    echo("</br></br>");
     foreach (array_keys($fullmenu) as $k) $fullmenu[$k]['actions'] = array();
 
     if (isset($_POST['apply']) && isset($_POST['resource_access']) && is_array($_POST['resource_access'])) {

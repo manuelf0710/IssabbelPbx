@@ -62,14 +62,20 @@ function _moduleContent(&$smarty, $module_name)
 
     //conexion resource
     $dsnAsterisk = generarDSNSistema('asteriskuser', 'asterisk');
+    echo("modificado");
+    echo($dsnAsterisk);
+
     $pDB = new paloDB($dsnAsterisk);
     //$pDB = "";
-    $dsn = generarDSNSistema('root', '');
+
+    var_dump($pDB);
+    $dsn = generarDSNSistema('asteriskuser', 'asterisk');
     $modelIvr = new IvrModel(new \paloDB($dsn));
     $modelOutgoingRoutes = new RutaSalienteModel(new \paloDB($dsn));
     $modelConexionesBD = new ConexionesModel(new \paloDB($dsn));
     $IvrList = $modelIvr->index();
     $conexionesLista = $modelConexionesBD->lista();
+    echo(json_encode($conexionesLista));
     $outgoingRouteList = $modelOutgoingRoutes->index();
 
     $infoToView = array("ivrLista" => $IvrList, "outgoingRouteList" => $outgoingRouteList, "conexionesLista" => $conexionesLista);
@@ -90,6 +96,7 @@ function _moduleContent(&$smarty, $module_name)
             $content = saveNewconfiguracion_generalMariaDB($smarty, $module_name, $local_templates_dir, $pDB, $arrConf, $infoToView);
             break;
         default: // view_form
+        echo("viewFormconfiguracion_general2");
             $content = viewFormconfiguracion_general2($smarty, $module_name, $local_templates_dir, $pDB, $arrConf, $infoToView);
             break;
     }
@@ -99,7 +106,6 @@ function _moduleContent(&$smarty, $module_name)
 function viewFormconfiguracion_general2($smarty, $module_name, $local_templates_dir, &$pDB, $arrConf, $infoToView)
 {
 
-    echo "cuales la accion ";
     $pconfiguracion_general2 = new paloSantoconfiguracion_general_module($pDB);
     $arrFormconfiguracion_general2 = createFieldForm();
     $oForm = new paloForm($smarty, $arrFormconfiguracion_general2);
@@ -118,8 +124,14 @@ function viewFormconfiguracion_general2($smarty, $module_name, $local_templates_
     echo("</br>despues$id</br>");  */
 
     $_DATA = $pconfiguracion_general2->getconfiguracion_general2ByName($motor);
-    $dataconfiguracion_generalMariaDB = $pconfiguracion_general2->getconfiguracion_general2MariaDB();   
-    $nuevo = array_merge($_DATA, $dataconfiguracion_generalMariaDB);
+
+    //echo"el array _DATA= ".json_encode($_DATA);
+    $dataconfiguracion_generalMariaDB = $pconfiguracion_general2->getconfiguracion_general2MariaDB();  
+    if ($_DATA != null) {
+        $_DATA = array_merge($_DATA, $dataconfiguracion_generalMariaDB);
+    }else{
+        $_DATA = $dataconfiguracion_generalMariaDB;
+    }
     //echo('elidddd='.$_DATA['id']);
 
     /*echo"</br>nuevo</br>";

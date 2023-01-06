@@ -64,10 +64,10 @@ function _moduleContent(&$smarty, $module_name)
     $dsnAsterisk = generarDSNSistema('asteriskuser', 'asterisk');
     $pDB = new paloDB($dsnAsterisk);
     //$pDB = "";
-    $dsn = generarDSNSistema('root', '');
-    $modelIvr = new IvrModel(new \paloDB($dsn));
-    $modelOutgoingRoutes = new RutaSalienteModel(new \paloDB($dsn));
-    $modelConexionesBD = new ConexionesModel(new \paloDB($dsn));
+    //$dsn = generarDSNSistema('root', '');
+    $modelIvr = new IvrModel(new \paloDB($dsnAsterisk));
+    $modelOutgoingRoutes = new RutaSalienteModel(new \paloDB($dsnAsterisk));
+    $modelConexionesBD = new ConexionesModel(new \paloDB($dsnAsterisk));
     $IvrList = $modelIvr->index();
     $conexionesLista = $modelConexionesBD->lista();
     $outgoingRouteList = $modelOutgoingRoutes->index();

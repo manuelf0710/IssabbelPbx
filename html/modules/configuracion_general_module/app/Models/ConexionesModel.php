@@ -12,7 +12,7 @@ class ConexionesModel extends Model
    */
   public function count()
   {
-    $query = "SELECT COUNT(id) AS total FROM `asterisk`.`conexionesbd`";
+    $query = "SELECT COUNT(id) AS total FROM `conexionesbd`";
 
     return $this->fetchSingleRow($query);
   }
@@ -23,7 +23,7 @@ class ConexionesModel extends Model
    */
   public function lista()
   {
-    $query = "SELECT id, motor  FROM `asterisk`.`conexionesbd`";
+    $query = "SELECT id, motor  FROM `conexionesbd`";
     //$parameters = ['id'];
 
     return $this->fetchRows($query);
@@ -31,9 +31,9 @@ class ConexionesModel extends Model
 
   public function index()
   {
-    $query = "SELECT *  FROM `asterisk`.`conexionesbd`";
+    $query = "SELECT *  FROM `conexionesbd`";
     $parameters = ['id'];
 
     return $this->fetchRows($query, $parameters);
-  }  
+  }
 }

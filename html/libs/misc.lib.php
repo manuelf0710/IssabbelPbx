@@ -607,6 +607,21 @@ function obtenerClaveAMIAdmin($ruta_base='')
     return $ret;
 }
 
+function consultarRemoteConexion($dsnAsterisk){
+    $pDB = new paloDB($dsnAsterisk);
+    $id=1;
+    $query = "SELECT * FROM asterisk.conexionbdmariadb WHERE id=?";
+
+    $result = $pDB->getFirstRowQuery($query, true, array("$id"));
+
+    if ($result == FALSE) {
+        $this->errMsg = $tpDB->errMsg;
+        return null;
+    }
+    return $result;     
+
+}
+
 /**
  * Función para construir un DSN para conectarse a varias bases de datos
  * frecuentemente utilizadas en Issabel. Para cada base de datos reconocida, se
@@ -630,10 +645,18 @@ function generarDSNSistema($sNombreUsuario, $sNombreDB, $ruta_base='')
         if(is_file("/etc/issabelpbx.conf")) {
             $pConfig = new paloConfig("/etc", "issabelpbx.conf", "=", "[[:space:]]*=[[:space:]]*");
             $listaParam = $pConfig->leer_configuracion(FALSE);
-            return $listaParam['$amp_conf[\'AMPDBENGINE\']']['valor']."://".
+            $dsnLocal = $listaParam['$amp_conf[\'AMPDBENGINE\']']['valor']."://".
                    $listaParam['$amp_conf[\'AMPDBUSER\']']['valor']. ":".
                    $listaParam['$amp_conf[\'AMPDBPASS\']']['valor']. "@".
                    $listaParam['$amp_conf[\'AMPDBHOST\']']['valor']. "/".$sNombreDB;
+            $getConnectionAsterixk = consultarRemoteConexion($dsnLocal);
+            if($getConnectionAsterixk['servidormariadb'] == 'localhost'){
+                return $dsnLocal;
+            }else{
+                $dsn = 'mysql://'.$getConnectionAsterixk['usuariomariadb'].':'.$getConnectionAsterixk['contrasenamariadb'].'@'.$getConnectionAsterixk['servidormariadb'].'/'.$getConnectionAsterixk['basedatosmariadb'];
+                return $dsn;
+            }
+
         } else if(is_file("/etc/freepbx.conf")) {
             $pConfig = new paloConfig("/etc", "freepbx.conf", "=", "[[:space:]]*=[[:space:]]*");
             $listaParam = $pConfig->leer_configuracion(FALSE);

@@ -53,13 +53,15 @@ class paloDB
             $this->connStatus = FALSE;
         } else {
             $dsninfo = $this->parseDSN($dsn);
+
+            //echo 'palodbparse '.json_encode($dsninfo);
+
             $engine  = $dsninfo['dbsyntax'];
 
             if ($engine == 'sqlite3') {
                 $dsn = "sqlite:" . $dsninfo['database'];
                 $this->engine = $engine;
             } else if ($engine == 'oracle') {
-                echo ("what the happend");
                 $host = $dsninfo['hostspec'];
                 $port = $dsninfo['port'];
 
@@ -94,6 +96,10 @@ class paloDB
 
             try {
                 $this->connStatus = false;  //logica negativa
+                if($dsninfo['dbsyntax'] == 'mysql'){
+    //echo "</br>nuevodsn = ".$dsn."</br>";
+}
+
                 $this->conn = new PDO($dsn, $user, $password);
             } catch (PDOException $e) {
                 $this->errMsg = "Error de conexion a la base de datos - " . $e->getMessage();
