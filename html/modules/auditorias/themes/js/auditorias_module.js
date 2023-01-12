@@ -16,7 +16,7 @@ $(document).ready(function(){
 		showWeek:true,
 
 	});		
-	$("#fecha_inicial, #fecha_final").datetimepicker({
+	$("#fecha_inicial, #fecha_final, .hasDatepicker").datetimepicker({
 		showOn: 'button',
 		firstDay:1,
 		buttonImageOnly: true,

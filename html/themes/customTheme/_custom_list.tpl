@@ -95,17 +95,17 @@
                     <a href="{$url}&exportspreadsheet=yes&rawmode=yes">
                         <div class="menuItem" role="menuitem" id="Spread_Sheet" aria-disabled="false">
                             <div>
-                                <i style="color:green;" class="fa fa-file-excel-o"></i>&nbsp;&nbsp;Spreadsheet
+                                <i style="color:green;" class="fa fa-file-excel-o"></i>&nbsp;&nbsp;Excel
                             </div>
                         </div>
                     </a>
-                    <a href="{$url}&exportpdf=yes&rawmode=yes">
-                        <div class="menuItem" role="menuitem" id="PDF" aria-disabled="false">
-                            <div>
-                                <i style="color:red;" class="fa fa-file-pdf-o"></i>&nbsp;&nbsp;PDF
-                            </div>
-                        </div>
-                    </a>
+                    <!--<a href="{$url}&exportpdf=yes&rawmode=yes">
+			<div class="menuItem" role="menuitem" id="PDF" aria-disabled="false">
+			    <div>
+				<i style="color:red;" class="fa fa-file-pdf-o"></i>&nbsp;&nbsp;PDF
+			    </div>
+			</div>
+		    </a>-->
                 </div>
             </div>
         {/if}

@@ -22,6 +22,38 @@
 </table>
 
 <fieldset style="border-radius: 5px; padding: 5px; min-height:150px;  margin-top:20px;">
+    <legend><span> Configuración NODEJS </span> </legend>
+    <table class="tabForm" style="font-size: 16px;" width="100%">
+        <tr class="letra12">
+            <td colspan="6" align="right" nowrap>
+                <span class="letra12"><span class="required">*</span>{$REQUIRED_FIELD}</span>
+            </td>
+
+        </tr>
+        <tr>
+            <td align="left" class="letra12" width="150"><b>Puerto Nodejs: <span class="required">*</span></b></td>
+            <td>
+                <input type="text" id="portnodejs" name="portnodejs" value="">
+            </td>
+        </tr>
+    </table>
+    <table style="width:98%; margin-top:20px;">
+        <tr>
+            <td align="right">
+                <input class="button" type="button" name="btnguardardatosnode" id="btnguardardatosnode"
+                    value="Modificar">
+                <div class="row" style="margin-top:5px; padding:10px">
+                    <div class="alert alert-danger mt-1" id="conexionnoexitosanode" style="display:none">Conexión no
+                        exitosa
+                    </div>
+                    <div class="alert alert-success mt-1" id="conexionexitosanode" style="display:none">Conexión exitosa
+                    </div>
+                </div>
+            </td>
+        </tr>
+    </table>
+</fieldset>
+<fieldset style="border-radius: 5px; padding: 5px; min-height:150px;  margin-top:20px;">
     <legend><span> Configuración de conexión Local o MariaDB </span> </legend>
     <table class="tabForm" style="font-size: 16px;" width="100%">
         <tr class="letra12">
@@ -111,7 +143,7 @@
             <td align="left">{$basedatos.INPUT}</td>
             <td align="left"><b>{$tablavista.LABEL}: <span class="required">*</span></b></td>
             <td align="left">{$tablavista.INPUT}</td>
-            <td align="left"><B>{$activo.LABEL}</B></td>
+            <td align="left"><B>Estado</B></td>
             <td align="left">
                 {$activo.INPUT}
             </td>

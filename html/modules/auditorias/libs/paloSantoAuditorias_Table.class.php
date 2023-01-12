@@ -58,6 +58,7 @@ class paloSantoAuditorias_Table{
 
     function getNumAuditorias_Table($filter_field, $filter_value, $postFilter)
     {
+
         $arrParam = null;
         /*if(isset($filter_field) & $filter_field !=""){
             $where    = "where $filter_field like ?";
@@ -65,15 +66,17 @@ class paloSantoAuditorias_Table{
         }
         */
         $where = '';
-        if($postFilter['fecha_inicial']!= ''){
-            echo("tiene valor fecha_inicial".$postFilter['fecha_inicial']);
-            $fechaInicial = $this->convertirToMysqlFormat($postFilter['fecha_inicial']);
-            $where .= ' and fecha >= '.$fechaInicial;
+        if(!empty($postFilter)){
+
+            if($postFilter['fecha_inicial']!= ''){
+                $fechaInicial = $this->convertirToMysqlFormat($postFilter['fecha_inicial']);
+                $where .= " and fecha >= '".$fechaInicial."'";
+            }
+            if($postFilter['fecha_final']!= ''){
+                $fechaFinal = $this->convertirToMysqlFormat($postFilter['fecha_final']);
+                $where .= " and fecha <= '".$fechaFinal."'";
+            }        
         }
-        if($postFilter['fecha_final']!= ''){
-            $fechaFinal = $this->convertirToMysqlFormat($postFilter['fecha_final']);
-            $where .= ' and fecha <= '.$fechaFinal;
-        }        
 
 
         $query   = "SELECT COUNT(*) FROM auditoriasissabel where 1 $where";
@@ -87,16 +90,31 @@ class paloSantoAuditorias_Table{
         return $result[0];
     }
 
-    function getAuditorias_Table($limit, $offset, $filter_field, $filter_value)
+    function getAuditorias_Table($limit, $offset, $filter_field, $filter_value, $postFilter)
     {
         $where    = "";
         $arrParam = null;
         if(isset($filter_field) & $filter_field !=""){
-            $where    = "where $filter_field like ?";
+            //$where    = "where $filter_field like ?";
             $arrParam = array("$filter_value%");
-        }
+        } 
 
-        $query   = "SELECT * FROM auditoriasissabel $where LIMIT $limit OFFSET $offset";
+        $where = '';
+        if (!empty($postFilter)) {
+
+
+            if($postFilter['fecha_inicial']!= ''){
+                $fechaInicial = $this->convertirToMysqlFormat($postFilter['fecha_inicial']);
+                $where .= " and fecha >= '".$fechaInicial."'";
+            }
+            if($postFilter['fecha_final']!= ''){
+                $fechaFinal = $this->convertirToMysqlFormat($postFilter['fecha_final']);
+                $where .= " and fecha <= '".$fechaFinal."'";
+            }          
+        }        
+
+
+        $query   = "SELECT * FROM auditoriasissabel where 1 $where LIMIT $limit OFFSET $offset";
 
         $result=$this->_DB->fetchTable($query, true, $arrParam);
 

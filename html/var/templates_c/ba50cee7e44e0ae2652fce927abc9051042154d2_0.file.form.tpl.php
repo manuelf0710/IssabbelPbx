@@ -1,18 +1,18 @@
 <?php
-/* Smarty version 3.1.33, created on 2023-01-04 23:39:15
+/* Smarty version 3.1.33, created on 2023-01-06 13:58:10
   from '/var/www/html/modules/configuracion_general_module/themes/default/form.tpl' */
 
 /* @var Smarty_Internal_Template $_smarty_tpl */
 if ($_smarty_tpl->_decodeProperties($_smarty_tpl, array (
   'version' => '3.1.33',
-  'unifunc' => 'content_63b654739226c2_33046114',
+  'unifunc' => 'content_63b86f42c7ec50_82176138',
   'has_nocache_code' => false,
   'file_dependency' => 
   array (
     'ba50cee7e44e0ae2652fce927abc9051042154d2' => 
     array (
       0 => '/var/www/html/modules/configuracion_general_module/themes/default/form.tpl',
-      1 => 1672893552,
+      1 => 1673031487,
       2 => 'file',
     ),
   ),
@@ -20,7 +20,7 @@ if ($_smarty_tpl->_decodeProperties($_smarty_tpl, array (
   array (
   ),
 ),false)) {
-function content_63b654739226c2_33046114 (Smarty_Internal_Template $_smarty_tpl) {
+function content_63b86f42c7ec50_82176138 (Smarty_Internal_Template $_smarty_tpl) {
 ?><link href="modules/configuracion_general_module/themes/css/configuraciongeneral_module.css" rel="stylesheet" />
 <?php echo '<script'; ?>
  type='text/javascript' src="modules/configuracion_general_module/themes/js/configuraciongeneral_module.js">
@@ -174,8 +174,7 @@ $_smarty_tpl->smarty->ext->_foreach->restore($_smarty_tpl, 1);?>
 : <span class="required">*</span></b></td>
             <td align="left"><?php echo $_smarty_tpl->tpl_vars['tablavista']->value['INPUT'];?>
 </td>
-            <td align="left"><B><?php echo $_smarty_tpl->tpl_vars['activo']->value['LABEL'];?>
-</B></td>
+            <td align="left"><B>Estado</B></td>
             <td align="left">
                 <?php echo $_smarty_tpl->tpl_vars['activo']->value['INPUT'];?>
 

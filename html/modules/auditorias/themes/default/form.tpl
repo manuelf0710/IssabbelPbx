@@ -26,15 +26,17 @@
         <tr class="letra12">
             <td align="left"><b>{$fecha_inicial.LABEL}: <span class="required">*</span></b></td>
             <td align="left">
-                <!--<input type="text" name="fecha_inicial" id="fecha_inicial" value="" class="calendar-reports">-->
-                {$fecha_inicial.INPUT}
+                <input type="text" name="fecha_inicial" id="fecha_inicial" value="{$fecha_inicial_filter}"
+                    class="calendar-reports">
+                <!--{$fecha_inicial.INPUT}-->
             </td>
         </tr>
         <tr class="letra12">
             <td align="left"><b>{$fecha_final.LABEL}: <span class="required">*</span></b></td>
             <td align="left">
-                <!-- <input type="text" name="fecha_final" id="fecha_final" value="" class="calendar-reports">-->
-                {$fecha_final.INPUT}
+                <input type="text" name="fecha_final" id="fecha_final" value="{$fecha_final_filter}"
+                    class="calendar-reports">
+                <!--{$fecha_final.INPUT}-->
             </td>
         </tr>
         <tr>
@@ -44,4 +46,6 @@
         </tr>
     </table>
     <input class="button" type="hidden" name="id" value="{$ID}" />
+    <input class="" type="hidden" name="fecha_inicial_filter" value="{$fecha_inicial_filter}" />
+    <input class="" type="hidden" name="fecha_final_filter" value="{$fecha_final_filter}" />
 </fieldset>

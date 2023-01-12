@@ -101,7 +101,13 @@ foreach (new RecursiveIteratorIterator($it) as $file) {
         }
     }
 }
-$dsnAsterisk = generarDSNSistema('asteriskuser', 'asterisk');
+
+if(isset($_POST['input_user']) && $_POST['input_user']=='admin'){
+    $dsnAsterisk = generarDSNSistema('asteriskuser', 'asterisk','','isadminloggin');
+    echo "entra asdf";
+}else{
+    $dsnAsterisk = generarDSNSistema('asteriskuser', 'asterisk');
+}
 //$pdbACL = new paloDB($arrConf['issabel_dsn']['acl']);
 $pdbACL = new paloDB($dsnAsterisk);
 $pACL = new paloACL($pdbACL);
@@ -167,7 +173,7 @@ if (isset($_POST['submit_login']) and !empty($_POST['input_user'])) {
         include_once("libs/IssabelExternalAuth.class.php");         
         $iauth = new IssabelExternalAuth();
         $iauthIssabel = new IssabelAuth();
-        $dsnAsterisk = generarDSNSistema('asteriskuser', 'asterisk');
+        //$dsnAsterisk = generarDSNSistema('asteriskuser', 'asterisk');
         $pDB = new paloDB($dsnAsterisk);   
         $pconfiguracion_general2 = new paloSantoconfiguracion_general2($pDB);
         $datos = $pconfiguracion_general2->getconfiguracion_general2Active();
@@ -303,9 +309,9 @@ if (
 ) {
 
     $idUser = $pACL->getIdUser($_SESSION['issabel_user']);
-    $dnsAsterisk = generarDSNSistema('asteriskuser', 'asterisk');
+    //$dsnAsterisk = generarDSNSistema('asteriskuser', 'asterisk');
     //$pMenu = new paloMenu($arrConf['issabel_dsn']['menu']);
-    $pMenu = new paloMenu($dnsAsterisk, 'mariadb');
+    $pMenu = new paloMenu($dsnAsterisk, 'mariadb');
     $arrMenuFiltered = $pMenu->filterAuthorizedMenus($idUser);
     if (!is_array($arrMenuFiltered)) {
         die("FATAL: unable to filter module list for user: " . $pMenu->errMsg);

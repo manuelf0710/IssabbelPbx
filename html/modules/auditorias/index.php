@@ -64,11 +64,19 @@ function _moduleContent(&$smarty, $module_name)
     $action = getAction();
     $content = "";
 
+    if(getParameter("exportcsv") == "yes" || getParameter("exportpdf") == "yes" || getParameter("exportspreadsheet") == "yes"){
+        $action = "isReport";
+    }
+
     switch ($action) {
         case "save_new":
             $content = saveNewAuditorias2($smarty, $module_name, $local_templates_dir, $pDB, $arrConf);
             $content .= reportAuditorias_Table($smarty, $module_name, $local_templates_dir, $pDB, $arrConf);
             break;
+        case "isReport":
+            //$content = saveNewAuditorias2($smarty, $module_name, $local_templates_dir, $pDB, $arrConf);
+            $content .= reportAuditorias_Table($smarty, $module_name, $local_templates_dir, $pDB, $arrConf);
+            break;            
         default: // view_form
             $content = viewFormAuditorias2($smarty, $module_name, $local_templates_dir, $pDB, $arrConf);
             $content .= reportAuditorias_Table($smarty, $module_name, $local_templates_dir, $pDB, $arrConf);
@@ -89,8 +97,6 @@ function viewFormAuditorias2($smarty, $module_name, $local_templates_dir, &$pDB,
     $id     = getParameter("id");
     $smarty->assign("ID", $id); //persistence id with input hidden in tpl
 
-    echo json_encode($_POST);
-
     if ($action == "view")
         $oForm->setViewMode();
     else if ($action == "view_edit" || getParameter("save_edit"))
@@ -99,7 +105,6 @@ function viewFormAuditorias2($smarty, $module_name, $local_templates_dir, &$pDB,
 
     if ($action == "view" || $action == "view_edit") { // the action is to view or view_edit.
         $dataAuditorias2 = $pAuditorias2->getAuditorias2ById($id);
-        echo json_encode($dataAuditorias2);
         if (is_array($dataAuditorias2) & count($dataAuditorias2) > 0)
             $_DATA = $dataAuditorias2;
         else {
@@ -113,6 +118,16 @@ function viewFormAuditorias2($smarty, $module_name, $local_templates_dir, &$pDB,
     $smarty->assign("CANCEL", _tr("Cancel"));
     $smarty->assign("REQUIRED_FIELD", _tr("Required field"));
     $smarty->assign("icon", "images/list.png");
+
+    $fecha_inicial_filter =  '';
+    $fecha_final_filter   =  '';    
+    if(isset($_POST['fecha_inicial'])){
+       $fecha_inicial_filter =  $_POST['fecha_inicial'];
+       $fecha_final_filter   =  $_POST['fecha_final'];
+    }
+
+    $smarty->assign("fecha_inicial_filter",$fecha_inicial_filter);
+    $smarty->assign("fecha_final_filter",$fecha_final_filter);
 
     $htmlForm = $oForm->fetchForm("$local_templates_dir/form.tpl", _tr("Auditorias2"), $_DATA);
     $content = "<form  method='POST' style='margin-bottom:0;' action='?menu=$module_name'>" . $htmlForm . "</form>";
@@ -209,6 +224,7 @@ function reportAuditorias_Table($smarty, $module_name, $local_templates_dir, &$p
 
     $oGrid->enableExport();   // enable export.
     $oGrid->setNameFile_Export(_tr("Auditorias_Table"));
+    $oGrid->setTplFile('themes/customTheme/_custom_list.tpl');
 
     $postFilter = $_POST;
     $url = array(
@@ -234,7 +250,7 @@ function reportAuditorias_Table($smarty, $module_name, $local_templates_dir, &$p
         $offset = $oGrid->calculateOffset();
     }
 
-    $arrResult =$pAuditorias_Table->getAuditorias_Table($limit, $offset, $filter_field, $filter_value);
+    $arrResult =$pAuditorias_Table->getAuditorias_Table($limit, $offset, $filter_field, $filter_value, $postFilter);
 
     if(is_array($arrResult) && $total>0){
         foreach($arrResult as $key => $value){ 

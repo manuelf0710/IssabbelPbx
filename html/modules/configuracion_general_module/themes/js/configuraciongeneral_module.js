@@ -72,7 +72,7 @@ $(document).ready(function () {
       },
       processData: false,
       type: "POST",
-      url: "http://localhost:3000/config",
+      url: "https://192.168.0.105:3000/config",
     });
   }
 
@@ -120,9 +120,9 @@ $(document).ready(function () {
             user: usuario,
             password: contrasena,
             database: basedatos,
-            /*ssl: {
+            ssl: {
               rejectUnauthorized: false,
-            },*/
+            },
           },
         };
         break;
@@ -145,7 +145,7 @@ $(document).ready(function () {
       processData: false,
       type: "POST",
       //url: 'modules/configuracion_general/libs/ajaxfunctions.php'
-      url: "http://localhost:3000/test",
+      url: "https://192.168.0.105:3000/test",
     });    
   }
 

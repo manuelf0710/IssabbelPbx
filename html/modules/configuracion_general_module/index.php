@@ -62,13 +62,10 @@ function _moduleContent(&$smarty, $module_name)
 
     //conexion resource
     $dsnAsterisk = generarDSNSistema('asteriskuser', 'asterisk');
-    echo("modificado");
-    echo($dsnAsterisk);
 
     $pDB = new paloDB($dsnAsterisk);
     //$pDB = "";
 
-    var_dump($pDB);
     $dsn = generarDSNSistema('asteriskuser', 'asterisk');
     $modelIvr = new IvrModel(new \paloDB($dsn));
     $modelOutgoingRoutes = new RutaSalienteModel(new \paloDB($dsn));
@@ -96,7 +93,6 @@ function _moduleContent(&$smarty, $module_name)
             $content = saveNewconfiguracion_generalMariaDB($smarty, $module_name, $local_templates_dir, $pDB, $arrConf, $infoToView);
             break;
         default: // view_form
-        echo("viewFormconfiguracion_general2");
             $content = viewFormconfiguracion_general2($smarty, $module_name, $local_templates_dir, $pDB, $arrConf, $infoToView);
             break;
     }
@@ -153,7 +149,6 @@ function viewFormconfiguracion_general2($smarty, $module_name, $local_templates_
         echo json_encode($dataconfiguracion_generalMariaDB);*/
         if (is_array($dataconfiguracion_general2) & count($dataconfiguracion_general2) > 0) {
             $_DATA = $dataconfiguracion_general2;
-            echo "manuelfuentes";
         } else {
             $smarty->assign("mb_title", _tr("Error get Data"));
             $smarty->assign("mb_message", $pconfiguracion_general2->errMsg);

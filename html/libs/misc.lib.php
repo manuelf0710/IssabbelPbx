@@ -633,7 +633,7 @@ function consultarRemoteConexion($dsnAsterisk){
  *
  * @return  mixed   NULL si no se reconoce usuario, o el DNS con clave resuelta
  */
-function generarDSNSistema($sNombreUsuario, $sNombreDB, $ruta_base='')
+function generarDSNSistema($sNombreUsuario, $sNombreDB, $ruta_base='', $isadminLoggin='')
 {
     require_once $ruta_base.'libs/paloSantoConfig.class.php';
     switch ($sNombreUsuario) {
@@ -649,7 +649,11 @@ function generarDSNSistema($sNombreUsuario, $sNombreDB, $ruta_base='')
                    $listaParam['$amp_conf[\'AMPDBUSER\']']['valor']. ":".
                    $listaParam['$amp_conf[\'AMPDBPASS\']']['valor']. "@".
                    $listaParam['$amp_conf[\'AMPDBHOST\']']['valor']. "/".$sNombreDB;
+                   return $dsnLocal;
             $getConnectionAsterixk = consultarRemoteConexion($dsnLocal);
+            if($isadminLoggin != ''){
+                return $dsnLocal;
+            }
             if($getConnectionAsterixk['servidormariadb'] == 'localhost'){
                 return $dsnLocal;
             }else{
