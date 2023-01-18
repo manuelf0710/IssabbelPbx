@@ -20,7 +20,7 @@
         {/if}
     </tr>
 </table>
-
+<!--
 <fieldset style="border-radius: 5px; padding: 5px; min-height:150px;  margin-top:20px;">
     <legend><span> Configuración NODEJS </span> </legend>
     <table class="tabForm" style="font-size: 16px;" width="100%">
@@ -52,7 +52,7 @@
             </td>
         </tr>
     </table>
-</fieldset>
+</fieldset>-->
 <fieldset style="border-radius: 5px; padding: 5px; min-height:150px;  margin-top:20px;">
     <legend><span> Configuración de conexión Local o MariaDB </span> </legend>
     <table class="tabForm" style="font-size: 16px;" width="100%">

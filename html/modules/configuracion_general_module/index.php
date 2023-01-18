@@ -72,7 +72,6 @@ function _moduleContent(&$smarty, $module_name)
     $modelConexionesBD = new ConexionesModel(new \paloDB($dsn));
     $IvrList = $modelIvr->index();
     $conexionesLista = $modelConexionesBD->lista();
-    echo(json_encode($conexionesLista));
     $outgoingRouteList = $modelOutgoingRoutes->index();
 
     $infoToView = array("ivrLista" => $IvrList, "outgoingRouteList" => $outgoingRouteList, "conexionesLista" => $conexionesLista);
@@ -122,10 +121,10 @@ function viewFormconfiguracion_general2($smarty, $module_name, $local_templates_
     $_DATA = $pconfiguracion_general2->getconfiguracion_general2ByName($motor);
 
     //echo"el array _DATA= ".json_encode($_DATA);
-    $dataconfiguracion_generalMariaDB = $pconfiguracion_general2->getconfiguracion_general2MariaDB();  
+    $dataconfiguracion_generalMariaDB = $pconfiguracion_general2->getconfiguracion_general2MariaDB();
     if ($_DATA != null) {
         $_DATA = array_merge($_DATA, $dataconfiguracion_generalMariaDB);
-    }else{
+    } else {
         $_DATA = $dataconfiguracion_generalMariaDB;
     }
     //echo('elidddd='.$_DATA['id']);
@@ -144,7 +143,7 @@ function viewFormconfiguracion_general2($smarty, $module_name, $local_templates_
 
     if ($action == "view" || $action == "view_edit") { // the action is to view or view_edit.
         $dataconfiguracion_general2 = $pconfiguracion_general2->getconfiguracion_general2ById($id);
-       
+
         /*echo("algoo");
         echo json_encode($dataconfiguracion_generalMariaDB);*/
         if (is_array($dataconfiguracion_general2) & count($dataconfiguracion_general2) > 0) {
@@ -160,7 +159,7 @@ function viewFormconfiguracion_general2($smarty, $module_name, $local_templates_
     $smarty->assign("REQUIRED_FIELD", _tr("Required field"));
     $smarty->assign("icon", "images/list.png");
     $smarty->assign("configListas", $infoToView);
-/*
+    /*
     echo("<br>");
 echo("<br>");
 echo json_encode($_DATA);
@@ -193,10 +192,10 @@ function saveNewconfiguracion_generalMariaDB($smarty, $module_name, $local_templ
     } else {
         //NO ERROR, HERE IMPLEMENTATION OF SAVE
 
-        $id     = getParameter("id");
+        //$id     = getParameter("id");
         $pconfiguracion_general2->updateconfiguracion_general2MariaDB($_POST);
 
-        $smarty->assign("ID", $id);
+        //$smarty->assign("ID", $id);
         $content = viewFormconfiguracion_general2($smarty, $module_name, $local_templates_dir, $pDB, $arrConf, $infoToView);
         //header("Location: index.php?menu=configuracion_general");
 
@@ -269,8 +268,8 @@ function createFieldForm()
             "INPUT_EXTRA_PARAM"      => "",
             "VALIDATION_TYPE"        => "text",
             "VALIDATION_EXTRA_PARAM" => ""
-        ),    
-        
+        ),
+
         "usuariomariadb"   => array(
             "LABEL"                  => _tr("Usuario"),
             "REQUIRED"               => "no",
@@ -294,7 +293,7 @@ function createFieldForm()
             "INPUT_EXTRA_PARAM"      => "",
             "VALIDATION_TYPE"        => "text",
             "VALIDATION_EXTRA_PARAM" => ""
-        ),        
+        ),
 
 
 
@@ -412,7 +411,7 @@ function getAction()
         return "view_form";
     else if (getParameter("action") == "save")     /*function for save info connection */
         return "savedata";
-    else if (getParameter("action") == "saveLocal")     
+    else if (getParameter("action") == "saveLocal")
         return "savemariadb";
     else if (getParameter("action") == "view_edit")
         return "view_form";

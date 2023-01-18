@@ -115,8 +115,8 @@ class paloSantoconfiguracion_general_module
 
     function getconfiguracion_general2MariaDB()
     {
-        $id=1;
-        $query = "SELECT * FROM asterisk.conexionbdmariadb WHERE id=?";
+        $id = 1;
+        $query = "SELECT motormariadb, servidormariadb, usuariomariadb, contrasenamariadb,basedatosmariadb FROM asterisk.conexionbdmariadb WHERE id=?";
 
         $result = $this->_DB->getFirstRowQuery($query, true, array("$id"));
 
@@ -125,7 +125,7 @@ class paloSantoconfiguracion_general_module
             return null;
         }
         return $result;
-    }    
+    }
 
     function getconfiguracion_general2Active()
     {
@@ -181,7 +181,7 @@ class paloSantoconfiguracion_general_module
         return 0;
     }
 
-    
+
 
     function updateconfiguracion_general2MariaDB($data)
     {
@@ -219,5 +219,5 @@ class paloSantoconfiguracion_general_module
             return null;
         } */
         return 0;
-    }    
+    }
 }

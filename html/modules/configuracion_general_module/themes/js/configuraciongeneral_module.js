@@ -59,11 +59,14 @@ $(document).ready(function () {
       data: JSON.stringify(information),
       dataType: "json",
       success: function (data, textStatus, xhr) {
-        if (xhr.status == 200) {
+        if (xhr.status == 200 && data && !messageContainError(data)) {
           $("#conexionexitosa").css("display", "block");
           alert("conexion exitosa");
           document.form_configuraciongeneral.action = "index.php?menu=configuracion_general_module&action=save";
           document.form_configuraciongeneral.submit();
+        }else{
+          $("#conexionnoexitosa").text("conexion no exitosa " + data.responseText);
+          alert("conexion no exitosa " + data.responseText);          
         }
       },
       error: function (data, textStatus, xhr) {
@@ -72,7 +75,7 @@ $(document).ready(function () {
       },
       processData: false,
       type: "POST",
-      url: "https://192.168.0.105:3000/config",
+      url: "api-node/index.php?action=config",
     });
   }
 
@@ -93,6 +96,15 @@ $(document).ready(function () {
     document.form_configuraciongeneral.action = "index.php?menu=configuracion_general_module&action=saveLocal";
     document.form_configuraciongeneral.submit();
   }); 
+
+  function messageContainError(message){
+
+    let errores = ["error","errores", "unknown", "ENOTFOUND","denied","could not","ORA-","EHOSTUNREACH","does not support"];
+
+     return (errores.some(v => message.includes(v)))
+      // There's at least one
+
+  }
   
   function probarConexion(motor, servidor, usuario, contrasena, basedatos, divconexionexitosa, divconexionnoexitosa){
     let information;
@@ -133,8 +145,12 @@ $(document).ready(function () {
       data: JSON.stringify(information),
       dataType: "json",
       success: function (data, textStatus, xhr) {
-        if (xhr.status == 200) {
+        console.log("data en test ", data)
+        if (xhr.status == 200 && data && !messageContainError(data)) {
           $("#"+divconexionexitosa).css("display", "block");
+        }else{
+          $("#"+divconexionnoexitosa).css("display", "block");
+          $("#"+divconexionnoexitosa).text("conexion no exitosa " + data);          
         }
       },
       error: function (data, textStatus, xhr) {
@@ -145,7 +161,7 @@ $(document).ready(function () {
       processData: false,
       type: "POST",
       //url: 'modules/configuracion_general/libs/ajaxfunctions.php'
-      url: "https://192.168.0.105:3000/test",
+      url: "api-node/index.php?action=test",
     });    
   }
 

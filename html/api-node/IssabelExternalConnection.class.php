@@ -19,17 +19,73 @@
   +----------------------------------------------------------------------+
 */
 
-class IssabelExternalAuth
+class IssabelExternalConnection
 {
 
     var $_DB; // instancia de la clase paloDB
     var $errMsg;
+    var $urlNode = 'http://localhost:3000/';
 
     function external_auth($user, $password, $payload)
     {
         session_write_close();
         $ch = curl_init();
-        curl_setopt($ch, CURLOPT_URL, "http://192.168.0.101:3000/auth");
+        //curl_setopt($ch, CURLOPT_URL,"http://192.168.0.101:3000/auth");
+        curl_setopt($ch, CURLOPT_URL, $this->urlNode . "auth");
+        curl_setopt($ch, CURLOPT_POST, 1);
+        curl_setopt($ch, CURLOPT_HEADER, true);
+        curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type:application/json'));
+        //curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($dataConn));
+        curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($payload));
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        $response    = curl_exec($ch);
+        $header_size = curl_getinfo($ch, CURLINFO_HEADER_SIZE);
+        $httpcode    = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+        $header      = substr($response, 0, $header_size);
+        $body        = substr($response, $header_size);
+        curl_close($ch);
+        session_start();
+        if ($httpcode == '200') {
+            $data = json_decode($body);
+            return $data;
+        } else {
+            return $body;
+        }
+    }
+
+
+    function config($payload)
+    {
+        session_write_close();
+        $ch = curl_init();
+        //curl_setopt($ch, CURLOPT_URL,"http://192.168.0.101:3000/auth");
+        curl_setopt($ch, CURLOPT_URL, $this->urlNode . "config");
+        curl_setopt($ch, CURLOPT_POST, 1);
+        curl_setopt($ch, CURLOPT_HEADER, true);
+        curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type:application/json'));
+        //curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($dataConn));
+        curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($payload));
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        $response    = curl_exec($ch);
+        $header_size = curl_getinfo($ch, CURLINFO_HEADER_SIZE);
+        $httpcode    = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+        $header      = substr($response, 0, $header_size);
+        $body        = substr($response, $header_size);
+        curl_close($ch);
+        session_start();
+        if ($httpcode == '200') {
+            $data = json_decode($body);
+            return $data;
+        } else {
+            return $body;
+        }
+    }
+
+    function test($payload)
+    {
+        session_write_close();
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_URL, "http://localhost:3000/test");
         curl_setopt($ch, CURLOPT_POST, 1);
         curl_setopt($ch, CURLOPT_HEADER, true);
         curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type:application/json'));
