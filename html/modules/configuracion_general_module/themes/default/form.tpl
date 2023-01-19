@@ -83,6 +83,10 @@
         <tr class="letra12">
             <td align="left"><b>{$basedatosmariadb.LABEL}: <span class="required">*</span></b></td>
             <td align="left">{$basedatosmariadb.INPUT}</td>
+            <td align="left"><b>{$sslmariadb.LABEL}: <span class="required">*</span></b></td>
+            <td align="left">
+                {$sslmariadb.INPUT}
+            </td>
         </tr>
     </table>
     <table style="width:98%; margin-top:20px;">

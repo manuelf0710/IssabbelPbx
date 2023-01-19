@@ -24,6 +24,7 @@ class IssabelExternalConnection
 
     var $_DB; // instancia de la clase paloDB
     var $errMsg;
+    //var $urlNode = 'http://192.168.0.101:3000/';
     var $urlNode = 'http://localhost:3000/';
 
     function external_auth($user, $password, $payload)
@@ -73,19 +74,20 @@ class IssabelExternalConnection
         $body        = substr($response, $header_size);
         curl_close($ch);
         session_start();
-        if ($httpcode == '200') {
+        echo json_encode($body);
+        /*if ($httpcode == '200') {
             $data = json_decode($body);
             return $data;
         } else {
             return $body;
-        }
+        } */
     }
 
     function test($payload)
     {
         session_write_close();
         $ch = curl_init();
-        curl_setopt($ch, CURLOPT_URL, "http://localhost:3000/test");
+        curl_setopt($ch, CURLOPT_URL, $this->urlNode."test");
         curl_setopt($ch, CURLOPT_POST, 1);
         curl_setopt($ch, CURLOPT_HEADER, true);
         curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type:application/json'));
@@ -99,11 +101,14 @@ class IssabelExternalConnection
         $body        = substr($response, $header_size);
         curl_close($ch);
         session_start();
-        if ($httpcode == '200') {
+
+        echo json_encode($body);
+       
+        /*if ($httpcode == '200') {
             $data = json_decode($body);
             return $data;
         } else {
             return $body;
-        }
+        }*/
     }
 }

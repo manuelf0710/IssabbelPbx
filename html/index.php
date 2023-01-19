@@ -104,7 +104,6 @@ foreach (new RecursiveIteratorIterator($it) as $file) {
 
 if(isset($_POST['input_user']) && $_POST['input_user']=='admin'){
     $dsnAsterisk = generarDSNSistema('asteriskuser', 'asterisk','','isadminloggin');
-    echo "entra asdf";
 }else{
     $dsnAsterisk = generarDSNSistema('asteriskuser', 'asterisk');
 }

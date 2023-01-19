@@ -112,16 +112,15 @@ function viewFormconfiguracion_general2($smarty, $module_name, $local_templates_
     //$id     = getParameter("id");
     //$smarty->assign("ID", $id); //persistence id with input hidden in tpl
     $motor     = getParameter("motor");
-    /*print_r($_DATA);
 
-    echo("antes.<br/> el id=".$id);
-    print_r($pconfiguracion_general2->getconfiguracion_general2ById($id));
-    echo("</br>despues$id</br>");  */
+    if(empty($motor)){
+        $_DATA = $pconfiguracion_general2->getconfiguracion_general2Active();
+    }else{
+        $_DATA = $pconfiguracion_general2->getconfiguracion_general2ByName($motor);
+    }
 
-    $_DATA = $pconfiguracion_general2->getconfiguracion_general2ByName($motor);
-
-    //echo"el array _DATA= ".json_encode($_DATA);
     $dataconfiguracion_generalMariaDB = $pconfiguracion_general2->getconfiguracion_general2MariaDB();
+
     if ($_DATA != null) {
         $_DATA = array_merge($_DATA, $dataconfiguracion_generalMariaDB);
     } else {
@@ -132,8 +131,9 @@ function viewFormconfiguracion_general2($smarty, $module_name, $local_templates_
     /*echo"</br>nuevo</br>";
     echo json_encode($nuevo);
     echo"</br></br>";*/
-
-    $smarty->assign("ID", $_DATA['id']); //persistence id with input hidden in tpl
+    if(isset($_DATA['id'])){
+        $smarty->assign("ID", $_DATA['id']); //persistence id with input hidden in tpl
+    }
 
     if ($action == "view")
         $oForm->setViewMode();
@@ -249,6 +249,7 @@ function createFieldForm()
     $arrOptionsMotor = array('' => 'Seleccione...', 'Oracle' => 'Oracle', 'PostgreSQL' => 'PostgreSQL', 'Mysql' => 'Mysql');
     $arrOptionsMotorMariaDB = array('MariaDB' => 'MariaDB');
     $arrOptionsActivo = array('' => 'Seleccione...', 'Activo' => 'Activo', 'Inactivo' => 'Inactivo');
+    $arrOptionsSSL = array('' => 'Seleccione...', 'Si' => 'Si', 'No' => 'No');
 
     $arrFields = array(
         "motormariadb"   => array(
@@ -261,6 +262,16 @@ function createFieldForm()
             "VALIDATION_EXTRA_PARAM" => "",
             "EDITABLE"               => "si",
         ),
+        "sslmariadb"   => array(
+            "LABEL"                  => _tr("SslMariadb"),
+            "REQUIRED"               => "no",
+            "INPUT_TYPE"             => "SELECT",
+            "INPUT_EXTRA_PARAM"      => $arrOptionsSSL,
+            "SUPPORT_VALUE"          => "si",
+            "VALIDATION_TYPE"        => "text",
+            "VALIDATION_EXTRA_PARAM" => "",
+            "EDITABLE"               => "si",
+        ),        
         "servidormariadb"   => array(
             "LABEL"                  => _tr("Servidor"),
             "REQUIRED"               => "no",

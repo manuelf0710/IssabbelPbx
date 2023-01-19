@@ -116,7 +116,7 @@ class paloSantoconfiguracion_general_module
     function getconfiguracion_general2MariaDB()
     {
         $id = 1;
-        $query = "SELECT motormariadb, servidormariadb, usuariomariadb, contrasenamariadb,basedatosmariadb FROM asterisk.conexionbdmariadb WHERE id=?";
+        $query = "SELECT motormariadb, servidormariadb, usuariomariadb, contrasenamariadb,basedatosmariadb, sslmariadb FROM asterisk.conexionbdmariadb WHERE id=?";
 
         $result = $this->_DB->getFirstRowQuery($query, true, array("$id"));
 
@@ -200,6 +200,7 @@ class paloSantoconfiguracion_general_module
                 "usuariomariadb"   =>  $this->_DB->DBCAMPO($data['usuariomariadb']),
                 "contrasenamariadb"         =>  $this->_DB->DBCAMPO($data['contrasenamariadb']),
                 "basedatosmariadb"         =>  $this->_DB->DBCAMPO($data['basedatosmariadb']),
+                "sslmariadb"         =>  $this->_DB->DBCAMPO($data['sslmariadb']),
             ),
             array(
                 "id"  => 1

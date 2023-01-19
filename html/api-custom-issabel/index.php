@@ -1,4 +1,5 @@
-<?php 
+<?php
+
 include("IssabelExternalConnection.class.php");
 if(isset($_GET['action']) && $_GET['action'] != ''){
     $action = $_GET['action'];

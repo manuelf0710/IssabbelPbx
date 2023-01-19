@@ -635,7 +635,7 @@ function consultarRemoteConexion($dsnAsterisk){
  */
 function generarDSNSistema($sNombreUsuario, $sNombreDB, $ruta_base='', $isadminLoggin='')
 {
-    require_once $ruta_base.'libs/paloSantoConfig.class.php';
+    require_once '../libs/paloSantoConfig.class.php';
     switch ($sNombreUsuario) {
     case 'root':
         $sClave = obtenerClaveConocidaMySQL($sNombreUsuario, $ruta_base);

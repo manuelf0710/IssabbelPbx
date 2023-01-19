@@ -29,7 +29,7 @@ class IssabelExternalAuth
     {
         session_write_close();
         $ch = curl_init();
-        curl_setopt($ch, CURLOPT_URL, "http://192.168.0.101:3000/auth");
+        curl_setopt($ch, CURLOPT_URL, "http://localhost:3000/auth");
         curl_setopt($ch, CURLOPT_POST, 1);
         curl_setopt($ch, CURLOPT_HEADER, true);
         curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type:application/json'));

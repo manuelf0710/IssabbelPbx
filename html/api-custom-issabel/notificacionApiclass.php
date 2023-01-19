@@ -6,7 +6,7 @@ if (isset($arrConf['basePath'])) {
     include_once("libs/paloSantoDB.class.php");
 }
 
-class externalLogin
+class notificacionApi
 {
 
     var $_DB; // instancia de la clase paloDB
@@ -15,7 +15,7 @@ class externalLogin
     var $lastInsert;
     var $lastInsertGroup;
 
-    function externalLogin(&$pDB)
+    function notificacionApi(&$pDB)
     {
         // Se recibe como parámetro una referencia a una conexión paloDB
         if (is_object($pDB)) {
@@ -33,6 +33,21 @@ class externalLogin
             }
         }
         print_r($this->_DB);
+    }
+
+
+    function ultimoId()
+    {
+        $id = 1;
+        $query = "SELECT * FROM asterisk.conexionesbd WHERE id=?";
+
+        $result = $this->_DB->getFirstRowQuery($query, true, array("$id"));
+
+        if ($result == FALSE) {
+            $this->errMsg = $this->_DB->errMsg;
+            return null;
+        }
+        return $result;
     }
 
 

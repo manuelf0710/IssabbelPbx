@@ -54,6 +54,12 @@ $(document).ready(function () {
       document.form_configuraciongeneral.submit();
       return false;
     }
+
+    if($("#sslmariadb").val() == 'No'){
+      delete information.asteriskBdConnection.ssl
+    }
+
+
     $.ajax({
       contentType: "application/json",
       data: JSON.stringify(information),
@@ -139,6 +145,12 @@ $(document).ready(function () {
         };
         break;
     }  
+    alert($("#sslmariadb").val());
+    if($("#sslmariadb").val() == 'No'){
+      delete information['externalBdConnection']['ssl'];
+    }
+
+    console.log("probar infff ",information);
     
     $.ajax({
       contentType: "application/json",
