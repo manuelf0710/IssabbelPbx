@@ -190,6 +190,25 @@ function createFieldForm()
     $arrOptionsMotor = array('' => 'Seleccione...', 'Oracle' => 'Oracle', 'PostgreSQL' => 'PostgreSQL', 'Mysql' => 'Mysql');
     $arrOptionsActivo = array('' => 'Seleccione...', 'Activo' => 'Activo', 'Inactivo' => 'Inactivo');
 
+    $arrOptionsDias = array(
+        "" => "...",
+        "Lunes" => "Lunes",
+        "Martes" => "Martes",
+        "Miercoles" => "Miercoles",
+        "Jueves" => "Jueves",
+        "Viernes" => "Viernes",
+        "Sabado" => "Sabado",
+        "Domingo" => "Domingo",
+    );
+    $optionsHours = array(''=>'...');
+    $optionsMins = array(''=>'...');
+    for($i = 0; $i < 24; $i++){
+        $optionsHours["$i"] =$i;
+    }
+    for($i = 0; $i < 60; $i++){
+        $optionsMins["$i"] =$i;       
+    }    
+
     $arrFields = array(
         "motor"   => array(
             "LABEL"                  => _tr("Motor"),
@@ -251,6 +270,66 @@ function createFieldForm()
             "VALIDATION_TYPE"        => "text",
             "VALIDATION_EXTRA_PARAM" => ""
         ),
+        "horainicialnot"   => array(
+            "LABEL"                  => _tr("Hora Inicial Notificación"),
+            "REQUIRED"               => "no",
+            "INPUT_TYPE"             => "SELECT",
+            "INPUT_EXTRA_PARAM"      => $optionsHours,
+            "VALIDATION_TYPE"        => "text",
+            "VALIDATION_EXTRA_PARAM" => "",
+            "EDITABLE"               => "si",
+        ), 
+        "minutoinicialnot"   => array(
+            "LABEL"                  => _tr("Minuto Inicial Notificación"),
+            "REQUIRED"               => "no",
+            "INPUT_TYPE"             => "SELECT",
+            "INPUT_EXTRA_PARAM"      => $optionsMins,
+            "VALIDATION_TYPE"        => "text",
+            "VALIDATION_EXTRA_PARAM" => "",
+            "EDITABLE"               => "si",
+        ),   
+        "minutofinalnot"   => array(
+            "LABEL"                  => _tr("Minuto Final Notificación"),
+            "REQUIRED"               => "no",
+            "INPUT_TYPE"             => "SELECT",
+            "INPUT_EXTRA_PARAM"      => $optionsMins,
+            "VALIDATION_TYPE"        => "text",
+            "VALIDATION_EXTRA_PARAM" => "",
+            "EDITABLE"               => "si",
+        ),              
+        "horafinalnot"   => array(
+            "LABEL"                  => _tr("Hora final Notificación"),
+            "REQUIRED"               => "no",
+            "INPUT_TYPE"             => "SELECT",
+            "INPUT_EXTRA_PARAM"      => $optionsHours,
+            "VALIDATION_TYPE"        => "text",
+            "VALIDATION_EXTRA_PARAM" => "",
+            "EDITABLE"               => "si",
+        ),                 
+        "diainicialnot"   => array(
+            "LABEL"                  => _tr("Día Inicial Notif"),
+            "REQUIRED"               => "no",
+            "INPUT_TYPE"             => "SELECT",
+            "INPUT_EXTRA_PARAM"      => $arrOptionsDias,
+            "VALIDATION_TYPE"        => "text",
+            "VALIDATION_EXTRA_PARAM" => "",
+            "EDITABLE"               => "si",
+        ),  
+        "diafinalnot"   => array(
+            "LABEL"                  => _tr("Día Final Notif"),
+            "REQUIRED"               => "no",
+            "INPUT_TYPE"             => "SELECT",
+            "INPUT_EXTRA_PARAM"      => $arrOptionsDias,
+            "VALIDATION_TYPE"        => "text",
+            "VALIDATION_EXTRA_PARAM" => "",
+            "EDITABLE"               => "si",
+        ),               
+
+
+
+
+
+
         "activar_desactivar"   => array(
             "LABEL"                  => _tr("Desactivar / Activar"),
             "REQUIRED"               => "no",

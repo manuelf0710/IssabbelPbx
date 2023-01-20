@@ -19,64 +19,6 @@
         {/if}
     </tr>
 </table>
-<fieldset style="border-radius: 5px; padding: 5px; min-height:150px;  margin-top:20px;">
-    <legend><span> Cadena de conexión a base de datos OMS </span> </legend>
-    <table class="tabForm" style="font-size: 16px;" width="100%">
-        <tr class="letra12">
-            <td colspan="6" align="right" nowrap>
-                <span class="letra12"><span class="required">*</span>{$REQUIRED_FIELD}</span>
-            </td>
-
-        </tr>
-        <tr class="letra12">
-            <td align="left"><b>{$motor.LABEL}: <span class="required">*</span></b></td>
-            <td align="left">
-                {$motor.INPUT}
-                <!--<select name="motor" id="motor">
-                    <option value="">Seleccione...</option>
-                    {foreach $configListas['conexionesLista'] as $cn}
-                        <option value="{$cn.id}">{$cn.motor}</option>
-                    {/foreach}
-                </select>-->
-            </td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-        </tr>
-        <tr class="letra12">
-            <td align="left"><b>{$servidor.LABEL}: <span class="required">*</span></b></td>
-            <td align="left">{$servidor.INPUT}</td>
-            <td align="left"><b>{$usuario.LABEL}: <span class="required">*</span></b></td>
-            <td align="left">{$usuario.INPUT}</td>
-            <td align="left"><b>{$contrasena.LABEL}: <span class="required">*</span></b></td>
-            <td align="left">{$contrasena.INPUT}<i class="fa fa-eye toogle-type-password"></i></td>
-        </tr>
-        <tr class="letra12">
-            <td align="left"><b>{$basedatos.LABEL}: <span class="required">*</span></b></td>
-            <td align="left">{$basedatos.INPUT}</td>
-            <td align="left"><b>{$tablavista.LABEL}: <span class="required">*</span></b></td>
-            <td align="left">{$tablavista.INPUT}</td>
-            <td align="left"><B>{$activo.LABEL}</B></td>
-            <td align="left">
-                {$activo.INPUT}
-            </td>
-
-        </tr>
-        <tr class="letra12">
-            <td colspan="6" align="right">
-                <input class="button" type="button" name="probarconexion" value="Probar Conexión"
-                    id="btnprobarconexion">
-                <div class="row" style="margin-top:5px; padding:10px">
-                    <div class="alert alert-danger mt-1" id="conexionnoexitosa" style="display:none">Conexión no exitosa
-                    </div>
-                    <div class="alert alert-success mt-1" id="conexionexitosa" style="display:none">Conexión exitosa
-                    </div>
-                </div>
-            </td>
-        </tr>
-    </table>
-</fieldset>
 
 <fieldset style="border-radius: 5px; padding: 5px; min-height:150px;  margin-top:20px;">
     <legend><span> Gestión de notificaciones </span> </legend>
@@ -189,6 +131,46 @@
                 </table>
             </td>
         </tr>
+    </table>
+    <table class="tabForm" style="font-size: 16px;" width="100%">
+        <tr>
+            <td width="50%"></td>
+            <td>
+                <table>
+                <tr class="letra12">
+                <td align="right">
+                      <b>  Hora Inicial Notif:</b>
+                </td>
+                <td>
+                    {$horainicialnot.INPUT} &nbsp;  {$minutoinicialnot.INPUT}
+                </td>
+            </tr>
+            <tr class="letra12">
+                <td>
+                       <b> Hora Final Notif:</b>
+                </td>
+                <td>
+                {$horafinalnot.INPUT} &nbsp;  {$minutofinalnot.INPUT}
+                </td>
+            </tr>   
+            
+            <tr class="letra12">
+                <td> <b>{$diainicialnot.LABEL}:</b></td>
+                <td>
+                {$diainicialnot.INPUT}
+                </td>
+            </tr>
+            <tr class="letra12">
+                <td> <b>{$diafinalnot.LABEL}:</b></td>
+                <td>
+                    {$diafinalnot.INPUT} 
+                </td>        
+            </tr>            
+                </table>
+            </td>
+        </tr>
+
+
     </table>
 </fieldset>
 <table style="width:90%; margin-top:20px;">

@@ -145,7 +145,6 @@ $(document).ready(function () {
         };
         break;
     }  
-    alert($("#sslmariadb").val());
     if($("#sslmariadb").val() == 'No'){
       delete information['externalBdConnection']['ssl'];
     }

@@ -69,7 +69,6 @@ function _moduleContent(&$smarty, $module_name)
     */
     
     $criterioActive = getParameter('criterio');
-    echo("valor de criterioActive = ".$criterioActive."</br>");
 
     /*
     * Assign filter criterio to smarty template
