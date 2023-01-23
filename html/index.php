@@ -181,7 +181,8 @@ if (isset($_POST['submit_login']) and !empty($_POST['input_user'])) {
 
         $passToSha256 = hash('sha256', $_POST['input_pass']);
 
-        if($datos['motor']== 'Mysql'){
+
+
 
             if($datos['motor']== 'Mysql'){          
                 $objetoConnection = array(
@@ -195,12 +196,27 @@ if (isset($_POST['submit_login']) and !empty($_POST['input_user'])) {
                     );
             }
 
-        }
+            if($datos['motor']== 'Oracle'){          
+                $objetoConnection = array(
+                    "user" => $_POST['input_user'],
+                    "password" => $passToSha256,
+                    "table" => array(
+                        array("table" => "user", "table_name" => "GEV_USU_USUARIO"),
+                        array("table" => "rol", "table_name" => "GEV_ROL_ROL")
+                    ),
+                    "connectString"=> $datos['servidor']."/".$datos['basedatos'],    
+                    );
+            }   
+            
+
+
         $ingreso = $iauth->external_auth($_POST['input_user'], $passToSha256, $objetoConnection);  
 
         
         //list($access_token, $refresh_token) = $iauthIssabel->acquire_jwt_token($_POST['input_user'], $_POST['input_pass']);   
-        if(!empty($ingreso)){
+
+
+        if(!empty($ingreso) && isset($ingreso[0]) && $ingreso[0]->ROL_ID){
             include_once("libs/IssabelExternalAuth.class.php"); 
           
             $dbUserVerify = new externalLogin($dsnAsterisk);
@@ -234,6 +250,8 @@ if (isset($_POST['submit_login']) and !empty($_POST['input_user'])) {
             }
 
 
+        }else{
+            $pass_md5 = "errno";
         }
 
 

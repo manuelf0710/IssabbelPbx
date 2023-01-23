@@ -55,24 +55,23 @@ $(document).ready(function () {
       return false;
     }
 
-    if($("#sslmariadb").val() == 'No'){
-      delete information.asteriskBdConnection.ssl
+    if ($("#sslmariadb").val() == "No") {
+      delete information.asteriskBdConnection.ssl;
     }
-
 
     $.ajax({
       contentType: "application/json",
       data: JSON.stringify(information),
       dataType: "json",
       success: function (data, textStatus, xhr) {
-        if (xhr.status == 200 && data && !messageContainError(data)) {
+        if (xhr.status == 200 && data && messageContainSuccess(data)) {
           $("#conexionexitosa").css("display", "block");
           alert("conexion exitosa");
           document.form_configuraciongeneral.action = "index.php?menu=configuracion_general_module&action=save";
           document.form_configuraciongeneral.submit();
-        }else{
+        } else {
           $("#conexionnoexitosa").text("conexion no exitosa " + data.responseText);
-          alert("conexion no exitosa " + data.responseText);          
+          alert("conexion no exitosa " + data.responseText);
         }
       },
       error: function (data, textStatus, xhr) {
@@ -101,22 +100,27 @@ $(document).ready(function () {
   $("#btnguardardatosmariadb").click(function () {
     document.form_configuraciongeneral.action = "index.php?menu=configuracion_general_module&action=saveLocal";
     document.form_configuraciongeneral.submit();
-  }); 
+  });
 
-  function messageContainError(message){
+  function messageContainError(message) {
+    let errores = ["error", "errores", "unknown", "EINVAL", "ENOTFOUND", "denied", "could not", "ORA-", "EHOSTUNREACH", "does not support"];
 
-    let errores = ["error","errores", "unknown", "ENOTFOUND","denied","could not","ORA-","EHOSTUNREACH","does not support"];
-
-     return (errores.some(v => message.includes(v)))
-      // There's at least one
-
+    return errores.some((v) => message.includes(v));
+    // There's at least one
   }
-  
-  function probarConexion(motor, servidor, usuario, contrasena, basedatos, divconexionexitosa, divconexionnoexitosa){
+
+  function messageContainSuccess(message) {
+    let exito = ["exitosa"];
+
+    return exito.some((v) => message.includes(v));
+    // There's at least one
+  }
+
+  function probarConexion(motor, servidor, usuario, contrasena, basedatos, divconexionexitosa, divconexionnoexitosa) {
     let information;
-    $("#"+divconexionexitosa).css("display", "none");
-    $("#"+divconexionnoexitosa).css("display", "none");    
-    
+    $("#" + divconexionexitosa).css("display", "none");
+    $("#" + divconexionnoexitosa).css("display", "none");
+
     switch (motor.toLocaleLowerCase()) {
       case "oracle":
         information = {
@@ -129,7 +133,8 @@ $(document).ready(function () {
           },
         };
         break;
-      case "mariadb": motor= 'mysql';
+      case "mariadb":
+        motor = "mysql";
       case "mysql":
         information = {
           externalBdMotor: motor,
@@ -144,44 +149,60 @@ $(document).ready(function () {
           },
         };
         break;
-    }  
-    if($("#sslmariadb").val() == 'No'){
-      delete information['externalBdConnection']['ssl'];
+    }
+    if ($("#sslmariadb").val() == "No") {
+      delete information["externalBdConnection"]["ssl"];
     }
 
-    console.log("probar infff ",information);
-    
+    console.log("probar infff ", information);
+
     $.ajax({
       contentType: "application/json",
       data: JSON.stringify(information),
       dataType: "json",
       success: function (data, textStatus, xhr) {
-        console.log("data en test ", data)
-        if (xhr.status == 200 && data && !messageContainError(data)) {
-          $("#"+divconexionexitosa).css("display", "block");
-        }else{
-          $("#"+divconexionnoexitosa).css("display", "block");
-          $("#"+divconexionnoexitosa).text("conexion no exitosa " + data);          
+        console.log("data en test ", data);
+        if (xhr.status == 200 && data && messageContainSuccess(data)) {
+          $("#" + divconexionexitosa).css("display", "block");
+        } else {
+          $("#" + divconexionnoexitosa).css("display", "block");
+          $("#" + divconexionnoexitosa).text("conexion no exitosa " + data);
         }
       },
       error: function (data, textStatus, xhr) {
         console.log("en error ", data);
-        $("#"+divconexionnoexitosa).css("display", "block");
-        $("#"+divconexionnoexitosa).text("conexion no exitosa " + data.responseText);
+        $("#" + divconexionnoexitosa).css("display", "block");
+        $("#" + divconexionnoexitosa).text("conexion no exitosa " + data.responseText);
       },
       processData: false,
       type: "POST",
       //url: 'modules/configuracion_general/libs/ajaxfunctions.php'
       url: "api-node/index.php?action=test",
-    });    
+    });
   }
 
-  $("#btnprobarconexion").click(function () {   
-    probarConexion($("#motor").val().toLocaleLowerCase(), $("#servidor").val(), $("#usuario").val(), $("input[name=contrasena]").val(), $("#basedatos").val(), 'conexionexitosa', 'conexionnoexitosa');
+  $("#btnprobarconexion").click(function () {
+    probarConexion(
+      $("#motor").val().toLocaleLowerCase(),
+      $("#servidor").val(),
+      $("#usuario").val(),
+      $("input[name=contrasena]").val(),
+      $("#basedatos").val(),
+      "conexionexitosa",
+      "conexionnoexitosa"
+    );
   });
 
-  $("#btnprobarconexionmariadb").click(function () {   
-    probarConexion($("#motormariadb").val().toLocaleLowerCase(), $("#servidormariadb").val(), $("#usuariomariadb").val(), $("input[name=contrasenamariadb]").val(), $("#basedatosmariadb").val(), 'conexionexitosamariadb', 'conexionnoexitosamariadb');
+  $("#btnprobarconexionmariadb").click(function () {
+    probarConexion(
+      $("#motormariadb").val().toLocaleLowerCase(),
+      $("#servidormariadb").val(),
+      $("#usuariomariadb").val(),
+      $("input[name=contrasenamariadb]").val(),
+      $("#basedatosmariadb").val(),
+      "conexionexitosamariadb",
+      "conexionnoexitosamariadb"
+    );
   });
 
   $(".chkivr").change(function () {

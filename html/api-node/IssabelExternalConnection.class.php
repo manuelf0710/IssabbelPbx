@@ -46,6 +46,8 @@ class IssabelExternalConnection
         $body        = substr($response, $header_size);
         curl_close($ch);
         session_start();
+
+        echo json_encode($body);
         if ($httpcode == '200') {
             $data = json_decode($body);
             return $data;
