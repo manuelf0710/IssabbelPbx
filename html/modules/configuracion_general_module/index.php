@@ -276,7 +276,7 @@ function createFieldForm()
             "LABEL"                  => _tr("Servidor"),
             "REQUIRED"               => "no",
             "INPUT_TYPE"             => "TEXT",
-            "INPUT_EXTRA_PARAM"      => "",
+            "INPUT_EXTRA_PARAM"      => array("class" => "mariadbconn"),
             "VALIDATION_TYPE"        => "text",
             "VALIDATION_EXTRA_PARAM" => ""
         ),
@@ -285,7 +285,7 @@ function createFieldForm()
             "LABEL"                  => _tr("Usuario"),
             "REQUIRED"               => "no",
             "INPUT_TYPE"             => "TEXT",
-            "INPUT_EXTRA_PARAM"      => "",
+            "INPUT_EXTRA_PARAM"      => array("class" => "mariadbconn"),
             "VALIDATION_TYPE"        => "text",
             "VALIDATION_EXTRA_PARAM" => ""
         ),
@@ -293,14 +293,14 @@ function createFieldForm()
             "LABEL"                  => _tr("Contraseña"),
             "REQUIRED"               => "no",
             "INPUT_TYPE"             => "password",
-            "INPUT_EXTRA_PARAM"      => "",
+            "INPUT_EXTRA_PARAM"      => array("class" => "mariadbconn"),
             "VALIDATION_TYPE"        => "text",
             "VALIDATION_EXTRA_PARAM" => ""
         ),
         "basedatosmariadb"   => array(
             "LABEL"                  => _tr("Base de Datos"),
             "REQUIRED"               => "no",
-            "INPUT_TYPE"             => "TEXT",
+            "INPUT_TYPE"             => "hidden",
             "INPUT_EXTRA_PARAM"      => "",
             "VALIDATION_TYPE"        => "text",
             "VALIDATION_EXTRA_PARAM" => ""
@@ -332,7 +332,7 @@ function createFieldForm()
             "LABEL"                  => _tr("Servidor"),
             "REQUIRED"               => "no",
             "INPUT_TYPE"             => "TEXT",
-            "INPUT_EXTRA_PARAM"      => "",
+            "INPUT_EXTRA_PARAM"      => array("class" => "omsconn"),
             "VALIDATION_TYPE"        => "text",
             "VALIDATION_EXTRA_PARAM" => ""
         ),
@@ -340,7 +340,7 @@ function createFieldForm()
             "LABEL"                  => _tr("Usuario"),
             "REQUIRED"               => "no",
             "INPUT_TYPE"             => "TEXT",
-            "INPUT_EXTRA_PARAM"      => "",
+            "INPUT_EXTRA_PARAM"      => array("class" => "omsconn"),
             "VALIDATION_TYPE"        => "text",
             "VALIDATION_EXTRA_PARAM" => ""
         ),
@@ -348,7 +348,7 @@ function createFieldForm()
             "LABEL"                  => _tr("Contraseña"),
             "REQUIRED"               => "no",
             "INPUT_TYPE"             => "password",
-            "INPUT_EXTRA_PARAM"      => "",
+            "INPUT_EXTRA_PARAM"      => array("class" => "omsconn"),
             "VALIDATION_TYPE"        => "text",
             "VALIDATION_EXTRA_PARAM" => ""
         ),
@@ -356,7 +356,7 @@ function createFieldForm()
             "LABEL"                  => _tr("Base de Datos"),
             "REQUIRED"               => "no",
             "INPUT_TYPE"             => "TEXT",
-            "INPUT_EXTRA_PARAM"      => "",
+            "INPUT_EXTRA_PARAM"      => array("class" => "omsconn"),
             "VALIDATION_TYPE"        => "text",
             "VALIDATION_EXTRA_PARAM" => ""
         ),
@@ -364,7 +364,7 @@ function createFieldForm()
             "LABEL"                  => _tr("Tabla o Vista"),
             "REQUIRED"               => "no",
             "INPUT_TYPE"             => "TEXT",
-            "INPUT_EXTRA_PARAM"      => "",
+            "INPUT_EXTRA_PARAM"      => array("class" => "omsconn"),
             "VALIDATION_TYPE"        => "text",
             "VALIDATION_EXTRA_PARAM" => ""
         ),

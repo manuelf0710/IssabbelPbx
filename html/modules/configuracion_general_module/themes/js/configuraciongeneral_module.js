@@ -1,3 +1,12 @@
+function tooglePassword(id) {
+  let x = document.getElementsByName("" + id)[0].type;
+  if (x == "password") {
+    document.getElementsByName("" + id)[0].type = "text";
+  } else {
+    document.getElementsByName("" + id)[0].type = "password";
+  }
+}
+
 $(document).ready(function () {
   function createConnection() {
     $("#conexionnoexitosa").css("display", "none");
@@ -94,12 +103,43 @@ $(document).ready(function () {
   });
 
   $("#btnguardardatos").click(function () {
-    createConnection();
+    if (validateOmsSave() == false) {
+      createConnection();
+    } else {
+      alert("debe ingresar todos los valores requeridos");
+    }
   });
 
+  function validateMariaDB() {
+    let error = false;
+    $(".mariadbconn").each(function () {
+      if ($(this).val() == "" && error == false) {
+        error = true;
+      }
+    });
+    return error;
+  }
+
+  function validateOmsSave() {
+    if ($("#motor").val() == "") {
+      return true;
+    }
+    let error = false;
+    $(".mariadbconn, .omsconn").each(function () {
+      if ($(this).val() == "" && error == false) {
+        error = true;
+      }
+    });
+    return error;
+  }
+
   $("#btnguardardatosmariadb").click(function () {
-    document.form_configuraciongeneral.action = "index.php?menu=configuracion_general_module&action=saveLocal";
-    document.form_configuraciongeneral.submit();
+    if (validateMariaDB() == false) {
+      document.form_configuraciongeneral.action = "index.php?menu=configuracion_general_module&action=saveLocal";
+      document.form_configuraciongeneral.submit();
+    } else {
+      alert("debe ingresar todos los valores requeridos");
+    }
   });
 
   function messageContainError(message) {

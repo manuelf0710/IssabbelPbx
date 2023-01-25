@@ -78,14 +78,14 @@
             <td align="left"><b>{$usuariomariadb.LABEL}: <span class="required">*</span></b></td>
             <td align="left">{$usuariomariadb.INPUT}</td>
             <td align="left"><b>{$contrasenamariadb.LABEL}: <span class="required">*</span></b></td>
-            <td align="left">{$contrasenamariadb.INPUT}<i class="fa fa-eye toogle-type-password"></i></td>
+            <td align="left">{$contrasenamariadb.INPUT}<i class="fa fa-eye toogle-type-password" onclick="tooglePassword('contrasenamariadb')"></i></td>
         </tr>
         <tr class="letra12">
-            <td align="left"><b>{$basedatosmariadb.LABEL}: <span class="required">*</span></b></td>
-            <td align="left">{$basedatosmariadb.INPUT}</td>
+            <!--<td align="left"><b>{$basedatosmariadb.LABEL}: <span class="required">*</span></b></td>-->
             <td align="left"><b>{$sslmariadb.LABEL}: <span class="required">*</span></b></td>
             <td align="left">
                 {$sslmariadb.INPUT}
+                {$basedatosmariadb.INPUT}
             </td>
         </tr>
     </table>
@@ -140,7 +140,7 @@
             <td align="left"><b>{$usuario.LABEL}: <span class="required">*</span></b></td>
             <td align="left">{$usuario.INPUT}</td>
             <td align="left"><b>{$contrasena.LABEL}: <span class="required">*</span></b></td>
-            <td align="left">{$contrasena.INPUT}<i class="fa fa-eye toogle-type-password"></i></td>
+            <td align="left">{$contrasena.INPUT}<i class="fa fa-eye toogle-type-password" onclick="tooglePassword('contrasena')"></i></td>
         </tr>
         <tr class="letra12">
             <td align="left"><b>{$basedatos.LABEL}: <span class="required">*</span></b></td>
