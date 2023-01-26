@@ -613,6 +613,7 @@ function getContent(&$smarty, $iss_module_name, $withList)
             $smarty->assign("INFO", _tr("Warning: Updating IssabelPBX through its web interface will cause it to install versions that may have not yet been properly integrated with Issabel. To avoid conflicts, it is always recommended to search/install updates only through the linux command \"yum update issabelPBX\"."));
 
             $dsnAsterisk = generarDSNSistema('asteriskuser', 'asterisk');
+            echo("dsnasterisk de pbk =".$dsnAsterisk);
             $pDB = new paloDB($dsnAsterisk);
 
             // run wizard if no extensions are found

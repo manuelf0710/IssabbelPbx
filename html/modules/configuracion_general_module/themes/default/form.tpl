@@ -54,7 +54,7 @@
     </table>
 </fieldset>-->
 <fieldset style="border-radius: 5px; padding: 5px; min-height:150px;  margin-top:20px;">
-    <legend><span> Configuración de conexión Local o MariaDB </span> </legend>
+    <legend><span>Cadena de conexión de base de datos MariaDB</span> </legend>
     <table class="tabForm" style="font-size: 16px;" width="100%">
         <tr class="letra12">
             <td colspan="6" align="right" nowrap>
@@ -144,9 +144,9 @@
         </tr>
         <tr class="letra12">
             <td align="left"><b>{$basedatos.LABEL}: <span class="required">*</span></b></td>
-            <td align="left">{$basedatos.INPUT}</td>
-            <td align="left"><b>{$tablavista.LABEL}: <span class="required">*</span></b></td>
-            <td align="left">{$tablavista.INPUT}</td>
+            <td align="left">{$basedatos.INPUT} {$tablavista.INPUT}</td>
+            <!--<td align="left"><b>{$tablavista.LABEL}: <span class="required">*</span></b></td>-->
+            <!--<td align="left"></td>-->
             <td align="left"><B>Estado</B></td>
             <td align="left">
                 {$activo.INPUT}
