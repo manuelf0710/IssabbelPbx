@@ -90,6 +90,22 @@ function obtenerClaveConocidaMySQL($sNombreUsuario, $ruta_base='')
 }
 }
 
+function consultarRemoteConexion($dsnAsterisk){
+    $pDB = new paloDB($dsnAsterisk);
+    $id=1;
+    $query = "SELECT * FROM asterisk.conexionbdmariadb WHERE id=?";
+
+
+    $result = $pDB->getFirstRowQuery($query, true, array("$id"));
+
+    if ($result == FALSE) {
+        $this->errMsg = $tpDB->errMsg;
+        return null;
+    }
+    return $result;     
+
+}
+
 /**
  * Función para construir un DSN para conectarse a varias bases de datos 
  * frecuentemente utilizadas en Issabel. Para cada base de datos reconocida, se
@@ -102,7 +118,7 @@ function obtenerClaveConocidaMySQL($sNombreUsuario, $ruta_base='')
  * @return  mixed   NULL si no se reconoce usuario, o el DNS con clave resuelta
  */
 if (!function_exists('generarDSNSistema')) {
-function generarDSNSistema($sNombreUsuario, $sNombreDB, $ruta_base='')
+function generarDSNSistema($sNombreUsuario, $sNombreDB, $ruta_base='', $isadminLoggin='')
 {
     require_once $ruta_base.'libs/paloSantoConfig.class.php';
     switch ($sNombreUsuario) {
@@ -113,10 +129,31 @@ function generarDSNSistema($sNombreUsuario, $sNombreDB, $ruta_base='')
     case 'asteriskuser':
         $pConfig = new paloConfig("/etc", "amportal.conf", "=", "[[:space:]]*=[[:space:]]*");
         $listaParam = $pConfig->leer_configuracion(FALSE);
-        return $listaParam['AMPDBENGINE']['valor']."://".
+        /*return $listaParam['AMPDBENGINE']['valor']."://".
+               $listaParam['AMPDBUSER']['valor']. ":".
+               $listaParam['AMPDBPASS']['valor']. "@".
+               $listaParam['AMPDBHOST']['valor']. "/".$sNombreDB; */
+
+
+               $dsnLocal = $listaParam['AMPDBENGINE']['valor']."://".
                $listaParam['AMPDBUSER']['valor']. ":".
                $listaParam['AMPDBPASS']['valor']. "@".
                $listaParam['AMPDBHOST']['valor']. "/".$sNombreDB;
+               //return $dsnLocal;
+        /*if(isset($_SESSION['issabel_user']) && $_SESSION['issabel_user'] == 'admin'){
+            return $dsnLocal;
+        }*/
+
+        $getConnectionAsterixk = consultarRemoteConexion($dsnLocal);
+
+
+        if($isadminLoggin != ''){
+            return $dsnLocal;
+        }else{
+            $dsn = 'mysql://'.$getConnectionAsterixk['usuariomariadb'].':'.$getConnectionAsterixk['contrasenamariadb'].'@'.$getConnectionAsterixk['servidormariadb'].'/'.$getConnectionAsterixk['basedatosmariadb'];
+            return $dsn;
+        }
+
     }
     return NULL;
 }

@@ -3,6 +3,13 @@
 require_once('DB.php'); //PEAR must be installed
 require_once(dirname(__FILE__).'/issabelpbx_DB.php');
 
+
+if (!function_exists('generarDSNSistema')) {
+    include('/var/www/html/libs/paloSantoDB.class.php'); 
+    include('/var/www/html/libs/misc.lib.php'); 
+
+}
+
 switch ($amp_conf['AMPDBENGINE']) {
     case "pgsql":
         die_issabelpbx("pgsql support is deprecated. Please use mysql or mysqli only.");
@@ -28,7 +35,28 @@ switch ($amp_conf['AMPDBENGINE']) {
         dbengine://username:password@host/database */
 
         $dbengine = 'mysql';
+        $dsn = generarDSNSistema('asteriskuser', 'asterisk');
 
+        $getObjStringHostAndDatabase = explode("@", $dsn);
+        $getHostString = explode("/", $getObjStringHostAndDatabase[1]);
+        $hostUrl = $getHostString[0];
+        $database = "asterisk";
+        $getUserAndPassword = explode("//", $getObjStringHostAndDatabase[0]);
+        $userandPassword = explode(":",$getUserAndPassword[1]);
+        $username = $userandPassword[0];
+        $pass = $userandPassword[1];
+
+        
+        $datasource = $dbengine . '://'
+                    . $username
+                    . ':'
+                    . $pass
+                    . '@'
+                    . $hostUrl
+                    . '/'
+                    . $database;
+
+/*
         $datasource = $dbengine . '://'
                     . $amp_conf['AMPDBUSER']
                     . ':'
@@ -36,7 +64,8 @@ switch ($amp_conf['AMPDBENGINE']) {
                     . '@'
                     . $amp_conf['AMPDBHOST']
                     . '/'
-                    . $amp_conf['AMPDBNAME'];
+                    . $amp_conf['AMPDBNAME']; */
+
         $db = issabelpbx_DB::connect($datasource); // attempt connection
         $db->query('SET NAMES utf8mb4');
         break;

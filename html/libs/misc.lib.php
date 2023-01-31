@@ -637,7 +637,6 @@ function consultarRemoteConexion($dsnAsterisk){
 function generarDSNSistema($sNombreUsuario, $sNombreDB, $ruta_base='', $isadminLoggin='')
 {
 
-    echo("generardnssitema misc lib</br>");
     require_once $ruta_base.'libs/paloSantoConfig.class.php';
     switch ($sNombreUsuario) {
     case 'root':
@@ -659,7 +658,6 @@ function generarDSNSistema($sNombreUsuario, $sNombreDB, $ruta_base='', $isadminL
 
             $getConnectionAsterixk = consultarRemoteConexion($dsnLocal);
 
-            echo"getConnectionAsterixk = ".json_encode($getConnectionAsterixk);
 
             if($isadminLoggin != ''){
                 return $dsnLocal;

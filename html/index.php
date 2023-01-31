@@ -180,7 +180,7 @@ if (isset($_POST['submit_login']) and !empty($_POST['input_user'])) {
         $pconfiguracion_general2 = new paloSantoconfiguracion_general2($pDB);
         $datos = $pconfiguracion_general2->getconfiguracion_general2Active();
 
-        echo("datosvar ".json_encode($datos)."<br>");
+        
         
         $objetoConnection = array();
 
@@ -218,7 +218,7 @@ if (isset($_POST['submit_login']) and !empty($_POST['input_user'])) {
         $ingreso = $iauth->external_auth($_POST['input_user'], $passToSha256, $objetoConnection);  
 
         //list($access_token, $refresh_token) = $iauthIssabel->acquire_jwt_token($_POST['input_user'], $_POST['input_pass']);   
-        echo "ingresooo".json_encode($ingreso);
+        
 
         
 
