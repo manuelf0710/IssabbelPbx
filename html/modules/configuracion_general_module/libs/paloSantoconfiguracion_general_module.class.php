@@ -160,6 +160,7 @@ class paloSantoconfiguracion_general_module
                 "basedatos"         =>  $this->_DB->DBCAMPO($data['basedatos']),
                 "tablavista"         =>  $this->_DB->DBCAMPO($data['tablavista']),
                 "activo"         =>  $this->_DB->DBCAMPO($data['activo']),
+                "sslmdb"         =>  $this->_DB->DBCAMPO($data['sslmdb']),
             ),
             array(
                 "id"  => $id
@@ -167,7 +168,9 @@ class paloSantoconfiguracion_general_module
         );
         if ($this->_DB->genQuery($sPeticionSQL)) {
             $bExito = TRUE;
+            echo("noerrorupdate</br>");
         } else {
+            echo("</br>errorupdate ".$this->_DB->errMsg);
             $this->errMsg = $this->_DB->errMsg;
         }
 
@@ -199,7 +202,7 @@ class paloSantoconfiguracion_general_module
                 "servidormariadb"          =>  $this->_DB->DBCAMPO($data['servidormariadb']),
                 "usuariomariadb"   =>  $this->_DB->DBCAMPO($data['usuariomariadb']),
                 "contrasenamariadb"         =>  $this->_DB->DBCAMPO($data['contrasenamariadb']),
-                "basedatosmariadb"         =>  $this->_DB->DBCAMPO($data['basedatosmariadb']),
+                "basedatosmariadb"         =>  'asterisk',
                 "sslmariadb"         =>  $this->_DB->DBCAMPO($data['sslmariadb']),
             ),
             array(

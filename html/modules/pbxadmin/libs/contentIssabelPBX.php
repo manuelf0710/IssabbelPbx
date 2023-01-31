@@ -611,9 +611,10 @@ function getContent(&$smarty, $iss_module_name, $withList)
             $smarty->assign("Unembedded_IssabelPBX", _tr('Unembedded IssabelPBX'));
 
             $smarty->assign("INFO", _tr("Warning: Updating IssabelPBX through its web interface will cause it to install versions that may have not yet been properly integrated with Issabel. To avoid conflicts, it is always recommended to search/install updates only through the linux command \"yum update issabelPBX\"."));
-
+            echo("antes");
             $dsnAsterisk = generarDSNSistema('asteriskuser', 'asterisk');
-            echo("dsnasterisk de pbk =".$dsnAsterisk);
+            echo("dsnpbx = ".$dsnAsterisk);
+            echo("</br>despues");
             $pDB = new paloDB($dsnAsterisk);
 
             // run wizard if no extensions are found
@@ -632,7 +633,9 @@ function getContent(&$smarty, $iss_module_name, $withList)
                 }
             }
 
-            $pDBsq = new paloDB($arrConf['issabel_dsn']['acl']);
+            //$pDBsq = new paloDB($arrConf['issabel_dsn']['acl']);
+            $pDBsq = $pDB;
+
             if (!empty($pDBsq->errMsg)) {
                return "ERROR DE DB: $pDBsq->errMsg <br>";
             }

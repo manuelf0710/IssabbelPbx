@@ -612,6 +612,7 @@ function consultarRemoteConexion($dsnAsterisk){
     $id=1;
     $query = "SELECT * FROM asterisk.conexionbdmariadb WHERE id=?";
 
+
     $result = $pDB->getFirstRowQuery($query, true, array("$id"));
 
     if ($result == FALSE) {
@@ -635,6 +636,8 @@ function consultarRemoteConexion($dsnAsterisk){
  */
 function generarDSNSistema($sNombreUsuario, $sNombreDB, $ruta_base='', $isadminLoggin='')
 {
+
+    echo("generardnssitema misc lib</br>");
     require_once $ruta_base.'libs/paloSantoConfig.class.php';
     switch ($sNombreUsuario) {
     case 'root':
@@ -650,15 +653,15 @@ function generarDSNSistema($sNombreUsuario, $sNombreDB, $ruta_base='', $isadminL
                    $listaParam['$amp_conf[\'AMPDBPASS\']']['valor']. "@".
                    $listaParam['$amp_conf[\'AMPDBHOST\']']['valor']. "/".$sNombreDB;
                    //return $dsnLocal;
-                /*if(isset($_SESSION['issabel_user']) && $_SESSION['issabel_user'] == 'admin'){
-                    return $dsnLocal;
-                }*/
+            /*if(isset($_SESSION['issabel_user']) && $_SESSION['issabel_user'] == 'admin'){
+                return $dsnLocal;
+            }*/
 
             $getConnectionAsterixk = consultarRemoteConexion($dsnLocal);
+
+            echo"getConnectionAsterixk = ".json_encode($getConnectionAsterixk);
+
             if($isadminLoggin != ''){
-                //return $dsnLocal;
-            }
-            if($getConnectionAsterixk['servidormariadb'] == 'localhost'){
                 return $dsnLocal;
             }else{
                 $dsn = 'mysql://'.$getConnectionAsterixk['usuariomariadb'].':'.$getConnectionAsterixk['contrasenamariadb'].'@'.$getConnectionAsterixk['servidormariadb'].'/'.$getConnectionAsterixk['basedatosmariadb'];

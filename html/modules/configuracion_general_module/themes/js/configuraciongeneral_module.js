@@ -24,12 +24,15 @@ $(document).ready(function () {
             connectString: $("#servidor").val() + "/" + $("#basedatos").val(),
             externalAuth: false,
           },
-          asteriskBdMotor: "oracle",
+          asteriskBdMotor: "mariadb",
           asteriskBdConnection: {
-            user: $("#usuario").val(),
-            password: $("input[name=contrasena]").val(),
-            connectString: $("#servidor").val() + "/" + $("#basedatos").val(),
-            externalAuth: false,
+            host: $("#servidormariadb").val(),
+            user: $("#usuariomariadb").val(),
+            password: $("input[name=contrasenamariadb]").val(),
+            database: $("#basedatosmariadb").val(),
+            ssl: {
+              rejectUnauthorized: false,
+            },
           },
         };
         break;
@@ -45,12 +48,12 @@ $(document).ready(function () {
               rejectUnauthorized: false,
             },
           },
-          asteriskBdMotor: $("#motor").val().toLocaleLowerCase(),
+          asteriskBdMotor: $("#motormariadb").val().toLocaleLowerCase(),
           asteriskBdConnection: {
-            host: $("#servidor").val(),
-            user: $("#usuario").val(),
-            password: $("input[name=contrasena]").val(),
-            database: $("#basedatos").val(),
+            host: $("#servidormariadb").val(),
+            user: $("#usuariomariadb").val(),
+            password: $("input[name=contrasenamariadb]").val(),
+            database: $("#basedatosmariadb").val(),
             ssl: {
               rejectUnauthorized: false,
             },
@@ -58,6 +61,7 @@ $(document).ready(function () {
         };
         break;
     }
+
     if ($("#activo").val() == "Inactivo") {
       document.form_configuraciongeneral.action = "index.php?menu=configuracion_general_module&action=save";
       document.form_configuraciongeneral.submit();
@@ -66,6 +70,10 @@ $(document).ready(function () {
 
     if ($("#sslmariadb").val() == "No") {
       delete information.asteriskBdConnection.ssl;
+    }
+
+    if ($("#sslmdb").val() == "No") {
+      delete information.externalBdConnection.ssl;
     }
 
     $.ajax({
@@ -133,10 +141,41 @@ $(document).ready(function () {
     return error;
   }
 
+  async function guardarMariaDB() {
+    console.log("iniciaMariaDB");
+    await testConexion(
+      $("#motormariadb").val().toLocaleLowerCase(),
+      $("#servidormariadb").val(),
+      $("#usuariomariadb").val(),
+      $("input[name=contrasenamariadb]").val(),
+      $("#basedatosmariadb").val(),
+      "conexionexitosamariadb",
+      "conexionnoexitosamariadb"
+    )
+      .then((response) => {
+        console.log("Response function respuesta ", response);
+        var prueba = response;
+        if (response && messageContainSuccess(response.json)) {
+          $("#conexionexitosa").css("display", "block");
+          alert("conexion exitosa");
+          document.form_configuraciongeneral.action = "index.php?menu=configuracion_general_module&action=saveLocal";
+          document.form_configuraciongeneral.submit();
+        } else {
+          $("#conexionnoexitosa").text("conexion no exitosa " + response.json);
+          alert("conexion no exitosa " + response.json);
+        }
+      })
+      .catch((errno) => {
+        console.log("ocurrio un error ", errno);
+      });
+  }
+
   $("#btnguardardatosmariadb").click(function () {
     if (validateMariaDB() == false) {
-      document.form_configuraciongeneral.action = "index.php?menu=configuracion_general_module&action=saveLocal";
-      document.form_configuraciongeneral.submit();
+      guardarMariaDB();
+
+      /*document.form_configuraciongeneral.action = "index.php?menu=configuracion_general_module&action=saveLocal";
+      document.form_configuraciongeneral.submit(); */
     } else {
       alert("debe ingresar todos los valores requeridos");
     }
@@ -154,6 +193,80 @@ $(document).ready(function () {
 
     return exito.some((v) => message.includes(v));
     // There's at least one
+  }
+
+  async function testConexion(motor, servidor, usuario, contrasena, basedatos, divconexionexitosa, divconexionnoexitosa) {
+    let result = { response: "", json: "" };
+    let information;
+    $("#" + divconexionexitosa).css("display", "none");
+    $("#" + divconexionnoexitosa).css("display", "none");
+
+    switch (motor.toLocaleLowerCase()) {
+      case "oracle":
+        information = {
+          externalBdMotor: motor.toLocaleLowerCase(),
+          externalBdConnection: {
+            user: usuario,
+            password: contrasena,
+            connectString: servidor + "/" + basedatos,
+            externalAuth: false,
+          },
+        };
+        break;
+      case "mariadb":
+        motor = "mysql";
+      case "mysql":
+        information = {
+          externalBdMotor: motor,
+          externalBdConnection: {
+            host: servidor,
+            user: usuario,
+            password: contrasena,
+            database: basedatos,
+            ssl: {
+              rejectUnauthorized: false,
+            },
+          },
+        };
+        break;
+    }
+    if ($("#sslmariadb").val() == "No") {
+      delete information["externalBdConnection"]["ssl"];
+    }
+
+    await fetch("api-node/index.php?action=test", {
+      method: "POST", // *GET, POST, PUT, DELETE, etc.
+      mode: "cors", // no-cors, *cors, same-origin
+      cache: "no-cache", // *default, no-cache, reload, force-cache, only-if-cached
+      //credentials: 'same-origin', // include, *same-origin, omit
+      headers: {
+        "Content-Type": "application/json",
+        // 'Content-Type': 'application/x-www-form-urlencoded',
+      },
+      redirect: "follow", // manual, *follow, error
+      referrerPolicy: "no-referrer", // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
+      body: JSON.stringify(information), // body data type must match "Content-Type" header
+    })
+      .then(async (res) => {
+        console.log("res ", res);
+        let resultadoJson = "Error en conexión, servidor no activo";
+        await res
+          .json()
+          .then((resultado) => {
+            console.log("resultadooo ", resultado);
+            if (resultado) {
+              resultadoJson = resultado;
+            }
+          })
+          .catch((error) => console.log(error));
+
+        result = { response: res, json: resultadoJson };
+      })
+      .catch((err) => {
+        console.log("error", err);
+      });
+
+    return result;
   }
 
   function probarConexion(motor, servidor, usuario, contrasena, basedatos, divconexionexitosa, divconexionnoexitosa) {

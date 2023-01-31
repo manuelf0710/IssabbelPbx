@@ -85,17 +85,17 @@
             <td align="left"><b>{$sslmariadb.LABEL}: <span class="required">*</span></b></td>
             <td align="left">
                 {$sslmariadb.INPUT}
-                {$basedatosmariadb.INPUT}
+                <input type="hidden" id="basedatosmariadb" name="basedatosmariadb" value="asterisk">
             </td>
         </tr>
     </table>
     <table style="width:98%; margin-top:20px;">
         <tr>
             <td align="right">
-                <input class="button" type="button" name="probarconexionmariadb" value="Probar Conexión"
-                    id="btnprobarconexionmariadb">
+                <!--<input class="button" type="button" name="probarconexionmariadb" value="Probar Conexión"
+                    id="btnprobarconexionmariadb">-->
                 <input class="button" type="button" name="btnguardardatosmariadb" id="btnguardardatosmariadb"
-                    value="Guardar">
+                    value="Probar y Guardar">
 
                 <div class="row" style="margin-top:5px; padding:10px">
                     <div class="alert alert-danger mt-1" id="conexionnoexitosamariadb" style="display:none">Conexión no
@@ -144,9 +144,15 @@
         </tr>
         <tr class="letra12">
             <td align="left"><b>{$basedatos.LABEL}: <span class="required">*</span></b></td>
-            <td align="left">{$basedatos.INPUT} {$tablavista.INPUT}</td>
+            <td align="left">{$basedatos.INPUT}  {$tablavista.INPUT}</td>
             <!--<td align="left"><b>{$tablavista.LABEL}: <span class="required">*</span></b></td>-->
             <!--<td align="left"></td>-->
+            <td align="left">
+            <b>{$sslmdb.LABEL}</b>
+            </TD>
+            <td>
+            {$sslmdb.INPUT}
+        </td>
             <td align="left"><B>Estado</B></td>
             <td align="left">
                 {$activo.INPUT}
@@ -157,10 +163,10 @@
     <table style="width:98%; margin-top:20px;">
         <tr>
             <td align="right">
-                <input class="button" type="button" name="probarconexion" value="Probar Conexión"
-                    id="btnprobarconexion">
+                <!--<input class="button" type="button" name="probarconexion" value="Probar Conexión"
+                    id="btnprobarconexion">-->
 
-                <input class="button" type="button" name="btnguardardatos" id="btnguardardatos" value="Guardar">
+                <input class="button" type="button" name="btnguardardatos" id="btnguardardatos" value="Probar y Guardar">
                 <div class="row" style="margin-top:5px; padding:10px">
                     <div class="alert alert-danger mt-1" id="conexionnoexitosa" style="display:none">Conexión no exitosa
                     </div>

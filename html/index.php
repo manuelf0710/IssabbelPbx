@@ -101,12 +101,15 @@ foreach (new RecursiveIteratorIterator($it) as $file) {
         }
     }
 }
-
-if(isset($_POST['input_user']) && $_POST['input_user']=='admin'){
+/*
+if(isset($_POST['input_user']) && $_POST['input_user']=='admin' || (isset($_SESSION['issabel_user']) && $_SESSION['issabel_user'] =="admin")  ){
     $dsnAsterisk = generarDSNSistema('asteriskuser', 'asterisk','','isadminloggin');
 }else{
-    $dsnAsterisk = generarDSNSistema('asteriskuser', 'asterisk');
-}
+    //$dsnAsterisk = generarDSNSistema('asteriskuser', 'asterisk');
+    $dsnAsterisk = generarDSNSistema('asteriskuser', 'asterisk','','isadminloggin');
+} */
+$dsnAsterisk = generarDSNSistema('asteriskuser', 'asterisk','','isadminloggin');
+
 //$pdbACL = new paloDB($arrConf['issabel_dsn']['acl']);
 $pdbACL = new paloDB($dsnAsterisk);
 $pACL = new paloACL($pdbACL);
@@ -172,10 +175,12 @@ if (isset($_POST['submit_login']) and !empty($_POST['input_user'])) {
         include_once("libs/IssabelExternalAuth.class.php");         
         $iauth = new IssabelExternalAuth();
         $iauthIssabel = new IssabelAuth();
-        //$dsnAsterisk = generarDSNSistema('asteriskuser', 'asterisk');
+        $dsnAsterisk = generarDSNSistema('asteriskuser', 'asterisk');
         $pDB = new paloDB($dsnAsterisk);   
         $pconfiguracion_general2 = new paloSantoconfiguracion_general2($pDB);
         $datos = $pconfiguracion_general2->getconfiguracion_general2Active();
+
+        echo("datosvar ".json_encode($datos)."<br>");
         
         $objetoConnection = array();
 
@@ -184,7 +189,7 @@ if (isset($_POST['submit_login']) and !empty($_POST['input_user'])) {
 
 
 
-            if($datos['motor']== 'Mysql'){          
+            if($datos['motor']== 'Mysql' || $datos['motor']== 'MariaDB'){          
                 $objetoConnection = array(
                     "user" => $_POST['input_user'],
                     "password" => $passToSha256,
@@ -212,14 +217,15 @@ if (isset($_POST['submit_login']) and !empty($_POST['input_user'])) {
 
         $ingreso = $iauth->external_auth($_POST['input_user'], $passToSha256, $objetoConnection);  
 
-        
         //list($access_token, $refresh_token) = $iauthIssabel->acquire_jwt_token($_POST['input_user'], $_POST['input_pass']);   
+        echo "ingresooo".json_encode($ingreso);
 
+        
 
         if(!empty($ingreso) && isset($ingreso[0]) && $ingreso[0]->ROL_ID){
             include_once("libs/IssabelExternalAuth.class.php"); 
-          
-            $dbUserVerify = new externalLogin($dsnAsterisk);
+            $dsnAsterisk2 = generarDSNSistema('asteriskuser', 'asterisk','','isadminloggin');
+            $dbUserVerify = new externalLogin($dsnAsterisk2);
             if($dbUserVerify->existeUser($_POST['input_user'])){  
                 $activeUser = $dbUserVerify->cargarUser($_POST['input_user']);
                 if(!empty($activeUser)){
@@ -257,6 +263,8 @@ if (isset($_POST['submit_login']) and !empty($_POST['input_user'])) {
 
         
     }
+
+
 
     if ($pACL->authenticateUser($_POST['input_user'], $pass_md5)) {
         session_regenerate_id(TRUE);
