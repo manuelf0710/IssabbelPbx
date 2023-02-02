@@ -32,8 +32,6 @@ class paloSantoconfiguracion_general2
         if (is_object($pDB)) {
             $this->_DB = &$pDB;
             $this->errMsg = $this->_DB->errMsg;
-            echo("dentrodeclasegeneral");
-            var_dump($pDB);
         } else {
             $dsn = (string)$pDB;
             $this->_DB = new paloDB($dsn);

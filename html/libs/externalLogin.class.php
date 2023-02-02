@@ -84,16 +84,15 @@ class externalLogin
             return FALSE; */
 
         // Verificación de existencia del menú
-        $e = $this->existeUser($id);
+        /*$e = $this->existeUser($id);
         if (is_null($e)) return FALSE;
         if ($e) {
             $this->errMsg = "user already exists";
             return FALSE;
-        }
+        } */
 
 
         $sqlfields = array(
-            'id'        =>  $id,
             'name'      =>  $name,
             'description'      =>  $description,
             'md5_password'      =>  $md5_password,
@@ -118,16 +117,15 @@ class externalLogin
             return FALSE; */
 
         // Verificación de existencia del menú
-        $e = $this->existeUser($id);
+        /*$e = $this->existeUser($id);
         if (is_null($e)) return FALSE;
         if ($e) {
             $this->errMsg = "user already exists";
             return FALSE;
-        }
+        } */
 
 
         $sqlfields = array(
-            'id'        =>  $id,
             'id_user'      =>  $id_user,
             'id_group'      =>  $id_group
         );
@@ -181,7 +179,6 @@ class externalLogin
      */
     function existeUser($name)
     {
-        echo "ingresa esixteusermethod";
 
         $sql = 'SELECT COUNT(*) AS N FROM acl_user WHERE name = ?';
         $tupla = $this->_DB->getFirstRowQuery($sql, TRUE, array($name));

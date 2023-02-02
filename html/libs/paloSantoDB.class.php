@@ -105,6 +105,7 @@ class paloDB
                 $this->errMsg = "Error de conexion a la base de datos - " . $e->getMessage();
                 $this->connStatus = true;
                 $this->conn = NULL;
+                //print_r($e);
             }
         }
     }

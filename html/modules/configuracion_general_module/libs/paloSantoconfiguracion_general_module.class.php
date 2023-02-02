@@ -202,7 +202,7 @@ class paloSantoconfiguracion_general_module
                 "servidormariadb"          =>  $this->_DB->DBCAMPO($data['servidormariadb']),
                 "usuariomariadb"   =>  $this->_DB->DBCAMPO($data['usuariomariadb']),
                 "contrasenamariadb"         =>  $this->_DB->DBCAMPO($data['contrasenamariadb']),
-                "basedatosmariadb"         =>  'asterisk',
+                "basedatosmariadb"         =>  "'asterisk'",
                 "sslmariadb"         =>  $this->_DB->DBCAMPO($data['sslmariadb']),
             ),
             array(

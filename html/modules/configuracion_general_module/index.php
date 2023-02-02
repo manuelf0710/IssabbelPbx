@@ -65,11 +65,13 @@ function _moduleContent(&$smarty, $module_name)
     $dsnAsterisk = generarDSNSistema('asteriskuser', 'asterisk');
 
 
-echo "dsnAsterisk = ".$dsnAsterisk."<br>";
-echo "dsnAsteriskLocal = ".$dsnAsteriskLocal."<br>";
+//echo "dsnAsterisk = ".$dsnAsterisk."<br>";
+//echo "dsnAsteriskLocal = ".$dsnAsteriskLocal."<br>";
 
     $pDBLocal = new paloDB($dsnAsteriskLocal);
     $pDB = new paloDB($dsnAsterisk);
+
+    //var_dump($pDBLocal);
 
     
     //$pDB = "";
@@ -129,7 +131,6 @@ function viewFormconfiguracion_general2($smarty, $module_name, $local_templates_
     }
 
     $dataconfiguracion_generalMariaDB = $pconfiguracion_general2->getconfiguracion_general2MariaDB();
-echo "exittoo ".json_encode($dataconfiguracion_generalMariaDB);
     if ($_DATA != null) {
         $_DATA = array_merge($_DATA, $dataconfiguracion_generalMariaDB);
     } else {
@@ -182,7 +183,7 @@ exit;
 
 function saveNewconfiguracion_generalMariaDB($smarty, $module_name, $local_templates_dir, &$pDB, &$pDBLocal, $arrConf, $infoToView)
 {
-    $pconfiguracion_general2 = new paloSantoconfiguracion_general_module($pDB);
+    $pconfiguracion_general2 = new paloSantoconfiguracion_general_module($pDBLocal);
     $arrFormconfiguracion_general2 = createFieldForm();
     $oForm = new paloForm($smarty, $arrFormconfiguracion_general2);
 
@@ -248,7 +249,7 @@ function saveNewconfiguracion_general2($smarty, $module_name, $local_templates_d
 
         
         $content = viewFormconfiguracion_general2($smarty, $module_name, $local_templates_dir, $pDB, $pDBLocal, $arrConf, $infoToView);
-        //header("Location: index.php?menu=configuracion_general_module");
+        header("Location: index.php?menu=configuracion_general_module");
 
         //$content = "Code to save yet undefined.";
 

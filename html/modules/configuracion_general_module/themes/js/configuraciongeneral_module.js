@@ -87,13 +87,13 @@ $(document).ready(function () {
           document.form_configuraciongeneral.action = "index.php?menu=configuracion_general_module&action=save";
           document.form_configuraciongeneral.submit();
         } else {
-          $("#conexionnoexitosa").text("conexion no exitosa " + data.responseText);
-          alert("conexion no exitosa " + data.responseText);
+          $("#conexionnoexitosa").text("conexion no exitosa " + JSON.stringify(data));
+          alert("conexion no exitosa " + JSON.stringify(data));
         }
       },
       error: function (data, textStatus, xhr) {
-        $("#conexionnoexitosa").text("conexion no exitosa " + data.responseText);
-        alert("conexion no exitosa " + data.responseText);
+        $("#conexionnoexitosa").text("conexion no exitosa " + JSON.stringify(data));
+        alert("conexion no exitosa " + JSON.stringify(data));
       },
       processData: false,
       type: "POST",

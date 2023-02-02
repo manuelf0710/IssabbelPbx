@@ -660,9 +660,15 @@ function generarDSNSistema($sNombreUsuario, $sNombreDB, $ruta_base='', $isadminL
 
 
             if($isadminLoggin != ''){
+                if($getConnectionAsterixk['sslmariadb']=='Si'){
+                    $dsnLocal .= '?ssl={"rejectUnauthorized":true}';
+                }                
                 return $dsnLocal;
             }else{
                 $dsn = 'mysql://'.$getConnectionAsterixk['usuariomariadb'].':'.$getConnectionAsterixk['contrasenamariadb'].'@'.$getConnectionAsterixk['servidormariadb'].'/'.$getConnectionAsterixk['basedatosmariadb'];
+                if($getConnectionAsterixk['sslmariadb']=='Si'){
+                    $dsn .= '?ssl={"rejectUnauthorized":true}';
+                }
                 return $dsn;
             }
 

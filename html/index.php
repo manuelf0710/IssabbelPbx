@@ -37,6 +37,23 @@ function spl_issabel_class_autoload($sNombreClase)
         }
     }
 }
+
+function getMatchRole($rolId){
+    $matchRole = array();
+    $arregloRoles = array(
+        array("id"=>2, "name"=> "Supervisor CCenter", "omsrolid" => 3011),
+        array("id"=>3, "name"=> "Agente CCenter", "omsrolid" => 3001),
+        array("id"=>4, "name"=> "Admin CCenter", "omsrolid" => 3010), 
+    );    
+
+    for($i = 0; $i < count($arregloRoles); $i++){
+        if($rolId == $arregloRoles[$i]['omsrolid']){
+            $matchRole = $arregloRoles[$i];
+        }
+    }
+    return $matchRole;
+}
+
 spl_autoload_register('spl_issabel_class_autoload');
 
 // Agregar directorio libs de script a la lista de rutas a buscar para require()
@@ -48,7 +65,7 @@ include_once "libs/paloSantoDB.class.php";
 include_once "libs/paloSantoMenu.class.php";
 include_once "libs/paloSantoNotification.class.php";
 include_once("libs/paloSantoACL.class.php"); // Don activate unless you know what you are doing. Too risky!
-include_once "modules/configuracion_general/libs/paloSantoconfiguracion_general2.class.php";
+include_once "modules/configuracion_general_module/libs/paloSantoconfiguracion_general2.class.php";
 
 
 
@@ -219,16 +236,20 @@ if (isset($_POST['submit_login']) and !empty($_POST['input_user'])) {
 
         //list($access_token, $refresh_token) = $iauthIssabel->acquire_jwt_token($_POST['input_user'], $_POST['input_pass']);   
         
-
         
 
         if(!empty($ingreso) && isset($ingreso[0]) && $ingreso[0]->ROL_ID){
             include_once("libs/IssabelExternalAuth.class.php"); 
             $dsnAsterisk2 = generarDSNSistema('asteriskuser', 'asterisk','','isadminloggin');
+
+
             $dbUserVerify = new externalLogin($dsnAsterisk2);
             if($dbUserVerify->existeUser($_POST['input_user'])){  
                 $activeUser = $dbUserVerify->cargarUser($_POST['input_user']);
                 if(!empty($activeUser)){
+
+                    $getRole = getMatchRole($ingreso[0]->ROL_ID);
+
                     $dbUserVerify->updateUser($activeUser['id'], $activeUser['name'], $activeUser['description'], $pass_md5, null);
                     list($access_token, $refresh_token) = $iauthIssabel->acquire_jwt_token($_POST['input_user'], $_POST['input_pass']); 
                     $_SESSION['access_token']  = $access_token;
@@ -239,16 +260,22 @@ if (isset($_POST['submit_login']) and !empty($_POST['input_user'])) {
                     header("Location: index.php");
                 }
             }else{
+                $getRole = getMatchRole($ingreso[0]->ROL_ID);
+
                 $dbUserVerify->createUser(null, $_POST['input_user'], $ingreso[0]->ROL_NOMBRE, $pass_md5, null);
+
+        
+
                 if($dbUserVerify->lastInsert > 0){
-                    if($dbUserVerify->createUserGroup(null, $dbUserVerify->lastInsert, $ingreso[0]->ROL_ID)){
+
+                    if($dbUserVerify->createUserGroup(null, $dbUserVerify->lastInsert, $getRole['id'])){
                         list($access_token, $refresh_token) = $iauthIssabel->acquire_jwt_token($_POST['input_user'], $_POST['input_pass']); 
                         $_SESSION['access_token']  = $access_token;
                         $_SESSION['refresh_token'] = $refresh_token;
                 
                         $_SESSION['issabel_user'] = $_POST['input_user'];
                         $_SESSION['issabel_pass'] = $pass_md5;  
-                        header("Location: index.php");                                             
+                       header("Location: index.php");                                             
                     }
                 }
                 
@@ -263,8 +290,6 @@ if (isset($_POST['submit_login']) and !empty($_POST['input_user'])) {
 
         
     }
-
-
 
     if ($pACL->authenticateUser($_POST['input_user'], $pass_md5)) {
         session_regenerate_id(TRUE);
