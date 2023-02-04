@@ -616,7 +616,7 @@ function consultarRemoteConexion($dsnAsterisk){
     $result = $pDB->getFirstRowQuery($query, true, array("$id"));
 
     if ($result == FALSE) {
-        $this->errMsg = $tpDB->errMsg;
+        $pDB->errMsg = $pDB->errMsg;
         return null;
     }
     return $result;     
