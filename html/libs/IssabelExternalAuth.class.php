@@ -27,11 +27,34 @@ class IssabelExternalAuth
 
     function external_auth($user, $password, $payload)
     {
+        $url ="http://localhost:3000/auth";
         session_write_close();
+
+       /*
+
+        $curl = curl_init();
+        curl_setopt($curl, CURLOPT_URL, $url);
+        curl_setopt($curl, CURLOPT_HTTPHEADER, array('Accept: application/json', 'Content-Type: application/json'));
+        curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
+
+        
+        curl_setopt($curl, CURLOPT_POSTFIELDS, json_encode($payload));
+        
+        $resp = curl_exec($curl);
+        curl_close($curl);
+        
+        echo $resp;
+        $nueva = json_decode($resp);
+
+        print_r($nueva);
+        echo("posterior"); */
+
+
+
         $ch = curl_init();
-        curl_setopt($ch, CURLOPT_URL, "http://localhost:3000/auth");
+        curl_setopt($ch, CURLOPT_URL, $url);
         curl_setopt($ch, CURLOPT_POST, 1);
-        curl_setopt($ch, CURLOPT_HEADER, true);
+        //curl_setopt($ch, CURLOPT_HEADER, true);
         curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type:application/json'));
         //curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($dataConn));
         curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($payload));
@@ -39,15 +62,12 @@ class IssabelExternalAuth
         $response    = curl_exec($ch);
         $header_size = curl_getinfo($ch, CURLINFO_HEADER_SIZE);
         $httpcode    = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-        $header      = substr($response, 0, $header_size);
+        //$header      = substr($response, 0, $header_size);
         $body        = substr($response, $header_size);
         curl_close($ch);
         session_start();
-        if ($httpcode == '200') {
-            $data = json_decode($body);
-            return $data;
-        } else {
-            return $body;
-        }
+        
+        return json_decode($response);
+
     }
 }

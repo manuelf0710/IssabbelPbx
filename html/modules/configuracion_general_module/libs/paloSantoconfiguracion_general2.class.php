@@ -115,14 +115,10 @@ class paloSantoconfiguracion_general2
 
     function getconfiguracion_general2Active()
     {
-        echo("en inicio getconfiguracion_general2Active");
 
         $query = "SELECT * FROM asterisk.conexionesbd WHERE activo='Activo'";
 
         $result = $this->_DB->getFirstRowQuery($query, true);
-
-        print_r($this->_DB);
-        echo json_encode($result);
 
         if ($result == FALSE) {
             $this->errMsg = $this->_DB->errMsg;

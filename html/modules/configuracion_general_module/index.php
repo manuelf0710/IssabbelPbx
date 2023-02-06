@@ -61,22 +61,9 @@ function _moduleContent(&$smarty, $module_name)
     $local_templates_dir = "$base_dir/modules/$module_name/" . $templates_dir . '/' . $arrConf['theme'];
 
     //conexion resource
-    $dsnAsteriskLocal = generarDSNSistema('asteriskuser', 'asterisk','','isadminloggin');
-    $dsnAsterisk = generarDSNSistema('asteriskuser', 'asterisk');
-
-
-//echo "dsnAsterisk = ".$dsnAsterisk."<br>";
-//echo "dsnAsteriskLocal = ".$dsnAsteriskLocal."<br>";
-
-    $pDBLocal = new paloDB($dsnAsteriskLocal);
-    $pDB = new paloDB($dsnAsterisk);
-
-    //var_dump($pDBLocal);
-
-    
-    //$pDB = "";
-
     $dsn = generarDSNSistema('asteriskuser', 'asterisk');
+    $pDB = new paloDB($dsn);
+    
     $modelIvr = new IvrModel(new \paloDB($dsn));
     $modelOutgoingRoutes = new RutaSalienteModel(new \paloDB($dsn));
     $modelConexionesBD = new ConexionesModel(new \paloDB($dsn));
@@ -93,26 +80,25 @@ function _moduleContent(&$smarty, $module_name)
 
     switch ($action) {
         case "save_new":
-            $content = saveNewconfiguracion_general2($smarty, $module_name, $local_templates_dir, $pDB, $pDBLocal, $arrConf, $infoToView);
+            $content = saveNewconfiguracion_general2($smarty, $module_name, $local_templates_dir, $pDB, $arrConf, $infoToView);
             break;
         case "savedata":
-            $content = saveNewconfiguracion_general2($smarty, $module_name, $local_templates_dir, $pDB, $pDBLocal, $arrConf, $infoToView);
+            $content = saveNewconfiguracion_general2($smarty, $module_name, $local_templates_dir, $pDB,  $arrConf, $infoToView);
             break;
         case "savemariadb":
-            $content = saveNewconfiguracion_generalMariaDB($smarty, $module_name, $local_templates_dir, $pDB, $pDBLocal, $arrConf, $infoToView);
+            $content = saveNewconfiguracion_generalMariaDB($smarty, $module_name, $local_templates_dir, $pDB,  $arrConf, $infoToView);
             break;
         default: // view_form
-            $content = viewFormconfiguracion_general2($smarty, $module_name, $local_templates_dir, $pDB, $pDBLocal, $arrConf, $infoToView);
+            $content = viewFormconfiguracion_general2($smarty, $module_name, $local_templates_dir, $pDB,  $arrConf, $infoToView);
             break;
     }
     return $content;
 }
 
-function viewFormconfiguracion_general2($smarty, $module_name, $local_templates_dir, &$pDB, &$pDBLocal, $arrConf, $infoToView)
+function viewFormconfiguracion_general2($smarty, $module_name, $local_templates_dir, &$pDB, $arrConf, $infoToView)
 {
 
-    $pconfiguracion_general2 = new paloSantoconfiguracion_general_module($pDBLocal);
-    $pconfiguracion_generalRemota = new paloSantoconfiguracion_general_module($pDB);
+    $pconfiguracion_general2 = new paloSantoconfiguracion_general_module($pDB);
     $arrFormconfiguracion_general2 = createFieldForm();
     $oForm = new paloForm($smarty, $arrFormconfiguracion_general2);
 
@@ -120,27 +106,22 @@ function viewFormconfiguracion_general2($smarty, $module_name, $local_templates_
     //begin, Form data persistence to errors and other events.
     $_DATA  = $_POST;
     $action = getParameter("action");
-    //$id     = getParameter("id");
-    //$smarty->assign("ID", $id); //persistence id with input hidden in tpl
+
     $motor     = getParameter("motor");
 
     if(empty($motor)){
-        $_DATA = $pconfiguracion_generalRemota->getconfiguracion_general2Active();
+        $_DATA = $pconfiguracion_general2->getconfiguracion_general2Active();
     }else{
-        $_DATA = $pconfiguracion_generalRemota->getconfiguracion_general2ByName($motor);
+        $_DATA = $pconfiguracion_general2->getconfiguracion_general2ByName($motor);
     }
 
     $dataconfiguracion_generalMariaDB = $pconfiguracion_general2->getconfiguracion_general2MariaDB();
-    if ($_DATA != null) {
+    /*if ($_DATA != null) {
         $_DATA = array_merge($_DATA, $dataconfiguracion_generalMariaDB);
     } else {
         $_DATA = $dataconfiguracion_generalMariaDB;
-    }
-    //echo('elidddd='.$_DATA['id']);
+    } */
 
-    /*echo"</br>nuevo</br>";
-    echo json_encode($nuevo);
-    echo"</br></br>";*/
     if(isset($_DATA['id'])){
         $smarty->assign("ID", $_DATA['id']); //persistence id with input hidden in tpl
     }
@@ -149,31 +130,12 @@ function viewFormconfiguracion_general2($smarty, $module_name, $local_templates_
         $oForm->setViewMode();
     else if ($action == "view_edit" || getParameter("save_edit"))
         $oForm->setEditMode();
-    //end, Form data persistence to errors and other events.
-
-    /*if ($action == "view" || $action == "view_edit") { // the action is to view or view_edit.
-        $dataconfiguracion_general2 = $pconfiguracion_general2->getconfiguracion_general2ById($id);
-
-      
-        if (is_array($dataconfiguracion_general2) & count($dataconfiguracion_general2) > 0) {
-            $_DATA = $dataconfiguracion_general2;
-        } else {
-            $smarty->assign("mb_title", _tr("Error get Data"));
-            $smarty->assign("mb_message", $pconfiguracion_general2->errMsg);
-        }
-    } */
     $smarty->assign("SAVE", _tr("Save"));
     $smarty->assign("EDIT", _tr("Edit"));
     $smarty->assign("CANCEL", _tr("Cancel"));
     $smarty->assign("REQUIRED_FIELD", _tr("Required field"));
     $smarty->assign("icon", "images/list.png");
     $smarty->assign("configListas", $infoToView);
-    /*
-    echo("<br>");
-echo("<br>");
-echo json_encode($_DATA);
-exit;
-*/
 
     $htmlForm = $oForm->fetchForm("$local_templates_dir/form.tpl", _tr("configuracion_general2"), $_DATA);
     $content = "<form  method='POST' style='margin-bottom:0;' action='?menu=$module_name' name='form_configuraciongeneral' id='form_configuraciongeneral'>" . $htmlForm . "</form>";
@@ -181,9 +143,9 @@ exit;
     return $content;
 }
 
-function saveNewconfiguracion_generalMariaDB($smarty, $module_name, $local_templates_dir, &$pDB, &$pDBLocal, $arrConf, $infoToView)
+function saveNewconfiguracion_generalMariaDB($smarty, $module_name, $local_templates_dir, &$pDB, $arrConf, $infoToView)
 {
-    $pconfiguracion_general2 = new paloSantoconfiguracion_general_module($pDBLocal);
+    $pconfiguracion_general2 = new paloSantoconfiguracion_general_module($pDB);
     $arrFormconfiguracion_general2 = createFieldForm();
     $oForm = new paloForm($smarty, $arrFormconfiguracion_general2);
 
@@ -197,7 +159,7 @@ function saveNewconfiguracion_generalMariaDB($smarty, $module_name, $local_templ
                 $strErrorMsg .= "$k, ";
         }
         $smarty->assign("mb_message", $strErrorMsg);
-        $content = viewFormconfiguracion_general2($smarty, $module_name, $local_templates_dir, $pDB, $pDBLocal, $arrConf, $infoToView);
+        $content = viewFormconfiguracion_general2($smarty, $module_name, $local_templates_dir, $pDB, $arrConf, $infoToView);
     } else {
         //NO ERROR, HERE IMPLEMENTATION OF SAVE
 
@@ -205,7 +167,7 @@ function saveNewconfiguracion_generalMariaDB($smarty, $module_name, $local_templ
         $pconfiguracion_general2->updateconfiguracion_general2MariaDB($_POST);
 
         //$smarty->assign("ID", $id);
-        $content = viewFormconfiguracion_general2($smarty, $module_name, $local_templates_dir, $pDB, $pDBLocal, $arrConf, $infoToView);
+        $content = viewFormconfiguracion_general2($smarty, $module_name, $local_templates_dir, $pDB, $arrConf, $infoToView);
         header("Location: index.php?menu=configuracion_general_module");
         
         //$content = "Code to save yet undefined.";
@@ -216,7 +178,7 @@ function saveNewconfiguracion_generalMariaDB($smarty, $module_name, $local_templ
     return $content;
 }
 
-function saveNewconfiguracion_general2($smarty, $module_name, $local_templates_dir, &$pDB, &$pDBLocal, $arrConf, $infoToView)
+function saveNewconfiguracion_general2($smarty, $module_name, $local_templates_dir, &$pDB, $arrConf, $infoToView)
 {
     print_r($pDB);
     $pconfiguracion_general2 = new paloSantoconfiguracion_general_module($pDB);
@@ -233,22 +195,19 @@ function saveNewconfiguracion_general2($smarty, $module_name, $local_templates_d
                 $strErrorMsg .= "$k, ";
         }
         $smarty->assign("mb_message", $strErrorMsg);
-        $content = viewFormconfiguracion_general2($smarty, $module_name, $local_templates_dir, $pDB, $pDBLocal, $arrConf, $infoToView);
+        $content = viewFormconfiguracion_general2($smarty, $module_name, $local_templates_dir, $pDB, $arrConf, $infoToView);
     } else {
         //NO ERROR, HERE IMPLEMENTATION OF SAVE
 
         $id     = getParameter("id");
         $motor     = getParameter("motor");
-        echo("idmotor ".$id);
-        echo "<br>";
-        var_dump($_POST);
         $pconfiguracion_general2->updateconfiguracion_general2ById($id, $_POST);
 
         $smarty->assign("ID", $id);
         $smarty->assign("motor", $id);
 
         
-        $content = viewFormconfiguracion_general2($smarty, $module_name, $local_templates_dir, $pDB, $pDBLocal, $arrConf, $infoToView);
+        $content = viewFormconfiguracion_general2($smarty, $module_name, $local_templates_dir, $pDB, $arrConf, $infoToView);
         header("Location: index.php?menu=configuracion_general_module");
 
         //$content = "Code to save yet undefined.";

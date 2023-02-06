@@ -623,6 +623,22 @@ function consultarRemoteConexion($dsnAsterisk){
 
 }
 
+function getRemoteConexionData(){
+    $url = "http://localhost:3000/connection";
+    $ch = curl_init();
+    // Will return the response, if false it print the response
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+    // Set the url
+    curl_setopt($ch, CURLOPT_URL,$url);
+    // Execute
+    $result=curl_exec($ch);
+    // Closing
+    curl_close($ch);
+    
+    return (json_decode($result, true));
+        
+}
+
 /**
  * Función para construir un DSN para conectarse a varias bases de datos
  * frecuentemente utilizadas en Issabel. Para cada base de datos reconocida, se
@@ -636,6 +652,25 @@ function consultarRemoteConexion($dsnAsterisk){
  */
 function generarDSNSistema($sNombreUsuario, $sNombreDB, $ruta_base='', $isadminLoggin='')
 {
+    $getConnectionAsterixk = getRemoteConexionData();
+    $dsn = "";
+
+    if (array_key_exists('message', $getConnectionAsterixk)) {
+        $html="
+            <div class='alert alert-danger'>
+            ".$getConnectionAsterixk['message']."
+            </div>
+        
+        ";
+        echo($html);
+    }else{
+        $dsn = 'mysql://'.$getConnectionAsterixk['user'].':'.$getConnectionAsterixk['password'].'@'.$getConnectionAsterixk['host'].'/'.$getConnectionAsterixk['database'];
+        if (array_key_exists('ssl', $getConnectionAsterixk)) {
+            $dsn .= '?ssl={"rejectUnauthorized":true}';
+        }
+    }
+   
+
 
     require_once $ruta_base.'libs/paloSantoConfig.class.php';
     switch ($sNombreUsuario) {
@@ -645,47 +680,11 @@ function generarDSNSistema($sNombreUsuario, $sNombreDB, $ruta_base='', $isadminL
         return 'mysql://root:'.$sClave.'@localhost/'.$sNombreDB;
     case 'asteriskuser':
         if(is_file("/etc/issabelpbx.conf")) {
-            $pConfig = new paloConfig("/etc", "issabelpbx.conf", "=", "[[:space:]]*=[[:space:]]*");
-            $listaParam = $pConfig->leer_configuracion(FALSE);
-            $dsnLocal = $listaParam['$amp_conf[\'AMPDBENGINE\']']['valor']."://".
-                   $listaParam['$amp_conf[\'AMPDBUSER\']']['valor']. ":".
-                   $listaParam['$amp_conf[\'AMPDBPASS\']']['valor']. "@".
-                   $listaParam['$amp_conf[\'AMPDBHOST\']']['valor']. "/".$sNombreDB;
-                   //return $dsnLocal;
-            /*if(isset($_SESSION['issabel_user']) && $_SESSION['issabel_user'] == 'admin'){
-                return $dsnLocal;
-            }*/
-
-            $getConnectionAsterixk = consultarRemoteConexion($dsnLocal);
-
-
-            if($isadminLoggin != ''){
-                if($getConnectionAsterixk['sslmariadb']=='Si'){
-                    $dsnLocal .= '?ssl={"rejectUnauthorized":true}';
-                }                
-                return $dsnLocal;
-            }else{
-                $dsn = 'mysql://'.$getConnectionAsterixk['usuariomariadb'].':'.$getConnectionAsterixk['contrasenamariadb'].'@'.$getConnectionAsterixk['servidormariadb'].'/'.$getConnectionAsterixk['basedatosmariadb'];
-                if($getConnectionAsterixk['sslmariadb']=='Si'){
-                    $dsn .= '?ssl={"rejectUnauthorized":true}';
-                }
-                return $dsn;
-            }
-
+            return $dsn;            
         } else if(is_file("/etc/freepbx.conf")) {
-            $pConfig = new paloConfig("/etc", "freepbx.conf", "=", "[[:space:]]*=[[:space:]]*");
-            $listaParam = $pConfig->leer_configuracion(FALSE);
-            return $listaParam['$amp_conf[\'AMPDBENGINE\']']['valor']."://".
-                   $listaParam['$amp_conf[\'AMPDBUSER\']']['valor']. ":".
-                   $listaParam['$amp_conf[\'AMPDBPASS\']']['valor']. "@".
-                   $listaParam['$amp_conf[\'AMPDBHOST\']']['valor']. "/".$sNombreDB;
+            return $dsn; 
         } else {
-            $pConfig = new paloConfig("/etc", "amportal.conf", "=", "[[:space:]]*=[[:space:]]*");
-            $listaParam = $pConfig->leer_configuracion(FALSE);
-            return $listaParam['AMPDBENGINE']['valor']."://".
-                   $listaParam['AMPDBUSER']['valor']. ":".
-                   $listaParam['AMPDBPASS']['valor']. "@".
-                   $listaParam['AMPDBHOST']['valor']. "/".$sNombreDB;
+            return $dsn; 
         }
     }
     return NULL;

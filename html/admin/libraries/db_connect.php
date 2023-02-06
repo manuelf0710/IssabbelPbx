@@ -20,14 +20,25 @@ switch ($amp_conf['AMPDBENGINE']) {
 
         $dbengine = 'mysqli';
 
-        $datasource = $dbengine . '://'
+        $dsn = generarDSNSistema('asteriskuser', 'asterisk');
+
+        $getObjStringHostAndDatabase = explode("@", $dsn);
+        $getHostString = explode("/", $getObjStringHostAndDatabase[1]);
+        $hostUrl = $getHostString[0];
+        $database = "asterisk";
+        $getUserAndPassword = explode("//", $getObjStringHostAndDatabase[0]);
+        $userandPassword = explode(":",$getUserAndPassword[1]);
+        $username = $userandPassword[0];
+        $pass = $userandPassword[1];        
+
+        /*$datasource = $dbengine . '://'
                     . $amp_conf['AMPDBUSER']
                     . ':'
                     . $amp_conf['AMPDBPASS']
                     . '@'
                     . $amp_conf['AMPDBHOST']
                     . '/'
-                    . $amp_conf['AMPDBNAME'];
+                    . $amp_conf['AMPDBNAME']; */
         $db = issabelpbx_DB::connect($datasource); // attempt connection
         break;
     case "mysql":

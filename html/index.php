@@ -43,7 +43,7 @@ function getMatchRole($rolId){
     $arregloRoles = array(
         array("id"=>2, "name"=> "Supervisor CCenter", "omsrolid" => 3011),
         array("id"=>3, "name"=> "Agente CCenter", "omsrolid" => 3001),
-        array("id"=>4, "name"=> "Admin CCenter", "omsrolid" => 3010), 
+        array("id"=>1, "name"=> "Admin CCenter", "omsrolid" => 3010), 
     );    
 
     for($i = 0; $i < count($arregloRoles); $i++){
@@ -118,21 +118,15 @@ foreach (new RecursiveIteratorIterator($it) as $file) {
         }
     }
 }
-/*
-if(isset($_POST['input_user']) && $_POST['input_user']=='admin' || (isset($_SESSION['issabel_user']) && $_SESSION['issabel_user'] =="admin")  ){
-    $dsnAsterisk = generarDSNSistema('asteriskuser', 'asterisk','','isadminloggin');
-}else{
-    //$dsnAsterisk = generarDSNSistema('asteriskuser', 'asterisk');
-    $dsnAsterisk = generarDSNSistema('asteriskuser', 'asterisk','','isadminloggin');
-} */
-$dsnAsterisk = generarDSNSistema('asteriskuser', 'asterisk','','isadminloggin');
+
+$dsnAsterisk = generarDSNSistema('asteriskuser', 'asterisk');
 
 //$pdbACL = new paloDB($arrConf['issabel_dsn']['acl']);
 $pdbACL = new paloDB($dsnAsterisk);
 $pACL = new paloACL($pdbACL);
 
 if (!empty($pACL->errMsg)) {
-    echo "ERROR DE DB: $pACL->errMsg <br>";
+    //echo "ERROR DE DB: $pACL->errMsg <br>";
 }
 
 // Load smarty
@@ -192,7 +186,6 @@ if (isset($_POST['submit_login']) and !empty($_POST['input_user'])) {
         include_once("libs/IssabelExternalAuth.class.php");         
         $iauth = new IssabelExternalAuth();
         $iauthIssabel = new IssabelAuth();
-        $dsnAsterisk = generarDSNSistema('asteriskuser', 'asterisk');
         $pDB = new paloDB($dsnAsterisk);   
         $pconfiguracion_general2 = new paloSantoconfiguracion_general2($pDB);
         $datos = $pconfiguracion_general2->getconfiguracion_general2Active();
@@ -234,16 +227,71 @@ if (isset($_POST['submit_login']) and !empty($_POST['input_user'])) {
 
         $ingreso = $iauth->external_auth($_POST['input_user'], $passToSha256, $objetoConnection);  
 
-        //list($access_token, $refresh_token) = $iauthIssabel->acquire_jwt_token($_POST['input_user'], $_POST['input_pass']);   
-        
-        
-
-        if(!empty($ingreso) && isset($ingreso[0]) && $ingreso[0]->ROL_ID){
+        //print_r($ingreso);
+        if(!empty($ingreso) && !array_key_exists('message', $ingreso) && count($ingreso)>0   && array_key_exists('ROL_ID', $ingreso[0])){
             include_once("libs/IssabelExternalAuth.class.php"); 
-            $dsnAsterisk2 = generarDSNSistema('asteriskuser', 'asterisk','','isadminloggin');
+
+            $id_user = $pACL->getIdUser($_POST['input_user']);
+            $getRole = getMatchRole($ingreso[0]->ROL_ID);
+            echo("el id usuario inicial ".$id_user."<br>");
+
+                if ($id_user !== false) {
+                    $r = $pACL->updateUser($id_user, $_POST['input_user'], $_POST['input_user']);
+                    echo("<br>entro for update method <br>");
+
+                    list($access_token, $refresh_token) = $iauthIssabel->acquire_jwt_token($_POST['input_user'], $_POST['input_pass']); 
+                    $_SESSION['access_token']  = $access_token;
+                    $_SESSION['refresh_token'] = $refresh_token;
+            
+                    $_SESSION['issabel_user'] = $_POST['input_user'];
+                    $_SESSION['issabel_pass'] = $pass_md5;                      
+                    header("Location: index.php");                
 
 
-            $dbUserVerify = new externalLogin($dsnAsterisk2);
+
+                }else{
+                    $pACL->setUserExtension();
+
+                   $r = $pACL->createUser($_POST['input_user'], $ingreso[0]->ROL_NOMBRE, $pass_md5, $extension = NULL);
+                   if (!is_null($id_user)) {
+                    /* Versiones viejas del archivo acl.db tienen una fila con
+                     * una tupla que asocia al usuario inexistente con ID 2, con
+                     * el grupo 2 (Operadores). Se limpia cualquier membresía
+                     * extraña. */
+                    $listaMembresia = $pACL->getMembership($id_user);
+                    if (is_array($listaMembresia) && count($listaMembresia) > 0) {
+                        foreach ($listaMembresia as $idGrupo) {
+                            $pACL->delFromGroup($id_user, $idGrupo);
+                        }
+                    }
+
+                    echo("ingresa por crear usuario ".json_encode($getRole)."<br>");
+                    echo("in valor de iduser ".$id_user."<br>");
+                    echo("el valor de get role id = ".$getRole['id']);
+                    $id_user = $pACL->getIdUser($_POST['input_user']);
+
+                    // Creo la membresia
+                    $r = $pACL->addToGroup($id_user, $getRole['id']);
+
+                    echo("<br>valor de r <br>");
+                    print_r($r);
+
+                    list($access_token, $refresh_token) = $iauthIssabel->acquire_jwt_token($_POST['input_user'], $_POST['input_pass']);                     
+
+                    $_SESSION['access_token']  = $access_token;
+                    $_SESSION['refresh_token'] = $refresh_token;
+            
+                    $_SESSION['issabel_user'] = $_POST['input_user'];
+                    $_SESSION['issabel_pass'] = $pass_md5;                      
+                    header("Location: index.php");         
+
+
+                }                   
+                }
+            exit;
+
+
+            $dbUserVerify = new externalLogin($dsnAsterisk);
             if($dbUserVerify->existeUser($_POST['input_user'])){  
                 $activeUser = $dbUserVerify->cargarUser($_POST['input_user']);
                 if(!empty($activeUser)){
@@ -359,7 +407,6 @@ if (
 ) {
 
     $idUser = $pACL->getIdUser($_SESSION['issabel_user']);
-    //$dsnAsterisk = generarDSNSistema('asteriskuser', 'asterisk');
     //$pMenu = new paloMenu($arrConf['issabel_dsn']['menu']);
     $pMenu = new paloMenu($dsnAsterisk, 'mariadb');
     $arrMenuFiltered = $pMenu->filterAuthorizedMenus($idUser);
