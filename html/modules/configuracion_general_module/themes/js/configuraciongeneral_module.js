@@ -33,11 +33,17 @@ $(document).ready(function () {
         user: $("#usuario").val(),
         password: $("input[name=contrasena]").val(),
         host: $("#servidor").val(),
-        ssl: $("#sslmdb").val(),
         database: $("#basedatos").val(),
         motor: $("#motor").val(),
+        ssl: {
+          rejectUnauthorized: true,
+        },
       },
     };
+
+    if ($("#sslmdb").val() == "No") {
+      delete information.ssl;
+    }
 
     await testConexion(
       $("#motor").val().toLocaleLowerCase(),
@@ -45,6 +51,7 @@ $(document).ready(function () {
       $("#usuario").val(),
       $("input[name=contrasena]").val(),
       $("#basedatos").val(),
+      $("#sslmdb").val(),
       "conexionexitosa",
       "conexionnoexitosa"
     )
@@ -66,10 +73,6 @@ $(document).ready(function () {
       .catch((errno) => {
         console.log("ocurrio un error ", errno);
       });
-
-    if ($("#sslmdb").val() == "No") {
-      delete information.ssl;
-    }
 
     /*
 
@@ -209,6 +212,7 @@ $(document).ready(function () {
       $("#usuariomariadb").val(),
       $("input[name=contrasenamariadb]").val(),
       $("#basedatosmariadb").val(),
+      $("#sslmariadb").val(),
       "conexionexitosamariadb",
       "conexionnoexitosamariadb"
     )
@@ -390,7 +394,7 @@ $(document).ready(function () {
       });
   }
 
-  async function testConexion(motor, servidor, usuario, contrasena, basedatos, divconexionexitosa, divconexionnoexitosa) {
+  async function testConexion(motor, servidor, usuario, contrasena, basedatos, ssl, divconexionexitosa, divconexionnoexitosa) {
     let result = { response: "", json: "" };
     let information;
     $("#" + divconexionexitosa).css("display", "none");
@@ -425,7 +429,7 @@ $(document).ready(function () {
         };
         break;
     }
-    if ($("#sslmariadb").val() == "No") {
+    if (ssl == "No") {
       delete information["bdConnection"]["ssl"];
     }
 

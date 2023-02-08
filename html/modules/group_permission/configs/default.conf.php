@@ -21,7 +21,8 @@
   +----------------------------------------------------------------------+
   $Id: default.conf.php,v 1.1 2009-05-06 04:05:41 Jonathan Vega jvega112@gmail.com Exp $ */
 global $arrConfModule;
-
+$testing = generarDSNSistema('asteriskuser', 'asterisk');
+echo $testing;
 $arrConfModule['module_name']   = 'group_permission';
 $arrConfModule['templates_dir'] = 'themes';
 $arrConfModule['dsn_conn_database'] = generarDSNSistema('asteriskuser', 'asterisk');

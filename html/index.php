@@ -1,6 +1,6 @@
 <?php
-ini_set('display_errors', 1);
-error_reporting(E_ALL);
+/*ini_set('display_errors', 1);
+error_reporting(E_ALL); */
 //phpinfo();
 /* vim: set expandtab tabstop=4 softtabstop=4 shiftwidth=4:
   Codificación: UTF-8
@@ -41,9 +41,9 @@ function spl_issabel_class_autoload($sNombreClase)
 function getMatchRole($rolId){
     $matchRole = array();
     $arregloRoles = array(
+        array("id"=>1, "name"=> "Admin CCenter", "omsrolid" => 3010),         
         array("id"=>2, "name"=> "Supervisor CCenter", "omsrolid" => 3011),
         array("id"=>3, "name"=> "Agente CCenter", "omsrolid" => 3001),
-        array("id"=>1, "name"=> "Admin CCenter", "omsrolid" => 3010), 
     );    
 
     for($i = 0; $i < count($arregloRoles); $i++){
@@ -81,7 +81,8 @@ if (isset($_GET['logout']) && $_GET['logout'] == 'yes') {
     session_destroy();
     session_name("issabelSession");
     session_start();
-    header("Location: index.php");
+    header("Location: sessdel.php");
+    //header("Location: index.php");
     exit;
 }
 

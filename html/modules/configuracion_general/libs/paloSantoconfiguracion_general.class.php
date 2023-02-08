@@ -21,12 +21,12 @@
   | The Initial Developer of the Original Code is PaloSanto Solutions    |
   +----------------------------------------------------------------------+
   $Id: paloSantoconfiguracion_general2.class.php,v 1.1 2022-12-12 05:12:10 manuelf manuelf0710@gmail.com Exp $ */
-class paloSantoconfiguracion_general2
+class paloSantoconfiguracion_general
 {
     var $_DB;
     var $errMsg;
 
-    function paloSantoconfiguracion_general2(&$pDB)
+    function paloSantoconfiguracion_general(&$pDB)
     {
         // Se recibe como parámetro una referencia a una conexión paloDB
         if (is_object($pDB)) {

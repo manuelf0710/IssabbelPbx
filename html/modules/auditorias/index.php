@@ -119,12 +119,13 @@ function viewFormAuditorias2($smarty, $module_name, $local_templates_dir, &$pDB,
     $smarty->assign("REQUIRED_FIELD", _tr("Required field"));
     $smarty->assign("icon", "images/list.png");
 
-    $fecha_inicial_filter =  '';
-    $fecha_final_filter   =  '';    
-    if(isset($_POST['fecha_inicial'])){
-       $fecha_inicial_filter =  $_POST['fecha_inicial'];
-       $fecha_final_filter   =  $_POST['fecha_final'];
-    }
+    $fecha_inicial = getParameter("fecha_inicial");
+    $fecha_final = getParameter("fecha_final");
+
+
+    $fecha_inicial_filter = $fecha_inicial;
+    $fecha_final_filter   = $fecha_final;
+
 
     $smarty->assign("fecha_inicial_filter",$fecha_inicial_filter);
     $smarty->assign("fecha_final_filter",$fecha_final_filter);
@@ -216,6 +217,8 @@ function reportAuditorias_Table($smarty, $module_name, $local_templates_dir, &$p
     $pAuditorias_Table = new paloSantoAuditorias_Table($pDB);
     $filter_field = getParameter("filter_field");
     $filter_value = getParameter("filter_value");
+    $fecha_inicial = getParameter("fecha_inicial");
+    $fecha_final = getParameter("fecha_final");
 
     //begin grid parameters
     $oGrid  = new paloSantoGrid($smarty);
@@ -226,12 +229,23 @@ function reportAuditorias_Table($smarty, $module_name, $local_templates_dir, &$p
     $oGrid->setNameFile_Export(_tr("Auditorias_Table"));
     $oGrid->setTplFile('themes/customTheme/_custom_list.tpl');
 
-    $postFilter = $_POST;
+    $postFilter =array(
+        "fecha_inicial" => $fecha_inicial,
+        "fecha_final" => $fecha_final,
+    );
+    
     $url = array(
         "menu"         =>  $module_name,
         "filter_field" =>  $filter_field,
         "filter_value" =>  $filter_value,
+        "fecha_inicial" => $fecha_inicial,
+        "fecha_final" => $fecha_final,
     );
+
+    $smarty->assign("fecha_inicial_filter",$fecha_inicial);
+    $smarty->assign("fecha_final_filter",$fecha_final);
+      
+
     $oGrid->setURL($url);
 
     $arrColumns = array(_tr("Fecha"),_tr("Usuario"),_tr("Descripción"),_tr("Modulo"),);
@@ -266,10 +280,10 @@ function reportAuditorias_Table($smarty, $module_name, $local_templates_dir, &$p
     //begin section filter
     $oFilterForm = new paloForm($smarty, createFieldFilter());
     $smarty->assign("SHOW", _tr("Show"));
-    $htmlFilter  = $oFilterForm->fetchForm("$local_templates_dir/filter.tpl","",$_POST);
-    //end section filter
+    /*$htmlFilter  = $oFilterForm->fetchForm("$local_templates_dir/filter.tpl","",$_POST);
 
-    $oGrid->showFilter(trim($htmlFilter));
+
+    $oGrid->showFilter(trim($htmlFilter)); */
     $content = $oGrid->fetchGrid();
     //end grid parameters
 

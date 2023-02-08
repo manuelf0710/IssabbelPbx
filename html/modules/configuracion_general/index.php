@@ -38,7 +38,7 @@ function _moduleContent(&$smarty, $module_name)
 {
     //include module files
     include_once "modules/$module_name/configs/default.conf.php";
-    include_once "modules/$module_name/libs/paloSantoconfiguracion_general2.class.php";
+    include_once "modules/$module_name/libs/paloSantoconfiguracion_general.class.php";
 
     //include file language agree to issabel configuration
     //if file language not exists, then include language by default (en)
@@ -95,7 +95,7 @@ function _moduleContent(&$smarty, $module_name)
 
 function viewFormconfiguracion_general2($smarty, $module_name, $local_templates_dir, &$pDB, $arrConf, $infoToView)
 {
-    $pconfiguracion_general2 = new paloSantoconfiguracion_general2($pDB);
+    $pconfiguracion_general2 = new paloSantoconfiguracion_general($pDB);
     $arrFormconfiguracion_general2 = createFieldForm();
     $oForm = new paloForm($smarty, $arrFormconfiguracion_general2);
 

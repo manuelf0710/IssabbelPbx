@@ -70,11 +70,11 @@ class paloSantoAuditorias_Table{
 
             if($postFilter['fecha_inicial']!= ''){
                 $fechaInicial = $this->convertirToMysqlFormat($postFilter['fecha_inicial']);
-                $where .= " and fecha >= '".$fechaInicial."'";
+                $where .= " and fecha >= str_to_date('".$fechaInicial."', '%Y-%m-%d %H:%i')";
             }
             if($postFilter['fecha_final']!= ''){
                 $fechaFinal = $this->convertirToMysqlFormat($postFilter['fecha_final']);
-                $where .= " and fecha <= '".$fechaFinal."'";
+                $where .= " and fecha <=  str_to_date('".$fechaFinal."', '%Y-%m-%d %H:%i')";
             }        
         }
 
@@ -82,6 +82,7 @@ class paloSantoAuditorias_Table{
         $query   = "SELECT COUNT(*) FROM auditoriasissabel where 1 $where";
 
         $result=$this->_DB->getFirstRowQuery($query, false, $arrParam);
+
 
         if($result==FALSE){
             $this->errMsg = $this->_DB->errMsg;
@@ -94,27 +95,28 @@ class paloSantoAuditorias_Table{
     {
         $where    = "";
         $arrParam = null;
-        if(isset($filter_field) & $filter_field !=""){
+        /*if(isset($filter_field) & $filter_field !=""){
             //$where    = "where $filter_field like ?";
             $arrParam = array("$filter_value%");
-        } 
+        } */
 
-        $where = '';
+
         if (!empty($postFilter)) {
 
 
             if($postFilter['fecha_inicial']!= ''){
                 $fechaInicial = $this->convertirToMysqlFormat($postFilter['fecha_inicial']);
-                $where .= " and fecha >= '".$fechaInicial."'";
+                $where .= " and fecha >= str_to_date('".$fechaInicial."', '%Y-%m-%d %H:%i')";
             }
             if($postFilter['fecha_final']!= ''){
                 $fechaFinal = $this->convertirToMysqlFormat($postFilter['fecha_final']);
-                $where .= " and fecha <= '".$fechaFinal."'";
+                $where .= " and fecha <=  str_to_date('".$fechaFinal."', '%Y-%m-%d %H:%i')";
             }          
         }        
 
 
         $query   = "SELECT * FROM auditoriasissabel where 1 $where LIMIT $limit OFFSET $offset";
+
 
         $result=$this->_DB->fetchTable($query, true, $arrParam);
 
