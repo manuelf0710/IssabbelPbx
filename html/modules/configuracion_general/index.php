@@ -71,8 +71,28 @@ function _moduleContent(&$smarty, $module_name)
     $IvrList = $modelIvr->index();
     $conexionesLista = $modelConexionesBD->lista();
     $outgoingRouteList = $modelOutgoingRoutes->index();
+    $arrOptionsDias = array(
+        "0" => "Lunes",
+        "1" => "Martes",
+        "2" => "Miercoles",
+        "3" => "Jueves",
+        "4" => "Viernes",
+        "5" => "Sabado",
+        "6" => "Domingo",
+    );  
+    $optionsHours = array(''=>'...');
+    $optionsMins = array(''=>'...');
+    for($i = 0; $i < 24; $i++){
+        $i < 10 ? $optionsHours["0$i"] ="0".$i : $optionsHours["$i"] = $i;
+    }
+    for($i = 0; $i < 60; $i++){  
+        $i < 10 ? $optionsMins["0$i"] ="0".$i : $optionsMins["$i"] = $i;   
+    }       
 
-    $infoToView = array("ivrLista" => $IvrList, "outgoingRouteList" => $outgoingRouteList, "conexionesLista" => $conexionesLista);
+    $infoToView = array("ivrLista" => $IvrList, "outgoingRouteList" => $outgoingRouteList, 
+    "conexionesLista" => $conexionesLista, "diasLista" => $arrOptionsDias, "optionsHours" => $optionsHours, 
+    "optionsMins" => $optionsMins
+    );
 
     //actions
     $action = getAction();
@@ -96,8 +116,11 @@ function _moduleContent(&$smarty, $module_name)
 function viewFormconfiguracion_general2($smarty, $module_name, $local_templates_dir, &$pDB, $arrConf, $infoToView)
 {
     $pconfiguracion_general2 = new paloSantoconfiguracion_general($pDB);
+    $configuracionGeneral = $pconfiguracion_general2->getNotificacionesConfiguracion();
+    echo json_encode($configuracionGeneral);
     $arrFormconfiguracion_general2 = createFieldForm();
     $oForm = new paloForm($smarty, $arrFormconfiguracion_general2);
+    $dataForm = array("configuracionGeneral"=>$configuracionGeneral);
 
 
     //begin, Form data persistence to errors and other events.
@@ -123,13 +146,8 @@ function viewFormconfiguracion_general2($smarty, $module_name, $local_templates_
     //end, Form data persistence to errors and other events.
 
     if ($action == "view" || $action == "view_edit") { // the action is to view or view_edit.
-        $dataconfiguracion_general2 = $pconfiguracion_general2->getconfiguracion_general2ById($id);
-        if (is_array($dataconfiguracion_general2) & count($dataconfiguracion_general2) > 0)
-            $_DATA = $dataconfiguracion_general2;
-        else {
             $smarty->assign("mb_title", _tr("Error get Data"));
             $smarty->assign("mb_message", $pconfiguracion_general2->errMsg);
-        }
     }
     $smarty->assign("SAVE", _tr("Save"));
     $smarty->assign("EDIT", _tr("Edit"));
@@ -137,6 +155,7 @@ function viewFormconfiguracion_general2($smarty, $module_name, $local_templates_
     $smarty->assign("REQUIRED_FIELD", _tr("Required field"));
     $smarty->assign("icon", "images/list.png");
     $smarty->assign("configListas", $infoToView);
+    $smarty->assign("dataForm", $dataForm);
 
     /*echo("<br>");
 echo("<br>");
@@ -192,34 +211,24 @@ function createFieldForm()
 
     $arrOptionsDias = array(
         "" => "...",
-        "Lunes" => "Lunes",
-        "Martes" => "Martes",
-        "Miercoles" => "Miercoles",
-        "Jueves" => "Jueves",
-        "Viernes" => "Viernes",
-        "Sabado" => "Sabado",
-        "Domingo" => "Domingo",
+        "0" => "Lunes",
+        "1" => "Martes",
+        "2" => "Miercoles",
+        "3" => "Jueves",
+        "4" => "Viernes",
+        "5" => "Sabado",
+        "6" => "Domingo",
     );
     $optionsHours = array(''=>'...');
     $optionsMins = array(''=>'...');
     for($i = 0; $i < 24; $i++){
-        $optionsHours["$i"] =$i;
+        $i < 10 ? $optionsHours["0$i"] ="0".$i : $optionsHours["$i"] = $i;
     }
-    for($i = 0; $i < 60; $i++){
-        $optionsMins["$i"] =$i;       
+    for($i = 0; $i < 60; $i++){  
+        $i < 10 ? $optionsMins["0$i"] ="0".$i : $optionsMins["$i"] = $i;   
     }    
 
     $arrFields = array(
-        "motor"   => array(
-            "LABEL"                  => _tr("Motor"),
-            "REQUIRED"               => "no",
-            "INPUT_TYPE"             => "SELECT",
-            "INPUT_EXTRA_PARAM"      => $arrOptionsMotor,
-            "SUPPORT_VALUE"          => "si",
-            "VALIDATION_TYPE"        => "text",
-            "VALIDATION_EXTRA_PARAM" => "",
-            "EDITABLE"               => "si",
-        ),
         "activo"   => array(
             "LABEL"                  => _tr("Activo"),
             "REQUIRED"               => "no",
@@ -229,46 +238,6 @@ function createFieldForm()
             "VALIDATION_TYPE"        => "text",
             "VALIDATION_EXTRA_PARAM" => "",
             "EDITABLE"               => "si",
-        ),
-        "servidor"   => array(
-            "LABEL"                  => _tr("Servidor"),
-            "REQUIRED"               => "no",
-            "INPUT_TYPE"             => "TEXT",
-            "INPUT_EXTRA_PARAM"      => "",
-            "VALIDATION_TYPE"        => "text",
-            "VALIDATION_EXTRA_PARAM" => ""
-        ),
-        "usuario"   => array(
-            "LABEL"                  => _tr("Usuario"),
-            "REQUIRED"               => "no",
-            "INPUT_TYPE"             => "TEXT",
-            "INPUT_EXTRA_PARAM"      => "",
-            "VALIDATION_TYPE"        => "text",
-            "VALIDATION_EXTRA_PARAM" => ""
-        ),
-        "contrasena"   => array(
-            "LABEL"                  => _tr("Contraseña"),
-            "REQUIRED"               => "no",
-            "INPUT_TYPE"             => "password",
-            "INPUT_EXTRA_PARAM"      => "",
-            "VALIDATION_TYPE"        => "text",
-            "VALIDATION_EXTRA_PARAM" => ""
-        ),
-        "basedatos"   => array(
-            "LABEL"                  => _tr("Base de Datos"),
-            "REQUIRED"               => "no",
-            "INPUT_TYPE"             => "TEXT",
-            "INPUT_EXTRA_PARAM"      => "",
-            "VALIDATION_TYPE"        => "text",
-            "VALIDATION_EXTRA_PARAM" => ""
-        ),
-        "tablavista"   => array(
-            "LABEL"                  => _tr("Tabla o Vista"),
-            "REQUIRED"               => "no",
-            "INPUT_TYPE"             => "TEXT",
-            "INPUT_EXTRA_PARAM"      => "",
-            "VALIDATION_TYPE"        => "text",
-            "VALIDATION_EXTRA_PARAM" => ""
         ),
         "horainicialnot"   => array(
             "LABEL"                  => _tr("Hora Inicial Notificación"),
@@ -324,11 +293,6 @@ function createFieldForm()
             "VALIDATION_EXTRA_PARAM" => "",
             "EDITABLE"               => "si",
         ),               
-
-
-
-
-
 
         "activar_desactivar"   => array(
             "LABEL"                  => _tr("Desactivar / Activar"),

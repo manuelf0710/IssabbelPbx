@@ -23,7 +23,7 @@ class RutaSalienteModel extends Model
    */
   public function index()
   {
-    $query = "SELECT route_id id, name  FROM `asterisk`.`outbound_routes`";
+    $query = "SELECT *  FROM `asterisk`.`outbound_routes`";
     //$parameters = ['id'];
 
     return $this->fetchRows($query);

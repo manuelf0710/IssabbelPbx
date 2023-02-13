@@ -113,6 +113,43 @@ class paloSantoconfiguracion_general
         return $result;
     }
 
+    function getNotificacionesConfiguracion()
+    {
+
+        $query = 'SELECT id, 
+                    activo, 
+                    cant_lineas, 
+                    barridos, 
+                    hora_inicial_notif,
+                    date_format(hora_inicial_notif, "%H") horainicialnot,
+                    date_format(hora_inicial_notif, "%i") minutoinicialnot,
+                    hora_final_notif, 
+                    date_format(hora_final_notif, "%H") horafinalnot,
+                    date_format(hora_final_notif, "%i") minutofinalnot,
+                    dia_inicial_notif, 
+                    dia_final_notif, 
+                    ivr_confirmado,
+                    activar_confirmado,
+                    ivr_restaurado,
+                    activar_restaurado,
+                    ivr_cancelado,
+                    activar_cancelado,
+                    ivr_programado,
+                    activar_programado
+                FROM notificaciones_configuracion
+            WHERE id =1';
+
+        $result = $this->_DB->getFirstRowQuery($query, true);
+
+        if ($result == FALSE) {
+            $this->errMsg = $this->_DB->errMsg;
+            return null;
+        }
+        return $result;
+    }
+    
+    
+
     function getconfiguracion_general2Active()
     {
 

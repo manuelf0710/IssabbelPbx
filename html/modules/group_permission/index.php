@@ -191,7 +191,7 @@ function reportGroupPermission($smarty, $module_name, $local_templates_dir)
     // Cargar el menú completo
     $dnsAsterisk = generarDSNSistema('asteriskuser', 'asterisk');
     //$oMenu = new paloMenu($arrConf['issabel_dsn']['menu']);
-    echo($$dnsAsterisk);
+    //echo($$dnsAsterisk);
     $oMenu = new paloMenu($dnsAsterisk);
     $fullmenu = $oMenu->cargar_menu();
     foreach (array_keys($fullmenu) as $k) $fullmenu[$k]['actions'] = array();
