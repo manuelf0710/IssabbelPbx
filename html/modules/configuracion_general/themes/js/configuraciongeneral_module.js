@@ -1,148 +1,90 @@
 $(document).ready(function () {
-  function createConnection() {
-    $("#conexionnoexitosa").css("display", "none");
-    $("#conexionexitosa").css("display", "none");
+	$(".calendar-configgeneral").datetimepicker({
+		showOn: 'button',
+		firstDay:1,
+		buttonImageOnly: true,
+		buttonImage: 'images/calendar.gif',
+		dateFormat: 'yy-mm-dd',
+		timeFormat :"HH:mm:ss",
+		changeMonth:true,
+		showWeek:true,
 
-    let information;
+	});	
 
-    switch ($("#motor").val().toLocaleLowerCase()) {
-      case "oracle":
-        information = {
-          externalBdMotor: $("#motor").val().toLocaleLowerCase(),
-          externalBdConnection: {
-            user: $("#usuario").val(),
-            password: $("input[name=contrasena]").val(),
-            connectString: $("#servidor").val() + "/" + $("#basedatos").val(),
-            externalAuth: false,
-          },
-          asteriskBdMotor: "oracle",
-          asteriskBdConnection: {
-            user: $("#usuario").val(),
-            password: $("input[name=contrasena]").val(),
-            connectString: $("#servidor").val() + "/" + $("#basedatos").val(),
-            externalAuth: false,
-          },
-        };
-        break;
-      case "mysql":
-        information = {
-          externalBdMotor: $("#motor").val().toLocaleLowerCase(),
-          externalBdConnection: {
-            host: $("#servidor").val(),
-            user: $("#usuario").val(),
-            password: $("input[name=contrasena]").val(),
-            database: $("#basedatos").val(),
-            ssl: {
-              rejectUnauthorized: false,
-            },
-          },
-          asteriskBdMotor: $("#motor").val().toLocaleLowerCase(),
-          asteriskBdConnection: {
-            host: $("#servidor").val(),
-            user: $("#usuario").val(),
-            password: $("input[name=contrasena]").val(),
-            database: $("#basedatos").val(),
-            ssl: {
-              rejectUnauthorized: false,
-            },
-          },
-        };
-        break;
-    }
-    if ($("#activo").val() == "Inactivo") {
-      document.form_configuraciongeneral.action = "index.php?menu=configuracion_general&action=save";
-      document.form_configuraciongeneral.submit();
-      return false;
-    }
-    $.ajax({
-      contentType: "application/json",
-      data: JSON.stringify(information),
-      dataType: "json",
-      success: function (data, textStatus, xhr) {
-        if (xhr.status == 200) {
-          $("#conexionexitosa").css("display", "block");
-          alert("conexion exitosa");
-          document.form_configuraciongeneral.action = "index.php?menu=configuracion_general&action=save";
-          document.form_configuraciongeneral.submit();
+  function validarformDestinos() {
+    validacionesDestino = 0;
+    $(".chkivr").each(function () {
+      console.log("algo" + $(this).is(":checked"));
+      if ($(this).is(":checked")) {
+        if ($("#" + $(this).attr("data-destino")).val() == "") {
+          validacionesDestino++;
         }
-      },
-      error: function (data, textStatus, xhr) {
-        $("#conexionnoexitosa").text("conexion no exitosa " + data.responseText);
-        alert("conexion no exitosa " + data.responseText);
-      },
-      processData: false,
-      type: "POST",
-      url: "http://localhost:3000/config",
+      }
     });
+    return validacionesDestino;
   }
 
-  $("#motor").change(function () {
-    if ($("#motor").val() != "") {
-      document.form_configuraciongeneral.submit();
-      $("#btnprobarconexion").css("display", "block");
-    } else {
-      $("#btnprobarconexion").css("display", "none");
-    }
-  });
+  function validateOutboundRoutes() {
+    let counter = 0;
+    $(".chkrouteoutbounds").each(function () {
+      if ($(this).is(":checked")) {
+        counter++;
+      }
+    });
+    return counter;
+  }
 
   $("#btnguardardatos").click(function () {
-    createConnection();
-  });
-
-  $("#btnprobarconexion").click(function () {
-    let data = $("#form_configuraciongeneral").serialize();
-    $("#conexionnoexitosa").css("display", "none");
-    $("#conexionexitosa").css("display", "none");
-
-    let information;
-
-    switch ($("#motor").val().toLocaleLowerCase()) {
-      case "oracle":
-        information = {
-          externalBdMotor: $("#motor").val().toLocaleLowerCase(),
-          externalBdConnection: {
-            user: $("#usuario").val(),
-            password: $("input[name=contrasena]").val(),
-            connectString: $("#servidor").val() + "/" + $("#basedatos").val(),
-            externalAuth: false,
-          },
-        };
-        break;
-      case "mysql":
-        information = {
-          externalBdMotor: $("#motor").val().toLocaleLowerCase(),
-          externalBdConnection: {
-            host: $("#servidor").val(),
-            user: $("#usuario").val(),
-            password: $("input[name=contrasena]").val(),
-            database: $("#basedatos").val(),
-            ssl: {
-              rejectUnauthorized: false,
-            },
-          },
-        };
-        break;
+    validarDestinos = validarformDestinos();
+    if (validarDestinos > 0) {
+      alert("debe ingresar un destino para el evento marcado");
+      return;
     }
 
-    $.ajax({
-      contentType: "application/json",
-      data: JSON.stringify(information),
-      dataType: "json",
-      success: function (data, textStatus, xhr) {
-        if (xhr.status == 200) {
-          $("#conexionexitosa").css("display", "block");
-        }
-      },
-      error: function (data, textStatus, xhr) {
-        console.log("en error ", data);
-        $("#conexionnoexitosa").css("display", "block");
-        $("#conexionnoexitosa").text("conexion no exitosa " + data.responseText);
-      },
-      processData: false,
-      type: "POST",
-      //url: 'modules/configuracion_general/libs/ajaxfunctions.php'
-      url: "http://localhost:3000/test",
-    });
+    if ($("#cant_lineas").val() == "") {
+      alert("debe ingresar la cantidad de líneas");
+      return;
+    }
+    if ($("#barridos").val() == "") {
+      alert("debe ingresar el campo barridos");
+      return;
+    }
+    if ($("#fecha_busqueda").val() == "") {
+      alert("debe ingresar una fecha de busqueda");
+      return;
+    }
+    if ($("#horainicialnot").val() == "") {
+      alert("debe ingresar la hora inicial notificación");
+      return;
+    }
+    if ($("#minutoinicialnot").val() == "") {
+      alert("debe ingresar el minuto inicial notificación");
+      return;
+    }
+    if ($("#horafinalnot").val() == "") {
+      alert("debe ingresar la hora final notificación");
+      return;
+    }
+    if ($("#minutofinalnot").val() == "") {
+      alert("debe ingresar el minuto final notificación");
+      return;
+    }
+    if ($("#diainicialnot").val() == "") {
+      alert("debe ingresar el dia inicial notificación");
+      return;
+    }
+    if ($("#diafinalnot").val() == "") {
+      alert("debe ingresar el dia final notificación");
+      return;
+    }
+
+    if (validateOutboundRoutes() == 0) {
+      alert("debe marcar alguna ruta de plan de marcado");
+      return;
+    }
+
+    document.form_configuraciongeneral.action = "index.php?menu=configuracion_general&action=save";
+    document.form_configuraciongeneral.submit();
   });
 
   $(".chkivr").change(function () {

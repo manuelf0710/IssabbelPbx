@@ -38,7 +38,7 @@ function _moduleContent(&$smarty, $module_name)
 {
     //include module files
     include_once "modules/$module_name/configs/default.conf.php";
-    include_once "modules/$module_name/libs/paloSantoconfiguracion_general.class.php";
+    include_once "modules/$module_name/libs/paloSantoconfiguraciongeneral.class.php";
 
     //include file language agree to issabel configuration
     //if file language not exists, then include language by default (en)
@@ -71,15 +71,17 @@ function _moduleContent(&$smarty, $module_name)
     $IvrList = $modelIvr->index();
     $conexionesLista = $modelConexionesBD->lista();
     $outgoingRouteList = $modelOutgoingRoutes->index();
+
     $arrOptionsDias = array(
-        "0" => "Lunes",
-        "1" => "Martes",
-        "2" => "Miercoles",
-        "3" => "Jueves",
-        "4" => "Viernes",
-        "5" => "Sabado",
-        "6" => "Domingo",
-    );  
+        "" => "...",
+        "1" => "Lunes",
+        "2" => "Martes",
+        "3" => "Miercoles",
+        "4" => "Jueves",
+        "5" => "Viernes",
+        "6" => "Sabado",
+        "0" => "Domingo",
+    ); 
     $optionsHours = array(''=>'...');
     $optionsMins = array(''=>'...');
     for($i = 0; $i < 24; $i++){
@@ -115,9 +117,9 @@ function _moduleContent(&$smarty, $module_name)
 
 function viewFormconfiguracion_general2($smarty, $module_name, $local_templates_dir, &$pDB, $arrConf, $infoToView)
 {
-    $pconfiguracion_general2 = new paloSantoconfiguracion_general($pDB);
+    $pconfiguracion_general2 = new paloSantoconfiguraciongeneral($pDB);
     $configuracionGeneral = $pconfiguracion_general2->getNotificacionesConfiguracion();
-    echo json_encode($configuracionGeneral);
+    //echo json_encode($configuracionGeneral);
     $arrFormconfiguracion_general2 = createFieldForm();
     $oForm = new paloForm($smarty, $arrFormconfiguracion_general2);
     $dataForm = array("configuracionGeneral"=>$configuracionGeneral);
@@ -127,17 +129,9 @@ function viewFormconfiguracion_general2($smarty, $module_name, $local_templates_
     $_DATA  = $_POST;
     $action = getParameter("action");
     //$id     = getParameter("id");
-    //$smarty->assign("ID", $id); //persistence id with input hidden in tpl
-    $motor     = getParameter("motor");
-    /*print_r($_DATA);
 
-    echo("antes.<br/> el id=".$id);
-    print_r($pconfiguracion_general2->getconfiguracion_general2ById($id));
-    echo("</br>despues$id</br>");  */
-
-    $_DATA = $pconfiguracion_general2->getconfiguracion_general2ByName($motor);
     //echo('elidddd='.$_DATA['id']);
-    $smarty->assign("ID", $_DATA['id']); //persistence id with input hidden in tpl
+    $smarty->assign("ID", 1); //persistence id with input hidden in tpl
 
     if ($action == "view")
         $oForm->setViewMode();
@@ -169,7 +163,7 @@ print_r($_DATA);*/
 
 function saveNewconfiguracion_general2($smarty, $module_name, $local_templates_dir, &$pDB, $arrConf, $infoToView)
 {
-    $pconfiguracion_general2 = new paloSantoconfiguracion_general2($pDB);
+    $pconfiguracion_general2 = new paloSantoconfiguracionGeneral($pDB);
     $arrFormconfiguracion_general2 = createFieldForm();
     $oForm = new paloForm($smarty, $arrFormconfiguracion_general2);
 
@@ -187,12 +181,9 @@ function saveNewconfiguracion_general2($smarty, $module_name, $local_templates_d
     } else {
         //NO ERROR, HERE IMPLEMENTATION OF SAVE
 
-        $id     = getParameter("id");
-        $pconfiguracion_general2->updateconfiguracion_general2ById($id, $_POST);
-
-        $smarty->assign("ID", $id);
-        $content = viewFormconfiguracion_general2($smarty, $module_name, $local_templates_dir, $pDB, $arrConf, $infoToView);
-        //header("Location: index.php?menu=configuracion_general");
+        // echo"variables posts =>". json_encode($_POST);
+         $pconfiguracion_general2->updateNotificacionesConfiguracion($_POST);
+        header("Location: index.php?menu=configuracion_general");
 
         //$content = "Code to save yet undefined.";
 
@@ -211,13 +202,13 @@ function createFieldForm()
 
     $arrOptionsDias = array(
         "" => "...",
-        "0" => "Lunes",
-        "1" => "Martes",
-        "2" => "Miercoles",
-        "3" => "Jueves",
-        "4" => "Viernes",
-        "5" => "Sabado",
-        "6" => "Domingo",
+        "1" => "Lunes",
+        "2" => "Martes",
+        "3" => "Miercoles",
+        "4" => "Jueves",
+        "5" => "Viernes",
+        "6" => "Sabado",
+        "0" => "Domingo",
     );
     $optionsHours = array(''=>'...');
     $optionsMins = array(''=>'...');

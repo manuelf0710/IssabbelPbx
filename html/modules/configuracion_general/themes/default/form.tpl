@@ -28,7 +28,8 @@
                 <b>{$cant_lineas.LABEL}</b>
             </td>
             <td align="right">
-                <input type="number" name="cant_lineas" id="cant_lineas" value="{$dataForm.configuracionGeneral.cant_lineas}">
+                <input type="number" name="cant_lineas" id="cant_lineas"
+                    value="{$dataForm.configuracionGeneral.cant_lineas}">
             </td>
         </tr>
         <tr class="letra12">
@@ -36,18 +37,20 @@
                 <!--{$activar_desactivar.INPUT}-->
                 <div class="material-switch font-weight-bold">
                     Desactivar&nbsp;&nbsp;
-                    <input id="activar_desactivar" name="activar_desactivar" type="checkbox" {if 1 == $dataForm.configuracionGeneral.activo}checked{/if} />
+                    <input id="activar_desactivar" name="activar_desactivar" value="1" type="checkbox"
+                        {if 1 == $dataForm.configuracionGeneral.activo}checked{/if} />
                     <label for="activar_desactivar" class="label-success"></label>&nbsp;&nbsp;Activar
                 </div>
             </td>
             <td align="left"><b>{$barridos.LABEL}: <span class="required">*</span></b></td>
             <td align="left">
                 <select name="barridos" id="barridos">
-                
-                <option value="">Seleccione...</option>
-                {foreach from=[1,2,3,4,5] item=num}
-                    <option value="{$num}" {if $num == $dataForm.configuracionGeneral.barridos}selected{/if}>{$num}</option>
-                  {/foreach}
+
+                    <option value="">Seleccione...</option>
+                    {foreach from=[1,2,3,4,5] item=num}
+                        <option value="{$num}" {if $num == $dataForm.configuracionGeneral.barridos}selected{/if}>{$num}
+                        </option>
+                    {/foreach}
                 </select>
             </td>
         </tr>
@@ -61,85 +64,92 @@
                     </tr>
                     <tr class="">
                         <td>
-                            <input type="checkbox" id="chkivr_confirmado" name="chkivr_confirmado" class="chkivr" 
-                            {if $dataForm.configuracionGeneral.activar_confirmado == 1}checked{/if}
-                            
-                            />
+                            <input type="checkbox" value="1" id="chkivr_confirmado" name="chkivr_confirmado"
+                                data-destino="ivrconfirmado" data-labelivr="confirmado" class="chkivr"
+                                {if $dataForm.configuracionGeneral.activar_confirmado == 1}checked{/if} />
                         </td>
                         <td class="letra12">Confirmado</td>
                         <td>
                             <select name="ivrconfirmado" id="ivrconfirmado" style="display:{if $dataForm.configuracionGeneral.activar_confirmado == 1}
-                                block,
+                                block;
                             {else}
                                none;
                             {/if}">
                                 <option value="">Seleccione...</option>
                                 {foreach $configListas['ivrLista'] as $ivr}
-                                    <option value="{$ivr.id}"  {if $ivr.id == $dataForm.configuracionGeneral.ivr_confirmado}selected{/if}>{$ivr.name}</option>
+                                    <option value="{$ivr.id}"
+                                        {if $ivr.id == $dataForm.configuracionGeneral.ivr_confirmado}selected{/if}>
+                                        {$ivr.name}</option>
                                 {/foreach}
                             </select>
                         </td>
                     </tr>
                     <tr class="">
                         <td>
-                            <input type="checkbox" id="chkivr_restaurado" name="chkivr_restaurado" class="chkivr"
-                        {if $dataForm.configuracionGeneral.activar_restaurado == 1}checked{/if}
-                            />
+                            <input type="checkbox" value="1" id="chkivr_restaurado" name="chkivr_restaurado"
+                                data-destino="ivrrestaurado" data-labelivr="restaurado" class="chkivr"
+                                {if $dataForm.configuracionGeneral.activar_restaurado == 1}checked{/if} />
                         </td>
                         <td class="letra12">Restaurado</td>
                         <td>
                             <select name="ivrrestaurado" id="ivrrestaurado" style="display:{if $dataForm.configuracionGeneral.activar_restaurado == 1}
-                                block,
+                                block;
                             {else}
                                none;
-                            {/if}">                            
-                           
+                            {/if}">
+
                                 <option value="">Seleccione...</option>
                                 {foreach $configListas['ivrLista'] as $ivr}
-                                    <option value="{$ivr.id}" {if $ivr.id == $dataForm.configuracionGeneral.ivr_restaurado}selected{/if}>{$ivr.name}</option>
+                                    <option value="{$ivr.id}"
+                                        {if $ivr.id == $dataForm.configuracionGeneral.ivr_restaurado}selected{/if}>
+                                        {$ivr.name}</option>
                                 {/foreach}
                             </select>
                         </td>
                     </tr>
                     <tr class="">
                         <td>
-                            <input type="checkbox" id="chkivr_cancelado" name="chkivr_cancelado" class="chkivr"
-                        {if $dataForm.configuracionGeneral.activar_cancelado == 1}checked{/if}
-                            />
+                            <input type="checkbox" value="1" id="chkivr_cancelado" name="chkivr_cancelado"
+                                data-destino="ivrcancelado" data-labelivr="cancelado" class="chkivr"
+                                {if $dataForm.configuracionGeneral.activar_cancelado == 1}checked{/if} />
                         </td>
                         <td class="letra12">Cancelado
                         </td>
                         <td>
                             <select name="ivrcancelado" id="ivrcancelado" style="display:{if $dataForm.configuracionGeneral.activar_cancelado == 1}
-                                block,
+                                block;
                             {else}
                                none;
-                            {/if}">                            
-                           
+                            {/if}">
+
                                 <option value="">Seleccione...</option>
                                 {foreach $configListas['ivrLista'] as $ivr}
-                                    <option value="{$ivr.id}" {if $ivr.id == $dataForm.configuracionGeneral.ivr_cancelado}selected{/if}>{$ivr.name}</option>
+                                    <option value="{$ivr.id}"
+                                        {if $ivr.id == $dataForm.configuracionGeneral.ivr_cancelado}selected{/if}>
+                                        {$ivr.name}</option>
                                 {/foreach}
                             </select>
                         </td>
                     </tr>
                     <tr class="">
                         <td>
-                            <input type="checkbox" id="chkivr_programado" name="chkivr_programado" class="chkivr"
-                        {if $dataForm.configuracionGeneral.activar_programado == 1}checked{/if}
-                            />
+                            <input type="checkbox" value="1" id="chkivr_programado" name="chkivr_programado"
+                                data-destino="ivrprogramado" data-labelivr="programado" class="chkivr"
+                                {if $dataForm.configuracionGeneral.activar_programado == 1}checked{/if} />
                         </td>
                         <td class="letra12">Programado</td>
                         <td>
                             <select name="ivrprogramado" id="ivrprogramado" style="display:
                             {if $dataForm.configuracionGeneral.activar_programado == 1}
-                                block,
+                                block;
                             {else}
                                none;
-                            {/if}">                            
+                            {/if}">
                                 <option value="">Seleccione...</option>
                                 {foreach $configListas['ivrLista'] as $ivr}
-                                    <option value="{$ivr.id}"{if $ivr.id == $dataForm.configuracionGeneral.ivr_programado}selected{/if} >{$ivr.name}</option>
+                                    <option value="{$ivr.id}"
+                                        {if $ivr.id == $dataForm.configuracionGeneral.ivr_programado}selected{/if}>
+                                        {$ivr.name}</option>
                                 {/foreach}
                             </select>
                         </td>
@@ -156,11 +166,9 @@
                         <tr class="letra12">
                             <td colspan="2" align="right">
                                 <div class="radio-containerd" style="text-align:left; width:60%">
-                                    <input name="outgoingroute_{$route.id}" id="outgoingroute_{$route.id}" type="checkbox"
-                                        value="{$route.id}" 
-                                        {if $route.enable_notificacion == 1}checked{/if}
-                                        
-                                        >
+                                    <input name="outgoingroute[]" id="outgoingroute_{$route.route_id}"
+                                        class="chkrouteoutbounds" type="checkbox" value="{$route.route_id}"
+                                        {if $route.enable_notificacion == 1}checked{/if}>
                                     <label for="outgoingroute_{$route.id}">{$route.name}</label>
                                 </div>
 
@@ -176,67 +184,95 @@
             <td width="50%"></td>
             <td>
                 <table>
-                <tr class="letra12">
-                <td align="right">
-                      <b>  Hora Inicial Notif:</b>
-                </td>
-                <td>
-                    <select name="horainicialnot" id="horainicialnot">
-                    {foreach from= $configListas['optionsHours'] key=k item=v}
-                        <option value="{$k}"{if $k == $dataForm.configuracionGeneral.horainicialnot}selected{/if} >{$v}</option>
-                    {/foreach}                          
-                    </select>
-                    
-                    &nbsp;
-                    <select name="minutoinicialnot" id="minutoinicialnot">
-                    {foreach from= $configListas['optionsMins'] key=k item=v}
-                        <option value="{$k}"{if $k == $dataForm.configuracionGeneral.minutoinicialnot}selected{/if} >{$v}</option>
-                    {/foreach}                          
-                    </select>                    
-                </td>
-            </tr>
-            <tr class="letra12">
-                <td>
-                       <b> Hora Final Notif:</b>
-                </td>
-                <td>
-                <select name="horafinalnot" id="horafinalnot">
-                {foreach from= $configListas['optionsHours'] key=k item=v}
-                    <option value="{$k}"{if $k == $dataForm.configuracionGeneral.horafinalnot}selected{/if} >{$v}</option>
-                {/foreach}                          
-                </select>
-                
-                &nbsp;  
-                <select name="minutofinalnot" id="minutofinalnot">
-                {foreach from= $configListas['optionsMins'] key=k item=v}
-                    <option value="{$k}"{if $k == $dataForm.configuracionGeneral.minutofinalnot}selected{/if} >{$v}</option>
-                {/foreach}                          
-                </select>                 
-                </td>
-            </tr>   
-            
-            <tr class="letra12">
-                <td> <b>{$diainicialnot.LABEL}:</b></td>
-                <td>
-                <select name="diainicialnot" id="diainicialnot">
-                <option value="">Seleccione...</option>
-                {foreach from= $configListas['diasLista'] key=k item=v}
-                    <option value="{$k}"{if $k == $dataForm.configuracionGeneral.dia_inicial_notif}selected{/if} >{$v}</option>
-                  {/foreach}              
-                </select>
-                </td>
-            </tr>
-            <tr class="letra12">
-                <td> <b>{$diafinalnot.LABEL}:</b></td>
-                <td>
-                    <select name="diafinalnot" id="diafinalnot">
-                    <option value="">Seleccione...</option>
-                    {foreach from= $configListas['diasLista'] key=k item=v}
-                        <option value="{$k}"{if $k == $dataForm.configuracionGeneral.dia_final_notif}selected{/if} >{$v}</option>
-                      {/foreach}              
-                    </select>                    
-                </td>        
-            </tr>            
+                    <tr>
+                        <td class="letra12">
+                            <b>Fecha Busqueda</b>
+                            <br>
+                            YYYY-mm-dd H:i:s
+                        </td>
+                        <td>
+                            <input class="calendar-configgeneral" type="text" id="fecha_busqueda" name="fecha_busqueda"
+                                value="{$dataForm.configuracionGeneral.fecha_busqueda}" readonly>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="letra12">
+                            <b>Timeout</b>
+                        </td>
+                        <td>
+                            <input type="number" id="timeout" name="timeout"
+                                value="{$dataForm.configuracionGeneral.timeout}">
+                        </td>
+                    </tr>
+                    <tr class="letra12">
+                        <td align="right">
+                            <b> Hora Inicial Notif:</b>
+                        </td>
+                        <td>
+                            <select name="horainicialnot" id="horainicialnot">
+                                {foreach from= $configListas['optionsHours'] key=k item=v}
+                                    <option value="{$k}"
+                                        {if $k == $dataForm.configuracionGeneral.horainicialnot}selected{/if}>{$v}</option>
+                                {/foreach}
+                            </select>
+
+                            &nbsp;
+                            <select name="minutoinicialnot" id="minutoinicialnot">
+                                {foreach from= $configListas['optionsMins'] key=k item=v}
+                                    <option value="{$k}"
+                                        {if $k == $dataForm.configuracionGeneral.minutoinicialnot}selected{/if}>{$v}
+                                    </option>
+                                {/foreach}
+                            </select>
+                        </td>
+                    </tr>
+                    <tr class="letra12">
+                        <td>
+                            <b> Hora Final Notif:</b>
+                        </td>
+                        <td>
+                            <select name="horafinalnot" id="horafinalnot">
+                                {foreach from= $configListas['optionsHours'] key=k item=v}
+                                    <option value="{$k}"
+                                        {if $k == $dataForm.configuracionGeneral.horafinalnot}selected{/if}>{$v}</option>
+                                {/foreach}
+                            </select>
+
+                            &nbsp;
+                            <select name="minutofinalnot" id="minutofinalnot">
+                                {foreach from= $configListas['optionsMins'] key=k item=v}
+                                    <option value="{$k}"
+                                        {if $k == $dataForm.configuracionGeneral.minutofinalnot}selected{/if}>{$v}</option>
+                                {/foreach}
+                            </select>
+                        </td>
+                    </tr>
+
+                    <tr class="letra12">
+                        <td> <b>{$diainicialnot.LABEL}:</b></td>
+                        <td>
+                            <select name="diainicialnot" id="diainicialnot">
+                                <option value="">Seleccione...</option>
+                                {foreach from= $configListas['diasLista'] key=k item=v}
+                                    <option value="{$k}"
+                                        {if $k == $dataForm.configuracionGeneral.dia_inicial_notif}selected{/if}>{$v}
+                                    </option>
+                                {/foreach}
+                            </select>
+                        </td>
+                    </tr>
+                    <tr class="letra12">
+                        <td> <b>{$diafinalnot.LABEL}:</b></td>
+                        <td>
+                            <select name="diafinalnot" id="diafinalnot">
+                                <option value="">Seleccione...</option>
+                                {foreach from= $configListas['diasLista'] key=k item=v}
+                                    <option value="{$k}"
+                                        {if $k == $dataForm.configuracionGeneral.dia_final_notif}selected{/if}>{$v}</option>
+                                {/foreach}
+                            </select>
+                        </td>
+                    </tr>
                 </table>
             </td>
         </tr>
@@ -256,4 +292,4 @@
 
 
 
-<input class="button" type="hidden" name="id" value="{$ID}" />
+<input class="button" type="hidden" name="id" value="1" />
