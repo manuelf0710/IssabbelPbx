@@ -25,6 +25,7 @@ class paloSantoconfiguracionGeneral
 {
     public $_DB;
     public $errMsg;
+    public $stateJob;
 
     public function paloSantoconfiguracionGeneral(&$pDB)
     {
@@ -47,10 +48,133 @@ class paloSantoconfiguracionGeneral
 
     /*HERE YOUR FUNCTIONS*/
 
+    public function unique_multidim_array($array, $key) {
+        $temp_array = array();
+        $i = 0;
+        $key_array = array();
+            $response_array = array();
+    
+        foreach($array as $val) {
+            if (!in_array($val[$key], $key_array)) {
+                $key_array[$i] = $val[$key];
+                $temp_array[$i] = $val;
+            }
+            $i++;
+        }
+        $i= 0;
+        foreach ($temp_array as $cat) {
+            $response_array[$i] = $cat;
+            $i++;
+        }
+    
+        return $response_array;
+    }   
+    
+    public function getTrunks(){
+        $query = 'select a2.* from (
+                                    SELECT s.route_id, 
+                                        s.name,
+                                        s.password,
+                                        t.enable_notificacion,
+                                        t.trunkid troncal_id,
+                                        t.name troncal, 
+                                        t.tech,
+                                        rp.match_pattern_prefix,
+                                        rp.match_pattern_pass,
+                                        rp.match_cid,
+                                        rp.prepend_digits,
+                                        "outbound_route" clase,
+                                        "" patterns
+                                    FROM outbound_routes s,trunks t, outbound_route_trunks rt,  outbound_route_patterns rp
+                                    where rt.route_id = s.route_id 
+                                    and   rt.trunk_id  = t.trunkid
+                                    and s.route_id =  rp.route_id
+                                    and t.name != ""
+                                    union 
+                                    SELECT "" routeid, 
+                                        "" name,
+                                        "" password,
+                                        t.enable_notificacion,  
+                                        t.trunkid troncal_id, 
+                                        t.name troncal, 
+                                        t.tech,
+                                        rp.match_pattern_prefix,
+                                        rp.match_pattern_pass,
+                                        "" match_cid,
+                                        rp.prepend_digits,
+                                        "trunk" clase,
+                                        "" patterns
+                                    FROM trunks t,  trunk_dialpatterns rp
+                                    where   t.trunkid  = rp.trunkid
+                                    and t.name != ""
+                                    ) a2 
+                        group by troncal_id, match_pattern_pass';
+
+        $result = $this->_DB->fetchTable($query, true);
+
+        if ($result == false) {
+            $this->errMsg = $this->_DB->errMsg;
+            return null;
+        }
+
+        $result2 = $this->unique_multidim_array($result, "troncal_id");
+        //echo json_encode($result);
+        //$addPatternsTrunk = $this->addPattersTrunk($result, $result2);
+        return $result2;
+
+    }
+
+    public function addPattersTrunk($completeArray, $uniqueArray){
+        $index = 0;
+        foreach($uniqueArray as $unique){
+            $uniqueArray[0]['patterns'] = array();
+            foreach($completeArray as $completeArray){
+                array_push($uniqueArray[0]['patterns'], array("match_pattern_prefix"=>$completeArray['match_pattern_prefix']));
+            }
+            $index++;
+        }
+    }
+
+    public function handleJob($url, $param){
+        $url ="http://localhost:3000/".$url;
+        session_write_close();
+        $payload = array("start" => $param);
+            
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_URL, $url);
+        curl_setopt($ch, CURLOPT_POST, 1);
+        //curl_setopt($ch, CURLOPT_HEADER, true);
+        curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type:application/json'));
+        //curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($dataConn));
+        curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($payload));
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        $response    = curl_exec($ch);
+        $header_size = curl_getinfo($ch, CURLINFO_HEADER_SIZE);
+        $httpcode    = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+        //$header      = substr($response, 0, $header_size);
+        $body        = substr($response, $header_size);
+        curl_close($ch);
+        session_start();
+
+        $dataa = json_decode($response, true);
+        return $dataa;
+
+           
+    }
+
+
     public function getNotificacionesConfiguracion()
     {
+         $this->stateJob = '0';
+        $estadoJob = $this->handleJob('cronstatus', 'check');
+        if($estadoJob != ""){
+            $this->stateJob = $estadoJob["message"] == "Activo" ? '1' : '0';     /* 1 activo 0 inactivo */            
+        }
+        
+        
+
         $query = 'SELECT id, 
-                    activo, 
+                    '.$this->stateJob.' activo, 
                     cant_lineas, 
                     barridos, 
                     fecha_busqueda,
@@ -104,11 +228,16 @@ public function updateNotificacionesConfiguracion($data)
 
     $outgoingroute = "'" . implode("','", $data["outgoingroute"]) . "'";
 
-    $sql = "UPDATE outbound_routes SET enable_notificacion = NULL WHERE route_id NOT IN ($outgoingroute)";
+    $sql = "UPDATE trunks SET enable_notificacion = NULL WHERE trunkid NOT IN ($outgoingroute)";
     $resultado = $this->_DB->genQuery($sql);
 
-    $sql2 = "UPDATE outbound_routes SET enable_notificacion = 1 WHERE route_id IN ($outgoingroute)";
-    $resultado2 = $this->_DB->genQuery($sql2);     
+    $sql2 = "UPDATE trunks SET enable_notificacion = 1 WHERE trunkid IN ($outgoingroute)";
+    $resultado2 = $this->_DB->genQuery($sql2);   
+    
+    $actionJob = $data['activar_desactivar'] == '1' ? true : false;
+    $estadoJob = $this->handleJob('cronstatus', $actionJob);
+    
+    
       
 
     $sPeticionSQL = $this->_DB->construirUpdate(

@@ -63,14 +63,16 @@ function _moduleContent(&$smarty, $module_name)
     //conexion resource
     $dsnAsterisk = generarDSNSistema('asteriskuser', 'asterisk');
     $pDB = new paloDB($dsnAsterisk);
+    $configuracionNotificaciones = new paloSantoconfiguraciongeneral($pDB);
     //$pDB = "";
     //$dsn = generarDSNSistema('root', '');
     $modelIvr = new IvrModel(new \paloDB($dsnAsterisk));
-    $modelOutgoingRoutes = new RutaSalienteModel(new \paloDB($dsnAsterisk));
+    //$modelOutgoingRoutes = new RutaSalienteModel(new \paloDB($dsnAsterisk));
     $modelConexionesBD = new ConexionesModel(new \paloDB($dsnAsterisk));
     $IvrList = $modelIvr->index();
     $conexionesLista = $modelConexionesBD->lista();
-    $outgoingRouteList = $modelOutgoingRoutes->index();
+    //$outgoingRouteList = $modelOutgoingRoutes->index();
+    $outgoingRouteList = $configuracionNotificaciones->getTrunks();
 
     $arrOptionsDias = array(
         "" => "...",

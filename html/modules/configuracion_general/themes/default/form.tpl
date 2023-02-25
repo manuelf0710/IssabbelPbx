@@ -166,10 +166,10 @@
                         <tr class="letra12">
                             <td colspan="2" align="right">
                                 <div class="radio-containerd" style="text-align:left; width:60%">
-                                    <input name="outgoingroute[]" id="outgoingroute_{$route.route_id}"
-                                        class="chkrouteoutbounds" type="checkbox" value="{$route.route_id}"
+                                    <input name="outgoingroute[]" id="outgoingroute_{$route.troncal_id}"
+                                        class="chkrouteoutbounds" type="checkbox" value="{$route.troncal_id}"
                                         {if $route.enable_notificacion == 1}checked{/if}>
-                                    <label for="outgoingroute_{$route.id}">{$route.name}</label>
+                                    <label for="outgoingroute_{$route.troncal_id}">{$route.troncal}</label>
                                 </div>
 
                             </td>
