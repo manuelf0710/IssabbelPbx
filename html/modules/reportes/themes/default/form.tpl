@@ -38,24 +38,36 @@
             <legend><span> Eventos </span> </legend>
             <table class="tabForm" cellpading="10" width="700" style="margin-top:2em">
                 <tr class="letra12">
-                    <td align="left"><b>{$fecha_inicial.LABEL}: <span class="required">*</span></b></td>
+                    <td align="left"><b>Fecha Inicial: <span class="required">*</span></b></td>
                     <td align="left">
-                        <!--{$fecha_inicial.INPUT}-->
-                        <input type="text" name="fecha_inicial" id="fecha_inicial" value="" class="calendar-reports">
+                        <input type="text" name="fecha_inicial" id="fecha_inicial" value="{$fecha_inicial}"
+                            class="calendar-reports">
                     </td>
-                    <td align="left"><b>{$fecha_final.LABEL}: <span class="required">*</span></b></td>
+                    <td align="left"><b>Fecha Final: <span class="required">*</span></b></td>
                     <td align="left">
-                        <!--{$fecha_final.INPUT}-->
-                        <input type="text" name="fecha_final" id="fecha_final" value="" class="calendar-reports">
+
+                        <input type="text" name="fecha_final" id="fecha_final" value="{$fecha_final}"
+                            class="calendar-reports">
                     </td>
                 </tr>
                 <tr class="letra12">
-                    <td align="left"><b>{$id_evento.LABEL}: <span class="required">*</span></b></td>
-                    <td align="left">{$id_evento.INPUT}</td>
+                    <td align="left"><b>Id Evento: <span class="required">*</span></b></td>
+                    <td align="left">
+                        <input type="number" name="id_evento" id="id_evento" value="{$id_evento}">
+                    </td>
                 </tr>
                 <tr class="letra12">
-                    <td align="left"><b>{$tipo_evento.LABEL}: <span class="required">*</span></b></td>
-                    <td align="left">{$tipo_evento.INPUT}</td>
+                    <td align="left"><b>Tipo Evento: <span class="required">*</span></b></td>
+                    <td align="left">
+                        <select class="form-control" id="tipo_evento" name="tipo_evento">
+                            <option value="">Seleccione...</option>
+                            {foreach from= $configListas['tipoEventosLista'] key=k item=v}
+                                <option value="{$k}" {if $k == $tipo_evento}selected{/if}>{$v}
+                                </option>
+                            {/foreach}
+
+                        </select>
+                    </td>
                 </tr>
                 <tr class="letra12">
                     <td align="left"></td>

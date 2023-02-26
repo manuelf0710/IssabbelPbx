@@ -55,7 +55,7 @@ class paloSantoReporte_Notificacion_Eventos{
             $arrParam = array("$filter_value%");
         }
 
-        $query   = "SELECT COUNT(*) FROM table $where";
+        $query   = "SELECT COUNT(*) FROM notificaciones_llamadas $where";
 
         $result=$this->_DB->getFirstRowQuery($query, false, $arrParam);
 
@@ -75,7 +75,15 @@ class paloSantoReporte_Notificacion_Eventos{
             $arrParam = array("$filter_value%");
         }
 
-        $query   = "SELECT * FROM table $where LIMIT $limit OFFSET $offset";
+        $query   = "SELECT eve_id,
+                           tipo_evento tipo,
+                           fecha_llamada,
+                           barridos,
+                           '0' cant_usuario,
+                           '0' informados,
+                           '0' fallidos,
+                           '0' destino
+                         FROM notificaciones_llamadas $where LIMIT $limit OFFSET $offset";
 
         $result=$this->_DB->fetchTable($query, true, $arrParam);
 
@@ -88,7 +96,7 @@ class paloSantoReporte_Notificacion_Eventos{
 
     function getReporte_Notificacion_EventosById($id)
     {
-        $query = "SELECT * FROM table WHERE id=?";
+        $query = "SELECT * FROM notificaciones_llamadas WHERE id=?";
 
         $result=$this->_DB->getFirstRowQuery($query, true, array("$id"));
 

@@ -57,6 +57,8 @@ function _moduleContent(&$smarty, $module_name)
     //conexion resource
     //$pDB = new paloDB($arrConf['dsn_conn_database']);
     $pDB = "";
+    $dsnAsterisk = generarDSNSistema('asteriskuser', 'asterisk');
+    $pDB = new paloDB($dsnAsterisk); 
 
 
     //actions
@@ -76,30 +78,51 @@ function _moduleContent(&$smarty, $module_name)
     */
     $smarty->assign("criterioActive", $criterioActive);
 
+    $arrOptionsTipoEvento = array(
+    'Confirmado' => 'Confirmado', 
+    'Restaurado' => 'Restaurado', 
+    'Cancelado' => 'Cancelado', 
+    'Reprogramado' => 'Reprogramado');   
+    
+    $infoToView = array("tipoEventosLista"=> $arrOptionsTipoEvento);
+
+    if(getParameter("exportcsv") == "yes" || getParameter("exportpdf") == "yes" || getParameter("exportspreadsheet") == "yes"){
+        $action = "isReport";
+    }    
+
     switch($action){
         case "save_new":
-            $content = saveNewReporte_Notificacion_Eventos($smarty, $module_name, $local_templates_dir, $pDB, $arrConf);
+            $content = saveNewReporte_Notificacion_Eventos($smarty, $module_name, $local_templates_dir, $pDB, $arrConf, $infoToView);
             if($criterioActive == 'eventos'){
-                $content .= eventosTabla($smarty, $module_name, $local_templates_dir, $pDB, $arrConf);
+                $content .= eventosTabla($smarty, $module_name, $local_templates_dir, $pDB, $arrConf, $infoToView);
             }
             if($criterioActive == 'otros'){
-                $content .= otrosTabla($smarty, $module_name, $local_templates_dir, $pDB, $arrConf);
+                $content .= otrosTabla($smarty, $module_name, $local_templates_dir, $pDB, $arrConf, $infoToView);
             }			
-            echo("in save new case".$criterioActive);
             break;
+        case "isReport":
+            if($criterioActive == 'eventos'){
+                $content .= eventosTabla($smarty, $module_name, $local_templates_dir, $pDB, $arrConf, $infoToView);
+            }
+            if($criterioActive == 'otros'){
+                $content .= otrosTabla($smarty, $module_name, $local_templates_dir, $pDB, $arrConf, $infoToView);
+            }            
+            
+            break;
+
         default: // view_form
-            $content = viewFormReporte_Notificacion_Eventos($smarty, $module_name, $local_templates_dir, $pDB, $arrConf);
+            $content = viewFormReporte_Notificacion_Eventos($smarty, $module_name, $local_templates_dir, $pDB, $arrConf, $infoToView);
             break;
     }
     return $content;
 }
 
-function viewFormReporte_Notificacion_Eventos($smarty, $module_name, $local_templates_dir, &$pDB, $arrConf)
+function viewFormReporte_Notificacion_Eventos($smarty, $module_name, $local_templates_dir, &$pDB, $arrConf, $infoToView)
 {
     $pReporte_Notificacion_Eventos = new paloSantoReporte_Notificacion_Eventos($pDB);
     $criterioActive = getParameter("criterio");
     
-    echo("criterioActive == (".$criterioActive.")");
+    //echo("criterioActive == (".$criterioActive.")");
 
         if($criterioActive == 'eventos'){
         $arrFormReporte_Notificacion_Eventos = createFieldFormEventos();
@@ -137,12 +160,25 @@ function viewFormReporte_Notificacion_Eventos($smarty, $module_name, $local_temp
     $smarty->assign("REQUIRED_FIELD", _tr("Required field"));
     $smarty->assign("icon", "images/list.png");
 
+    $fecha_inicial = getParameter("fecha_inicial");
+    $fecha_final = getParameter("fecha_final");
+    $id_evento = getParameter("id_evento");
+    $tipo_evento = getParameter("tipo_evento");  
+    $criterio = getParameter("criterio");  
+    $smarty->assign("configListas", $infoToView);  
+
+    $smarty->assign("fecha_inicial", $fecha_inicial);  
+    $smarty->assign("fecha_final", $fecha_final);  
+    $smarty->assign("id_evento", $id_evento);  
+    $smarty->assign("tipo_evento", $tipo_evento);  
+    $smarty->assign("criterioActive", $criterio);  
+
     $htmlForm = $oForm->fetchForm("$local_templates_dir/form.tpl",_tr("Reporte Notificacion Eventos"), $_DATA);
     $content = "<form  method='POST' style='margin-bottom:0;' action='?menu=$module_name' name='form_reporte' id='form_reporte'>".$htmlForm."</form>";
     return $content;
 }
 
-function saveNewReporte_Notificacion_Eventos($smarty, $module_name, $local_templates_dir, &$pDB, $arrConf)
+function saveNewReporte_Notificacion_Eventos($smarty, $module_name, $local_templates_dir, &$pDB, $arrConf, $infoToView)
 {
     $pReporte_Notificacion_Eventos = new paloSantoReporte_Notificacion_Eventos($pDB);
     
@@ -165,13 +201,13 @@ function saveNewReporte_Notificacion_Eventos($smarty, $module_name, $local_templ
                 $strErrorMsg .= "$k, ";
         }
         $smarty->assign("mb_message", $strErrorMsg);
-        $content = viewFormReporte_Notificacion_Eventos($smarty, $module_name, $local_templates_dir, $pDB, $arrConf);
+        $content = viewFormReporte_Notificacion_Eventos($smarty, $module_name, $local_templates_dir, $pDB, $arrConf, $infoToView);
     }
     else{
         //NO ERROR, HERE IMPLEMENTATION OF SAVE
         //$content = "Code to save yet undefined.";
-        $content = viewFormReporte_Notificacion_Eventos($smarty, $module_name, $local_templates_dir, $pDB, $arrConf);        
-        echo json_encode($_POST);
+        $content = viewFormReporte_Notificacion_Eventos($smarty, $module_name, $local_templates_dir, $pDB, $arrConf, $infoToView);        
+        //echo json_encode($_POST);
     }
     return $content;
 }
@@ -188,39 +224,7 @@ function createFieldFormEventos(){
                                             "VALIDATION_TYPE"        => "text",
                                             "VALIDATION_EXTRA_PARAM" => "",
                                             "EDITABLE"               => "si",
-                                            ),
-            "fecha_inicial"   => array(      "LABEL"                  => _tr("fecha_inicial"),
-                                            "REQUIRED"               => "no",
-                                            "INPUT_TYPE"             => "DATE",
-                                            "INPUT_EXTRA_PARAM"      => array("TIME" => true, "FORMAT" => "%d %b %Y %H:%M","TIMEFORMAT" => "12"),
-                                            "VALIDATION_TYPE"        => "",
-                                            "EDITABLE"               => "si",
-                                            "VALIDATION_EXTRA_PARAM" => ""
-                                            ),
-            "fecha_final"   => array(      "LABEL"                  => _tr("Fecha Final"),
-                                            "REQUIRED"               => "no",
-                                            "INPUT_TYPE"             => "DATE",
-                                            "INPUT_EXTRA_PARAM"      => array("TIME" => true, "FORMAT" => "%d %b %Y %H:%M","TIMEFORMAT" => "12"),
-                                            "VALIDATION_TYPE"        => "",
-                                            "EDITABLE"               => "si",
-                                            "VALIDATION_EXTRA_PARAM" => ""
-                                            ),
-            "id_evento"   => array(      "LABEL"                  => _tr("Id Evento"),
-                                            "REQUIRED"               => "no",
-                                            "INPUT_TYPE"             => "TEXT",
-                                            "INPUT_EXTRA_PARAM"      => "",
-                                            "VALIDATION_TYPE"        => "text",
-                                            "VALIDATION_EXTRA_PARAM" => ""
-                                            ),
-            "tipo_evento"   => array(      "LABEL"                  => _tr("Tipo Evento"),
-                                            "REQUIRED"               => "no",
-                                            "INPUT_TYPE"             => "SELECT",
-                                            "INPUT_EXTRA_PARAM"      => $arrOptionsTipoEvento,
-                                            "VALIDATION_TYPE"        => "text",
-                                            "VALIDATION_EXTRA_PARAM" => "",
-                                            "EDITABLE"               => "si",
-                                            ),                                            
-
+                                            )
 
             );
     return $arrFields;
@@ -321,11 +325,16 @@ function getAction()
 /*
 * funciones para crear la tabla de eventos
  */
-function eventosTabla($smarty, $module_name, $local_templates_dir, &$pDB, $arrConf)
+function eventosTabla($smarty, $module_name, $local_templates_dir, &$pDB, $arrConf, $infoToView)
 {
     $pevento_tabla = new paloSantoevento_tabla($pDB);
     $filter_field = getParameter("filter_field");
     $filter_value = getParameter("filter_value");
+    $fecha_inicial = getParameter("fecha_inicial");
+    $fecha_final = getParameter("fecha_final");
+    $id_evento = getParameter("id_evento");
+    $tipo_evento = getParameter("tipo_evento");
+    $criterio = getParameter("criterio");
 
     //begin grid parameters
     $oGrid  = new paloSantoGrid($smarty);
@@ -334,17 +343,34 @@ function eventosTabla($smarty, $module_name, $local_templates_dir, &$pDB, $arrCo
 
     $oGrid->enableExport();   // enable export.
     $oGrid->setNameFile_Export(_tr("eventoTabla"));
+    $oGrid->setTplFile('themes/customTheme/_custom_list.tpl');
+
+    $postFilter =array(
+        "fecha_inicial" => $fecha_inicial,
+        "fecha_final" => $fecha_final,
+        "id_evento" => $id_evento,
+        "tipo_evento" => $tipo_evento
+    );    
 
     $url = array(
         "menu"         =>  $module_name,
         "filter_field" =>  $filter_field,
-        "filter_value" =>  $filter_value);
+        "filter_value" =>  $filter_value,
+        "fecha_inicial" => $fecha_inicial,
+        "fecha_final" => $fecha_final,
+        "id_evento" => $id_evento,
+        "tipo_evento" => $tipo_evento,
+        "criterio" => $criterio
+
+    
+    );
     $oGrid->setURL($url);
 
     $arrColumns = array(_tr("ID Evento"),_tr("Tipo"),_tr("Fecha llamada"),_tr("Barridos"),_tr("Cant Usuario"),_tr("Informados"),_tr("Fallidos"),_tr("Destino"),);
     $oGrid->setColumns($arrColumns);
 
-    $total   = $pevento_tabla->getNumevento_tabla($filter_field, $filter_value);
+    $total   = $pevento_tabla->getNumevento_tabla($filter_field, $filter_value, $postFilter);
+
     $arrData = null;
     if($oGrid->isExportAction()){
         $limit  = $total; // max number of rows.
@@ -357,11 +383,11 @@ function eventosTabla($smarty, $module_name, $local_templates_dir, &$pDB, $arrCo
         $offset = $oGrid->calculateOffset();
     }
 
-    $arrResult =$pevento_tabla->getevento_tabla($limit, $offset, $filter_field, $filter_value);
+    $arrResult =$pevento_tabla->getevento_tabla($limit, $offset, $filter_field, $filter_value, $postFilter);
 
     if(is_array($arrResult) && $total>0){
         foreach($arrResult as $key => $value){ 
-	    $arrTmp[0] = $value['id_evento'];
+	    $arrTmp[0] = $value['eve_id'];
 	    $arrTmp[1] = $value['tipo'];
 	    $arrTmp[2] = $value['fecha_llamada'];
 	    $arrTmp[3] = $value['barridos'];
@@ -380,7 +406,7 @@ function eventosTabla($smarty, $module_name, $local_templates_dir, &$pDB, $arrCo
     $htmlFilter  = $oFilterForm->fetchForm("$local_templates_dir/filter.tpl","",$_POST);
     //end section filter
 
-    $oGrid->showFilter(trim($htmlFilter));
+    //$oGrid->showFilter(trim($htmlFilter));
     $content = $oGrid->fetchGrid();
     //end grid parameters
 
@@ -424,7 +450,7 @@ function createFieldFilterEvento(){
 /*
 * funciones para crear la tabla de otros
  */
-function otrosTabla($smarty, $module_name, $local_templates_dir, &$pDB, $arrConf)
+function otrosTabla($smarty, $module_name, $local_templates_dir, &$pDB, $arrConf, $infoToView)
 {
     $potros_tabla = new paloSantootros_tabla($pDB);
     $filter_field = getParameter("filter_field");
@@ -437,6 +463,7 @@ function otrosTabla($smarty, $module_name, $local_templates_dir, &$pDB, $arrConf
 
     $oGrid->enableExport();   // enable export.
     $oGrid->setNameFile_Export(_tr("OtrosTabla"));
+    $oGrid->setTplFile('themes/customTheme/_custom_list.tpl');
 
     $url = array(
         "menu"         =>  $module_name,

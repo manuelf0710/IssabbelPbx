@@ -46,16 +46,46 @@ class paloSantoevento_tabla{
 
     /*HERE YOUR FUNCTIONS*/
 
-    function getNumevento_tabla($filter_field, $filter_value)
+
+    function convertirToMysqlFormat($fecha){
+        $getDateAndTime = explode(" ",$fecha);
+        $dateFecha = explode("/",$getDateAndTime[0]);
+        $timeFecha = $getDateAndTime[1];
+        $newFecha = array_reverse($dateFecha);
+        $newFecha = join("-",$newFecha);
+        return $newFecha.' '.$timeFecha;
+
+    }    
+
+    function getNumevento_tabla($filter_field, $filter_value, $postFilter)
     {
         $where    = "";
         $arrParam = null;
-        if(isset($filter_field) & $filter_field !=""){
+        /*if(isset($filter_field) & $filter_field !=""){
             $where    = "where $filter_field like ?";
             $arrParam = array("$filter_value%");
-        }
+        } */
+        if(!empty($postFilter)){
 
-        $query   = "SELECT COUNT(*) FROM table $where";
+            if($postFilter['fecha_inicial']!= ''){
+                $fechaInicial = $this->convertirToMysqlFormat($postFilter['fecha_inicial']);
+                $where .= " and fecha_llamada >= str_to_date('".$fechaInicial."', '%Y-%m-%d %H:%i')";
+            }
+            if($postFilter['fecha_final']!= ''){
+                $fechaFinal = $this->convertirToMysqlFormat($postFilter['fecha_final']);
+                $where .= " and fecha_llamada <=  str_to_date('".$fechaFinal."', '%Y-%m-%d %H:%i')";
+            } 
+            if($postFilter['id_evento']!= ''){
+                $where .= " and eve_id =  '".$postFilter['id_evento']."'";
+            }  
+            
+            if($postFilter['tipo_evento']!= ''){
+                $where .= " and tipo_evento =  '".$postFilter['tipo_evento']."'";
+            }             
+            
+        }        
+
+        $query   = "SELECT COUNT(*) FROM  notificaciones_llamadas where 1 $where";
 
         $result=$this->_DB->getFirstRowQuery($query, false, $arrParam);
 
@@ -66,17 +96,45 @@ class paloSantoevento_tabla{
         return $result[0];
     }
 
-    function getevento_tabla($limit, $offset, $filter_field, $filter_value)
+    function getevento_tabla($limit, $offset, $filter_field, $filter_value, $postFilter)
     {
         $where    = "";
         $arrParam = null;
-        if(isset($filter_field) & $filter_field !=""){
+        /*if(isset($filter_field) & $filter_field !=""){
             $where    = "where $filter_field like ?";
             $arrParam = array("$filter_value%");
-        }
+        } */
 
-        $query   = "SELECT * FROM table $where LIMIT $limit OFFSET $offset";
+        if(!empty($postFilter)){
 
+            if($postFilter['fecha_inicial']!= ''){
+                $fechaInicial = $this->convertirToMysqlFormat($postFilter['fecha_inicial']);
+                $where .= " and fecha_llamada >= str_to_date('".$fechaInicial."', '%Y-%m-%d %H:%i')";
+            }
+            if($postFilter['fecha_final']!= ''){
+                $fechaFinal = $this->convertirToMysqlFormat($postFilter['fecha_final']);
+                $where .= " and fecha_llamada <=  str_to_date('".$fechaFinal."', '%Y-%m-%d %H:%i')";
+            } 
+            if($postFilter['id_evento']!= ''){
+                $where .= " and eve_id =  '".$postFilter['id_evento']."'";
+            }  
+            
+            if($postFilter['tipo_evento']!= ''){
+                $where .= " and tipo_evento =  '".$postFilter['tipo_evento']."'";
+            }             
+            
+        }  
+
+
+        $query   = "SELECT eve_id,
+                           tipo_evento tipo,
+                           if(fecha_llamada = '0000-00-00 00:00:00', '', fecha_llamada) fecha_llamada,
+                           barridos,
+                           '0' cant_usuario,
+                           '0' informados,
+                           '0' fallidos,
+                           '0' destino
+         FROM notificaciones_llamadas where 1 $where LIMIT $limit OFFSET $offset";
         $result=$this->_DB->fetchTable($query, true, $arrParam);
 
         if($result==FALSE){
@@ -88,7 +146,15 @@ class paloSantoevento_tabla{
 
     function getevento_tablaById($id)
     {
-        $query = "SELECT * FROM table WHERE id=?";
+        $query = "SELECT eve_id,
+                        tipo_evento tipo,
+                        fecha_llamada,
+                        barridos,
+                        '0' cant_usuario,
+                        '0' informados,
+                        '0' fallidos,
+                        '0' destino
+         FROM notificaciones_llamadas WHERE id=?";
 
         $result=$this->_DB->getFirstRowQuery($query, true, array("$id"));
 
