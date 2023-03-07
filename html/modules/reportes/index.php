@@ -111,7 +111,14 @@ function _moduleContent(&$smarty, $module_name)
             break;
 
         default: // view_form
+        echo("<br> ingreso por el default");
             $content = viewFormReporte_Notificacion_Eventos($smarty, $module_name, $local_templates_dir, $pDB, $arrConf, $infoToView);
+            if($criterioActive == 'eventos'){
+                $content .= eventosTabla($smarty, $module_name, $local_templates_dir, $pDB, $arrConf, $infoToView);
+            }
+            if($criterioActive == 'otros'){
+                $content .= otrosTabla($smarty, $module_name, $local_templates_dir, $pDB, $arrConf, $infoToView);
+            }               
             break;
     }
     return $content;
@@ -162,16 +169,35 @@ function viewFormReporte_Notificacion_Eventos($smarty, $module_name, $local_temp
 
     $fecha_inicial = getParameter("fecha_inicial");
     $fecha_final = getParameter("fecha_final");
-    $id_evento = getParameter("id_evento");
+    $id_evento = getParameter("id_eventootros");
     $tipo_evento = getParameter("tipo_evento");  
     $criterio = getParameter("criterio");  
+
+    /*add campos form filter otros */
+    $nus = getParameter("nus");  
+    $telefono = getParameter("telefono");  
+    $fecha_llamada = getParameter("fecha_llamada");  
+    $id_eventootros = getParameter("id_eventootros"); 
+
+
+    
     $smarty->assign("configListas", $infoToView);  
 
+
+
+
     $smarty->assign("fecha_inicial", $fecha_inicial);  
-    $smarty->assign("fecha_final", $fecha_final);  
-    $smarty->assign("id_evento", $id_evento);  
+    $smarty->assign("fecha_final", $fecha_final);    
     $smarty->assign("tipo_evento", $tipo_evento);  
-    $smarty->assign("criterioActive", $criterio);  
+    $smarty->assign("criterioActive", $criterio); 
+
+    $smarty->assign("nus", $nus);
+    $smarty->assign("telefono", $telefono);
+    $smarty->assign("fecha_llamada", $fecha_llamada);
+    $smarty->assign("id_eventootros", $id_eventootros);
+
+
+    
 
     $htmlForm = $oForm->fetchForm("$local_templates_dir/form.tpl",_tr("Reporte Notificacion Eventos"), $_DATA);
     $content = "<form  method='POST' style='margin-bottom:0;' action='?menu=$module_name' name='form_reporte' id='form_reporte'>".$htmlForm."</form>";
@@ -242,40 +268,7 @@ function createFieldFormOtros(){
                                             "VALIDATION_TYPE"        => "text",
                                             "VALIDATION_EXTRA_PARAM" => "",
                                             "EDITABLE"               => "si",
-                                            ),
-
-            "nus"   => array(      "LABEL"                  => _tr("Nus"),
-                                            "REQUIRED"               => "no",
-                                            "INPUT_TYPE"             => "TEXT",
-                                            "INPUT_EXTRA_PARAM"      => "",
-                                            "VALIDATION_TYPE"        => "text",
-                                            "VALIDATION_EXTRA_PARAM" => ""
-                                            ),
-            "telefono"   => array(      "LABEL"                  => _tr("Teléfono"),
-                                            "REQUIRED"               => "no",
-                                            "INPUT_TYPE"             => "TEXT",
-                                            "INPUT_EXTRA_PARAM"      => "",
-                                            "VALIDATION_TYPE"        => "text",
-                                            "VALIDATION_EXTRA_PARAM" => "",
-                                            "EDITABLE"               => "si",
-                                            ),
-            "fecha_llamada"   => array(      "LABEL"                  => _tr("Fecha llamada"),
-                                            "REQUIRED"               => "no",
-                                            "INPUT_TYPE"             => "DATE",
-                                            "INPUT_EXTRA_PARAM"      => array("TIME" => true, "FORMAT" => "%d %b %Y %H:%M","TIMEFORMAT" => "12"),
-                                            "VALIDATION_TYPE"        => "",
-                                            "EDITABLE"               => "si",
-                                            "VALIDATION_EXTRA_PARAM" => ""
-                                            ),
-
-            "id_evento"   => array(      "LABEL"                  => _tr("ID del evento"),
-                                        "REQUIRED"               => "no",
-                                        "INPUT_TYPE"             => "TEXT",
-                                        "INPUT_EXTRA_PARAM"      => "",
-                                        "VALIDATION_TYPE"        => "text",
-                                        "VALIDATION_EXTRA_PARAM" => "",
-                                        "EDITABLE"               => "si",
-                                        ),                                                                                        
+                                            )                                                                                    
 
 
             );
@@ -383,6 +376,14 @@ function eventosTabla($smarty, $module_name, $local_templates_dir, &$pDB, $arrCo
         $offset = $oGrid->calculateOffset();
     }
 
+    $first_record = $offset + 1;
+    $last_record = $offset + $limit;
+    if($last_record > $total) {
+        $last_record = $total;
+        }
+
+
+
     $arrResult =$pevento_tabla->getevento_tabla($limit, $offset, $filter_field, $filter_value, $postFilter);
 
     if(is_array($arrResult) && $total>0){
@@ -407,6 +408,8 @@ function eventosTabla($smarty, $module_name, $local_templates_dir, &$pDB, $arrCo
     //end section filter
 
     //$oGrid->showFilter(trim($htmlFilter));
+    
+    //$content = "<div style='margin-top:10px;'>mostrando $first_record a $last_record de $total registros</div>";
     $content = $oGrid->fetchGrid();
     //end grid parameters
 
@@ -455,6 +458,11 @@ function otrosTabla($smarty, $module_name, $local_templates_dir, &$pDB, $arrConf
     $potros_tabla = new paloSantootros_tabla($pDB);
     $filter_field = getParameter("filter_field");
     $filter_value = getParameter("filter_value");
+    $nus = getParameter("nus");  
+    $telefono = getParameter("telefono");  
+    $fecha_llamada = getParameter("fecha_llamada");  
+    $id_evento = getParameter("id_evento"); 
+    $criterio = getParameter("criterio");    
 
     //begin grid parameters
     $oGrid  = new paloSantoGrid($smarty);
@@ -465,16 +473,35 @@ function otrosTabla($smarty, $module_name, $local_templates_dir, &$pDB, $arrConf
     $oGrid->setNameFile_Export(_tr("OtrosTabla"));
     $oGrid->setTplFile('themes/customTheme/_custom_list.tpl');
 
+    $nus = getParameter("nus");  
+    $telefono = getParameter("telefono");  
+    $fecha_llamada = getParameter("fecha_llamada");  
+    $id_eventootros = getParameter("id_eventootros");  
+
+    $postFilter =array(
+        "nus" => $nus,
+        "telefono" => $telefono,
+        "fecha_llamada" => $fecha_llamada,
+        "id_eventosotros" => $id_eventootros
+    );  
+
     $url = array(
         "menu"         =>  $module_name,
         "filter_field" =>  $filter_field,
-        "filter_value" =>  $filter_value);
+        "filter_value" =>  $filter_value,
+        "nus" => $nus,
+        "telefono" => $telefono,
+        "fecha_llamada" => $fecha_llamada,
+        "id_evento" => $id_evento,
+        "criterio" => $criterio
+    );
     $oGrid->setURL($url);
 
     $arrColumns = array(_tr("Nus"),_tr("Teléfono"),_tr("Resultado"),_tr("Duración de la llamada"),_tr("ID evento"),_tr("Fecha llamada"),_tr("Agente"),_tr("Grabación"),);
     $oGrid->setColumns($arrColumns);
 
-    $total   = $potros_tabla->getNumotros_tabla($filter_field, $filter_value);
+    $total   = $potros_tabla->getNumotros_tabla($filter_field, $filter_value, $postFilter);
+
     $arrData = null;
     if($oGrid->isExportAction()){
         $limit  = $total; // max number of rows.
@@ -487,7 +514,7 @@ function otrosTabla($smarty, $module_name, $local_templates_dir, &$pDB, $arrConf
         $offset = $oGrid->calculateOffset();
     }
 
-    $arrResult =$potros_tabla->getotros_tabla($limit, $offset, $filter_field, $filter_value);
+    $arrResult =$potros_tabla->getotros_tabla($limit, $offset, $filter_field, $filter_value, $postFilter);
 
     if(is_array($arrResult) && $total>0){
         foreach($arrResult as $key => $value){ 
@@ -510,7 +537,7 @@ function otrosTabla($smarty, $module_name, $local_templates_dir, &$pDB, $arrConf
     $htmlFilter  = $oFilterForm->fetchForm("$local_templates_dir/filter.tpl","",$_POST);
     //end section filter
 
-    $oGrid->showFilter(trim($htmlFilter));
+    //$oGrid->showFilter(trim($htmlFilter));
     $content = $oGrid->fetchGrid();
     //end grid parameters
 

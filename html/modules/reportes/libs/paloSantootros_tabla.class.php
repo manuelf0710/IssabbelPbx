@@ -46,17 +46,49 @@ class paloSantootros_tabla{
 
     /*HERE YOUR FUNCTIONS*/
 
-    function getNumotros_tabla($filter_field, $filter_value)
+    function convertirToMysqlFormat($fecha){
+        $getDateAndTime = explode(" ",$fecha);
+        $dateFecha = explode("/",$getDateAndTime[0]);
+        $timeFecha = $getDateAndTime[1];
+        $newFecha = array_reverse($dateFecha);
+        $newFecha = join("-",$newFecha);
+        return $newFecha.' '.$timeFecha;
+
+    }      
+
+    function getNumotros_tabla($filter_field, $filter_value, $postFilter)
     {
         $where    = "";
         $arrParam = null;
-        if(isset($filter_field) & $filter_field !=""){
+        /*if(isset($filter_field) & $filter_field !=""){
             $where    = "where $filter_field like ?";
             $arrParam = array("$filter_value%");
-        }
+        } */
 
-        $query   = "SELECT COUNT(*) FROM table $where";
+        if(!empty($postFilter)){
 
+            if($postFilter['fecha_llamada']!= ''){
+                $fechaInicial = $this->convertirToMysqlFormat($postFilter['fecha_llamada']);
+                $where .= " and fecha_llamada >= str_to_date('".$fechaInicial."', '%Y-%m-%d %H:%i')";
+            }
+
+            if($postFilter['id_eventosotros']!= ''){
+                $where .= " and eve_id =  '".$postFilter['id_eventosotros']."'";
+            }  
+
+            if($postFilter['nus']!= ''){
+                $where .= " and nus =  '".$postFilter['nus']."'";
+            }  
+            
+            if($postFilter['telefono']!= ''){
+                $where .= " and (celular =  '".$postFilter['telefono']."' or telefono = '".$postFilter['telefono']."')";
+            }             
+            
+        } 
+
+        $query   = "SELECT COUNT(*) FROM notificaciones_llamadas where 1 $where";
+
+        
         $result=$this->_DB->getFirstRowQuery($query, false, $arrParam);
 
         if($result==FALSE){
@@ -66,16 +98,47 @@ class paloSantootros_tabla{
         return $result[0];
     }
 
-    function getotros_tabla($limit, $offset, $filter_field, $filter_value)
+    function getotros_tabla($limit, $offset, $filter_field, $filter_value, $postFilter)
     {
         $where    = "";
         $arrParam = null;
-        if(isset($filter_field) & $filter_field !=""){
+        /*if(isset($filter_field) & $filter_field !=""){
             $where    = "where $filter_field like ?";
             $arrParam = array("$filter_value%");
-        }
+        } */
 
-        $query   = "SELECT * FROM table $where LIMIT $limit OFFSET $offset";
+        if(!empty($postFilter)){
+
+            if($postFilter['fecha_llamada']!= ''){
+                $fechaInicial = $this->convertirToMysqlFormat($postFilter['fecha_llamada']);
+                $where .= " and fecha_llamada >= str_to_date('".$fechaInicial."', '%Y-%m-%d %H:%i')";
+            }
+
+            if($postFilter['id_eventosotros']!= ''){
+                $where .= " and eve_id =  '".$postFilter['id_eventosotros']."'";
+            }  
+
+            if($postFilter['nus']!= ''){
+                $where .= " and nus =  '".$postFilter['nus']."'";
+            }  
+            
+            if($postFilter['telefono']!= ''){
+                $where .= " and (celular =  '".$postFilter['telefono']."' or telefono = '".$postFilter['telefono']."')";
+            }             
+            
+        } 
+
+        $query   = "SELECT nus,
+                           if(celular = '' or celular is null, telefono, celular ) telefono,
+                           eve_id id_evento,
+                           duracion duracion_llamada,
+                           estado resultado,
+                           if(fecha_llamada = '0000-00-00 00:00:00', '', fecha_llamada) fecha_llamada,
+                           agente,
+                           '' grabacion
+                     FROM notificaciones_llamadas where 1 $where order by campania_id desc LIMIT $limit OFFSET $offset";
+
+                
 
         $result=$this->_DB->fetchTable($query, true, $arrParam);
 

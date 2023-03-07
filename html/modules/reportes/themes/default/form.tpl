@@ -23,7 +23,13 @@
     <table class="tabForm" style="font-size: 16px;" width="100%">
         <tr class="letra12">
             <td align="left" width="35%"><b>{$criterio.LABEL}: <span class="required">*</span></b></td>
-            <td align="left">{$criterio.INPUT}
+            <td align="left">
+            <select name="criterio" id="criterio">
+                <option value="" >Seleccione...</option>
+                <option value="eventos" {if 'eventos' == $criterioActive}selected{/if}>Eventos</option>
+                <option value="otros" {if 'otros' == $criterioActive}selected{/if}>Otros</option>
+            </select>
+
                 <span class="letra12" style="margin-left:3em"><span class="required">*</span> {$REQUIRED_FIELD}</span>
                 <!--<input class="button" type="submit" name="save_new" value="Aceptar">-->&nbsp;&nbsp;
             </td>
@@ -77,9 +83,6 @@
 
             </table>
         </fieldset>
-
-
-
     {/if}
 
 
@@ -89,20 +92,30 @@
             <legend><span> Otros </span> </legend>
             <table class="tabForm" cellpading="10" width="700" style="margin-top:2em">
                 <tr class="letra12">
-                    <td align="left"><b>{$nus.LABEL}: </b></td>
-                    <td align="left">{$nus.INPUT}</td>
+                    <td align="left"><b>Nus: </b></td>
+                    <td align="left">
+                    <input type="text" name="nus" id="nus" value="{$nus}">
+                    </td>
                 </tr>
                 <tr class="letra12">
-                    <td align="left"><b>{$telefono.LABEL}: </b></td>
-                    <td align="left">{$telefono.INPUT}</td>
+                    <td align="left"><b>Telefono: </b></td>
+                    <td align="left">
+                    <input type="number" name="telefono" id="telefono" value="{$telefono}">
+                    </td>
                 </tr>
                 <tr class="letra12">
-                    <td align="left"><b>{$fecha_llamada.LABEL}: </b></td>
-                    <td align="left">{$fecha_llamada.INPUT}</td>
+                    <td align="left"><b>Fecha llamada: </b></td>
+                    <td align="left">
+                    <input type="text" name="fecha_llamada" id="fecha_llamada" value="{$fecha_llamada}"
+                            class="calendar-reports">
+                    </td>
                 </tr>
                 <tr class="letra12">
-                    <td align="left"><b>{$id_evento.LABEL}: </b></td>
-                    <td align="left">{$id_evento.INPUT}</td>
+                    <td align="left"><b>Id evento: </b></td>
+                    <td align="left">
+                    <input type="text" name="id_eventootros" id="id_eventootros" value="{$id_eventootros}">
+  
+                    </td>
                 </tr>
                 <tr class="letra12">
                     <td align="left"></td>
