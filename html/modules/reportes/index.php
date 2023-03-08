@@ -111,7 +111,6 @@ function _moduleContent(&$smarty, $module_name)
             break;
 
         default: // view_form
-        echo("<br> ingreso por el default");
             $content = viewFormReporte_Notificacion_Eventos($smarty, $module_name, $local_templates_dir, $pDB, $arrConf, $infoToView);
             if($criterioActive == 'eventos'){
                 $content .= eventosTabla($smarty, $module_name, $local_templates_dir, $pDB, $arrConf, $infoToView);
@@ -169,7 +168,7 @@ function viewFormReporte_Notificacion_Eventos($smarty, $module_name, $local_temp
 
     $fecha_inicial = getParameter("fecha_inicial");
     $fecha_final = getParameter("fecha_final");
-    $id_evento = getParameter("id_eventootros");
+    $id_evento = getParameter("id_evento");
     $tipo_evento = getParameter("tipo_evento");  
     $criterio = getParameter("criterio");  
 
@@ -189,6 +188,7 @@ function viewFormReporte_Notificacion_Eventos($smarty, $module_name, $local_temp
     $smarty->assign("fecha_inicial", $fecha_inicial);  
     $smarty->assign("fecha_final", $fecha_final);    
     $smarty->assign("tipo_evento", $tipo_evento);  
+    $smarty->assign("id_evento", $id_evento);
     $smarty->assign("criterioActive", $criterio); 
 
     $smarty->assign("nus", $nus);
@@ -359,7 +359,7 @@ function eventosTabla($smarty, $module_name, $local_templates_dir, &$pDB, $arrCo
     );
     $oGrid->setURL($url);
 
-    $arrColumns = array(_tr("ID Evento"),_tr("Tipo"),_tr("Fecha llamada"),_tr("Barridos"),_tr("Cant Usuario"),_tr("Informados"),_tr("Fallidos"),_tr("Destino"),);
+    $arrColumns = array(_tr("ID Evento"),_tr("Tipo"),_tr("Fecha llamada"),_tr("Barridos"),_tr("Cant Usuario"),_tr("Informados"),_tr("Fallidos"),_tr("Destino"),_tr("Campaña"));
     $oGrid->setColumns($arrColumns);
 
     $total   = $pevento_tabla->getNumevento_tabla($filter_field, $filter_value, $postFilter);
@@ -396,6 +396,7 @@ function eventosTabla($smarty, $module_name, $local_templates_dir, &$pDB, $arrCo
 	    $arrTmp[5] = $value['informados'];
 	    $arrTmp[6] = $value['fallidos'];
 	    $arrTmp[7] = $value['destino'];
+	    $arrTmp[8] = $value['campania'];
             $arrData[] = $arrTmp;
         }
     }

@@ -198,6 +198,8 @@
                     <tr>
                         <td class="letra12">
                             <b>Timeout</b>
+                            <br>
+                            en segundos
                         </td>
                         <td>
                             <input type="number" id="timeout" name="timeout"

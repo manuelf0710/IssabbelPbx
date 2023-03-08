@@ -85,7 +85,10 @@ class paloSantoevento_tabla{
             
         }        
 
-        $query   = "SELECT COUNT(*) FROM  notificaciones_llamadas where 1 $where";
+        $query   = "SELECT count(*)
+      FROM notificaciones_campania nc 
+     inner join  notificaciones_llamadas n1 on nc.id = n1.campania_id
+     where 1 $where";
 
         $result=$this->_DB->getFirstRowQuery($query, false, $arrParam);
 
@@ -126,15 +129,34 @@ class paloSantoevento_tabla{
         }  
 
 
-        $query   = "SELECT eve_id,
-                           tipo_evento tipo,
-                           if(fecha_llamada = '0000-00-00 00:00:00', '', fecha_llamada) fecha_llamada,
-                           barridos,
-                           '0' cant_usuario,
-                           '0' informados,
-                           '0' fallidos,
-                           '0' destino
-         FROM notificaciones_llamadas where 1 $where LIMIT $limit OFFSET $offset";
+        $query   = "SELECT 
+        n1.eve_id,
+        n1.tipo_evento tipo,
+        nc.fecha fecha_llamada,
+        count(nc.id) barridos,
+        nc.cantidad cant_usuario,
+        (select count(distinct n2.nus)
+		  from notificaciones_llamadas n2
+          where n2.estado = 'Success'
+          and n2.campania_id = n1.campania_id
+	   ) informados,
+	   (select count(distinct n2.nus)
+		  from notificaciones_llamadas n2
+          where n2.estado = 'Failed'
+          and n2.campania_id = n1.campania_id
+          and n2.nus not in (
+		select distinct n3.nus
+		  from notificaciones_llamadas n3
+          where n3.estado = 'Success'
+          and n3.campania_id = n2.campania_id          
+          )
+         
+	   ) fallidos,
+        'IVR' destino,
+        nc.id campania
+      FROM notificaciones_campania nc 
+     inner join  notificaciones_llamadas n1 on nc.id = n1.campania_id
+     where 1 $where group by n1.campania_id order by campania_id desc LIMIT $limit OFFSET $offset";
         $result=$this->_DB->fetchTable($query, true, $arrParam);
 
         if($result==FALSE){
