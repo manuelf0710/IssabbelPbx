@@ -375,6 +375,7 @@ function eventosTablaDetalle($smarty, $module_name, $local_templates_dir, &$pDB,
 
     $total   = $pevento_tabla->getNumevento_tabla($filter_field, $filter_value, $postFilter);
 
+
     $arrData = null;
     if($oGrid->isExportAction()){
         $limit  = $total; // max number of rows.
@@ -476,6 +477,7 @@ function eventosTabla($smarty, $module_name, $local_templates_dir, &$pDB, $arrCo
    
 
     $total   = $pevento_tabla->getNumevento_tabla($filter_field, $filter_value, $postFilter);
+
 
     $arrData = null;
     if($oGrid->isExportAction()){
