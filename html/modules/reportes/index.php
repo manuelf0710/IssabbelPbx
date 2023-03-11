@@ -94,7 +94,9 @@ function _moduleContent(&$smarty, $module_name)
         case "save_new":
             $content = saveNewReporte_Notificacion_Eventos($smarty, $module_name, $local_templates_dir, $pDB, $arrConf, $infoToView);
             if($criterioActive == 'eventos'){
+                $content.="<div id='divcontent_eventos'>";
                 $content .= eventosTabla($smarty, $module_name, $local_templates_dir, $pDB, $arrConf, $infoToView);
+                $content.="</div>";
             }
             if($criterioActive == 'otros'){
                 $content .= otrosTabla($smarty, $module_name, $local_templates_dir, $pDB, $arrConf, $infoToView);
@@ -102,18 +104,23 @@ function _moduleContent(&$smarty, $module_name)
             break;
         case "isReport":
             if($criterioActive == 'eventos'){
+                $content.="<div id='divcontent_eventos'>";
                 $content .= eventosTabla($smarty, $module_name, $local_templates_dir, $pDB, $arrConf, $infoToView);
+                $content.="</div>";
             }
             if($criterioActive == 'otros'){
                 $content .= otrosTabla($smarty, $module_name, $local_templates_dir, $pDB, $arrConf, $infoToView);
-            }            
-            
+            }  
+        case "isDetailEvent" :
+              $content = eventosTablaDetalle($smarty, $module_name, $local_templates_dir, $pDB, $arrConf, $infoToView);
             break;
 
         default: // view_form
             $content = viewFormReporte_Notificacion_Eventos($smarty, $module_name, $local_templates_dir, $pDB, $arrConf, $infoToView);
             if($criterioActive == 'eventos'){
+                $content.="<div id='divcontent_eventos'>";
                 $content .= eventosTabla($smarty, $module_name, $local_templates_dir, $pDB, $arrConf, $infoToView);
+                $content.="</div>";
             }
             if($criterioActive == 'otros'){
                 $content .= otrosTabla($smarty, $module_name, $local_templates_dir, $pDB, $arrConf, $infoToView);
@@ -309,10 +316,115 @@ function getAction()
         return "view_form";
     else if(getParameter("action")=="view")      //Get parameter by GET (command pattern, links)
         return "view_form";
+    else if(getParameter("action")=="isDetailEvent")      //Get parameter by GET (command pattern, links)
+    return "isDetailEvent";        
     else if(getParameter("action")=="view_edit")
         return "view_form";
     else
         return "report"; //cancel
+}
+
+function eventosTablaDetalle($smarty, $module_name, $local_templates_dir, &$pDB, $arrConf, $infoToView)
+{
+    $pevento_tabla = new paloSantoEventoDetalle_tabla($pDB);
+    $filter_field = getParameter("filter_field");
+    $filter_value = getParameter("filter_value");
+    $fecha_inicial = getParameter("fecha_inicial");
+    $fecha_final = getParameter("fecha_final");
+    $id_evento = getParameter("id_evento");
+    $tipo_evento = getParameter("tipo_evento");
+    $criterio = getParameter("criterio");
+    $detalleid_filter = getParameter("detalleid_filter");
+
+    //begin grid parameters
+    $oGrid  = new paloSantoGrid($smarty);
+    $oGrid->setTitle(_tr("eventoTabla"));
+    $oGrid->pagingShow(true); // show paging section.
+
+    $oGrid->enableExport();   // enable export.
+    $oGrid->setNameFile_Export(_tr("eventoTabla"));
+    $oGrid->setTplFile('themes/customTheme/_custom_list.tpl');
+
+    $postFilter =array(
+        "fecha_inicial" => $fecha_inicial,
+        "fecha_final" => $fecha_final,
+        "id_evento" => $id_evento,
+        "tipo_evento" => $tipo_evento,
+        "criterio" => $criterio,
+        "detalleid_filter" => $detalleid_filter,
+    );    
+
+    $url = array(
+        "menu"         =>  $module_name,
+        "filter_field" =>  $filter_field,
+        "filter_value" =>  $filter_value,
+        "fecha_inicial" => $fecha_inicial,
+        "fecha_final" => $fecha_final,
+        "id_evento" => $id_evento,
+        "tipo_evento" => $tipo_evento,
+        "criterio" => $criterio
+
+    
+    );
+    $oGrid->setURL($url);
+
+    $arrColumns = array(_tr("Uniqueid"),_tr("Nus"),_tr("Tel Marcado"),_tr("Resultado"),_tr("Duración LLamada"),_tr("Fecha LLamada"),_tr("Agente"),_tr("Grabación"));
+    $oGrid->setColumns($arrColumns); 
+    $oGrid->addLinkAction("index.php?menu=reportes&action=retornoeventos&criterio=eventos","Volver a lista de Eventos");
+      
+
+    $total   = $pevento_tabla->getNumevento_tabla($filter_field, $filter_value, $postFilter);
+
+    $arrData = null;
+    if($oGrid->isExportAction()){
+        $limit  = $total; // max number of rows.
+        $offset = 0;      // since the start.
+    }
+    else{
+        $limit  = 20;
+        $oGrid->setLimit($limit);
+        $oGrid->setTotal($total);
+        $offset = $oGrid->calculateOffset();
+    }
+
+    $first_record = $offset + 1;
+    $last_record = $offset + $limit;
+    if($last_record > $total) {
+        $last_record = $total;
+        }
+
+
+
+    $arrResult =$pevento_tabla->getevento_tabla($limit, $offset, $filter_field, $filter_value, $postFilter);
+
+    if(is_array($arrResult) && $total>0){
+        foreach($arrResult as $key => $value){ 
+	    $arrTmp[0] = $value['uniqueid'];
+	    $arrTmp[1] = $value['nus'];
+	    $arrTmp[2] = $value['tel_marcado'];
+	    $arrTmp[3] = $value['resultado'];
+	    $arrTmp[4] = $value['duracion'];
+	    $arrTmp[5] = $value['fecha_llamada'];
+	    $arrTmp[6] = $value['agente'];
+	    $arrTmp[7] = $value['grabacion'];
+            $arrData[] = $arrTmp;
+        }
+    }
+    $oGrid->setData($arrData);
+
+    //begin section filter
+    $oFilterForm = new paloForm($smarty, createFieldFilterEvento());
+    $smarty->assign("SHOW", _tr("Show"));
+    $htmlFilter  = $oFilterForm->fetchForm("$local_templates_dir/filter.tpl","",$_POST);
+    //end section filter
+
+    //$oGrid->showFilter(trim($htmlFilter));
+    
+    //$content = "<div style='margin-top:10px;'>mostrando $first_record a $last_record de $total registros</div>";
+    $content = $oGrid->fetchGrid();
+    //end grid parameters
+
+    return $content;
 }
 
 /*
@@ -361,6 +473,7 @@ function eventosTabla($smarty, $module_name, $local_templates_dir, &$pDB, $arrCo
 
     $arrColumns = array(_tr("ID Evento"),_tr("Tipo"),_tr("Fecha llamada"),_tr("Barridos"),_tr("Cant Usuario"),_tr("Informados"),_tr("Fallidos"),_tr("Destino"),_tr("Campaña"));
     $oGrid->setColumns($arrColumns);
+   
 
     $total   = $pevento_tabla->getNumevento_tabla($filter_field, $filter_value, $postFilter);
 
@@ -419,7 +532,7 @@ function eventosTabla($smarty, $module_name, $local_templates_dir, &$pDB, $arrCo
 
 function createFieldFilterEvento(){
     $arrFilter = array(
-	    "id_evento" => _tr("ID Evento"),
+	    "id_evento" => _tr("ID Eventos"),
 	    "tipo" => _tr("Tipo"),
 	    "fecha_llamada" => _tr("Fecha llamada"),
 	    "barridos" => _tr("Barridos"),
