@@ -160,21 +160,25 @@
                 <table class="tabForm notificacionesTable" style="font-size: 16px;" width="100%">
                     <tr class="letra12">
                         <td><b>Plan Marcado:</b></td>
-                        <td></td>
+                        <td>
+                        {$counter = 100}
+                        <select name="notificacion_troncal" id="notificacion_troncal">
+                                <option value="">Seleccione...</option>
+                            {foreach $configListas['outgoingRouteList'] as $route}
+                                <option value="{$route.trunkid}" {if $route.id == $dataForm.configuracionGeneral.notificacion_troncal}selected{/if}>{$route.name}</option>
+                                {$counter = $counter + 1}
+                            {/foreach}
+                            
+                        </select>                        
+                        </td>
                     </tr>
-                    {foreach $configListas['outgoingRouteList'] as $route}
+                    
                         <tr class="letra12">
                             <td colspan="2" align="right">
-                                <div class="radio-containerd" style="text-align:left; width:60%">
-                                    <input name="outgoingroute[]" id="outgoingroute_{$route.troncal_id}"
-                                        class="chkrouteoutbounds" type="checkbox" value="{$route.troncal_id}"
-                                        {if $route.enable_notificacion == 1}checked{/if}>
-                                    <label for="outgoingroute_{$route.troncal_id}">{$route.troncal}</label>
-                                </div>
-
+                            
                             </td>
                         </tr>
-                    {/foreach}
+                   
                 </table>
             </td>
         </tr>

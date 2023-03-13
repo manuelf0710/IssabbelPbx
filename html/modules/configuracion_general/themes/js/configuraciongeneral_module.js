@@ -1,15 +1,14 @@
 $(document).ready(function () {
-	$(".calendar-configgeneral").datetimepicker({
-		showOn: 'button',
-		firstDay:1,
-		buttonImageOnly: true,
-		buttonImage: 'images/calendar.gif',
-		dateFormat: 'yy-mm-dd',
-		timeFormat :"HH:mm:ss",
-		changeMonth:true,
-		showWeek:true,
-
-	});	
+  $(".calendar-configgeneral").datetimepicker({
+    showOn: "button",
+    firstDay: 1,
+    buttonImageOnly: true,
+    buttonImage: "images/calendar.gif",
+    dateFormat: "yy-mm-dd",
+    timeFormat: "HH:mm:ss",
+    changeMonth: true,
+    showWeek: true,
+  });
 
   function validarformDestinos() {
     validacionesDestino = 0;
@@ -78,8 +77,13 @@ $(document).ready(function () {
       return;
     }
 
-    if (validateOutboundRoutes() == 0) {
+    /*if (validateOutboundRoutes() == 0) {
       alert("debe marcar alguna ruta de plan de marcado");
+      return;
+    } */
+
+    if ($("#notificacion_troncal").val() == "") {
+      alert("debe selecciona un plan de marcado");
       return;
     }
 

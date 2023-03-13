@@ -72,7 +72,8 @@ function _moduleContent(&$smarty, $module_name)
     $IvrList = $modelIvr->index();
     $conexionesLista = $modelConexionesBD->lista();
     //$outgoingRouteList = $modelOutgoingRoutes->index();
-    $outgoingRouteList = $configuracionNotificaciones->getTrunks();
+    //$outgoingRouteList = $configuracionNotificaciones->getTrunksDialPatern();
+    $dialplanAndRouteList = $configuracionNotificaciones->getTrunksConfig();
 
     $arrOptionsDias = array(
         "" => "...",
@@ -93,7 +94,7 @@ function _moduleContent(&$smarty, $module_name)
         $i < 10 ? $optionsMins["0$i"] ="0".$i : $optionsMins["$i"] = $i;   
     }       
 
-    $infoToView = array("ivrLista" => $IvrList, "outgoingRouteList" => $outgoingRouteList, 
+    $infoToView = array("ivrLista" => $IvrList, "outgoingRouteList" => $dialplanAndRouteList, 
     "conexionesLista" => $conexionesLista, "diasLista" => $arrOptionsDias, "optionsHours" => $optionsHours, 
     "optionsMins" => $optionsMins
     );

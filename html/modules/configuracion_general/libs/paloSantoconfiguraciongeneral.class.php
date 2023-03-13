@@ -69,46 +69,58 @@ class paloSantoconfiguracionGeneral
     
         return $response_array;
     }   
+
+    public function getTrunksConfig(){
+                    $query = 'SELECT nt.id,
+                    "-1" trunkid,
+                    "dialPlan" name,
+                    "" tech,
+                    nt.estado,
+                    "1" tipo
+             FROM notificaciones_troncales nt
+             where  nt.id = 1
+             union
+             SELECT nt.id,
+                    t.trunkid,
+                    t.name,
+                    t.tech,
+                    nt.estado,
+                    "2" tipo
+             FROM trunks t left join notificaciones_troncales nt
+              on t.trunkid = nt.trunkid
+             where  t.name != ""';
+
+            $result = $this->_DB->fetchTable($query, true);
+
+            if ($result == false) {
+            $this->errMsg = $this->_DB->errMsg;
+            return null;
+            }
+
+            return $result;        
+    }
     
-    public function getTrunks(){
+    public function getTrunksDialPatern(){
         $query = 'select a2.* from (
-                                    SELECT s.route_id, 
-                                        s.name,
-                                        s.password,
-                                        t.enable_notificacion,
-                                        t.trunkid troncal_id,
-                                        t.name troncal, 
-                                        t.tech,
-                                        rp.match_pattern_prefix,
-                                        rp.match_pattern_pass,
-                                        rp.match_cid,
-                                        rp.prepend_digits,
-                                        "outbound_route" clase,
-                                        "" patterns
-                                    FROM outbound_routes s,trunks t, outbound_route_trunks rt,  outbound_route_patterns rp
-                                    where rt.route_id = s.route_id 
-                                    and   rt.trunk_id  = t.trunkid
-                                    and s.route_id =  rp.route_id
-                                    and t.name != ""
-                                    union 
-                                    SELECT "" routeid, 
-                                        "" name,
-                                        "" password,
-                                        t.enable_notificacion,  
-                                        t.trunkid troncal_id, 
-                                        t.name troncal, 
-                                        t.tech,
-                                        rp.match_pattern_prefix,
-                                        rp.match_pattern_pass,
-                                        "" match_cid,
-                                        rp.prepend_digits,
-                                        "trunk" clase,
-                                        "" patterns
-                                    FROM trunks t,  trunk_dialpatterns rp
-                                    where   t.trunkid  = rp.trunkid
-                                    and t.name != ""
-                                    ) a2 
-                        group by troncal_id, match_pattern_pass';
+                            SELECT s.route_id, 
+                                s.name,
+                                s.password,
+                                t.trunkid troncal_id,
+                                t.name troncal, 
+                                t.tech,
+                                rp.match_pattern_prefix,
+                                rp.match_pattern_pass,
+                                rp.match_cid,
+                                rp.prepend_digits,
+                                "outbound_route" clase,
+                                "" patterns
+                            FROM outbound_routes s,trunks t, outbound_route_trunks rt,  outbound_route_patterns rp
+                            where rt.route_id = s.route_id 
+                            and   rt.trunk_id  = t.trunkid
+                            and s.route_id =  rp.route_id
+                            and t.name != ""
+                            ) a2 
+                group by troncal_id, match_pattern_pass';
 
         $result = $this->_DB->fetchTable($query, true);
 
@@ -118,10 +130,7 @@ class paloSantoconfiguracionGeneral
         }
 
         $result2 = $this->unique_multidim_array($result, "troncal_id");
-        //echo json_encode($result);
-        //$addPatternsTrunk = $this->addPattersTrunk($result, $result2);
         return $result2;
-
     }
 
     public function addPattersTrunk($completeArray, $uniqueArray){
@@ -194,7 +203,10 @@ class paloSantoconfiguracionGeneral
                     activar_cancelado,
                     ivr_programado,
                     activar_programado,
-                    timeout
+                    timeout,
+                    (
+                        select nt.id from notificaciones_troncales nt where estado = 1 limit 1
+                    ) notificacion_troncal
                 FROM notificaciones_configuracion
             WHERE id =1';
 
@@ -225,14 +237,37 @@ public function updateNotificacionesConfiguracion($data)
     $ivr_programado = array_key_exists("ivrprogramado", $data) ? $data['ivrprogramado'] : null;
     $activar_programado = array_key_exists("chkivr_programado", $data) ? 1 : 0;
     $timeout = $data['timeout'];
+    $notificacion_troncal = $data["notificacion_troncal"];
 
+    $sqlUpdateNotificacionTroncal = "UPDATE notificaciones_troncales SET estado = '2' WHERE 1";
+    $resultadoUpdateNotificacion = $this->_DB->genQuery($sqlUpdateNotificacionTroncal);
+
+    if($notificacion_troncal == '-1'){
+        $sqlUpdateNotificacionTroncal = "UPDATE notificaciones_troncales SET estado = '1' WHERE id = '1'";
+        $resultadoUpdateNotificacion = $this->_DB->genQuery($sqlUpdateNotificacionTroncal);        
+    }else{
+        $query = "select * from notificaciones_troncales where trunkid = '".$notificacion_troncal."'";
+        $result = $this->_DB->getFirstRowQuery($query, true);   
+        
+        
+        if(count($result)>0){    
+            $sqlUpdateNotificacionTroncal = "UPDATE notificaciones_troncales SET estado = '1' WHERE trunkid = '".$notificacion_troncal."'";
+            $resultadoUpdateNotificacion = $this->_DB->genQuery($sqlUpdateNotificacionTroncal);            
+        }else{
+            $queryInsert = "insert into notificaciones_troncales 
+                             (tipo,trunkid,estado) values
+                             ('2','".$notificacion_troncal."', '1')";
+            $resultadoInsert = $this->_DB->genQuery($queryInsert);                             
+        }
+    }
+/*
     $outgoingroute = "'" . implode("','", $data["outgoingroute"]) . "'";
 
     $sql = "UPDATE trunks SET enable_notificacion = NULL WHERE trunkid NOT IN ($outgoingroute)";
     $resultado = $this->_DB->genQuery($sql);
 
     $sql2 = "UPDATE trunks SET enable_notificacion = 1 WHERE trunkid IN ($outgoingroute)";
-    $resultado2 = $this->_DB->genQuery($sql2);   
+    $resultado2 = $this->_DB->genQuery($sql2); */   
     
     $actionJob = $data['activar_desactivar'] == '1' ? true : false;
     $estadoJob = $this->handleJob('cronstatus', $actionJob);
@@ -266,7 +301,7 @@ public function updateNotificacionesConfiguracion($data)
         )
     );
 
-    echo "<br>".$sPeticionSQL;
+    //echo "<br>".$sPeticionSQL;
     if ($this->_DB->genQuery($sPeticionSQL)) {
         $bExito = true;
     } else {
