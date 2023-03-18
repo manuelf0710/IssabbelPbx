@@ -46,7 +46,17 @@ class paloSantoLogs_Table{
 
     /*HERE YOUR FUNCTIONS*/
 
-    function getNumLogs_Table($filter_field, $filter_value)
+    function convertirToMysqlFormat($fecha){
+        $getDateAndTime = explode(" ",$fecha);
+        $dateFecha = explode("/",$getDateAndTime[0]);
+        $timeFecha = $getDateAndTime[1];
+        $newFecha = array_reverse($dateFecha);
+        $newFecha = join("-",$newFecha);
+        return $newFecha.' '.$timeFecha;
+
+    }    
+
+    function getNumLogs_Table($filter_field, $filter_value, $postFilter)
     {
         $where    = "";
         $arrParam = null;
@@ -54,8 +64,22 @@ class paloSantoLogs_Table{
             $where    = "where $filter_field like ?";
             $arrParam = array("$filter_value%");
         }*/
+        if(!empty($postFilter)){
 
-        $query   = "SELECT COUNT(*) FROM notificaciones_logs $where";
+            if($postFilter['fecha_inicial']!= ''){
+                $fechaInicial = $this->convertirToMysqlFormat($postFilter['fecha_inicial']);
+                $where .= " and fecha >= str_to_date('".$fechaInicial."', '%Y-%m-%d %H:%i')";
+            }
+            if($postFilter['fecha_final']!= ''){
+                $fechaFinal = $this->convertirToMysqlFormat($postFilter['fecha_final']);
+                $where .= " and fecha <=  str_to_date('".$fechaFinal."', '%Y-%m-%d %H:%i')";
+            }   
+            if($postFilter['tipo']!= ''){
+                $where .= " and tipo =  '".$postFilter['tipo']."'";
+            }                    
+        }        
+
+        $query   = "SELECT COUNT(*) FROM notificaciones_logs where 1 $where";
 
         $result=$this->_DB->getFirstRowQuery($query, false, $arrParam);
 
@@ -66,16 +90,25 @@ class paloSantoLogs_Table{
         return $result[0];
     }
 
-    function getLogs_Table($limit, $offset, $filter_field, $filter_value)
+    function getLogs_Table($limit, $offset, $filter_field, $filter_value, $postFilter)
     {
         $where    = "";
         $arrParam = null;
-  /*      if(isset($filter_field) & $filter_field !=""){
-            $where    = "where $filter_field like ?";
-            $arrParam = array("$filter_value%");
-        }
-*/
-        $query   = "SELECT * FROM notificaciones_logs $where order by id desc LIMIT $limit OFFSET $offset";
+        if(!empty($postFilter)){
+
+            if($postFilter['fecha_inicial']!= ''){
+                $fechaInicial = $this->convertirToMysqlFormat($postFilter['fecha_inicial']);
+                $where .= " and fecha >= str_to_date('".$fechaInicial."', '%Y-%m-%d %H:%i')";
+            }
+            if($postFilter['fecha_final']!= ''){
+                $fechaFinal = $this->convertirToMysqlFormat($postFilter['fecha_final']);
+                $where .= " and fecha <=  str_to_date('".$fechaFinal."', '%Y-%m-%d %H:%i')";
+            }   
+            if($postFilter['tipo']!= ''){
+                $where .= " and tipo <=  '".$postFilter['tipo']."'";
+            }                    
+        }  
+        $query   = "SELECT * FROM notificaciones_logs where 1 $where order by id desc LIMIT $limit OFFSET $offset";
 
         $result=$this->_DB->fetchTable($query, true, $arrParam);
 

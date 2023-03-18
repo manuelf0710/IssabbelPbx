@@ -104,11 +104,23 @@ function viewFormLogs2($smarty, $module_name, $local_templates_dir, &$pDB, $arrC
         }
     }
 
+
     $smarty->assign("SAVE", _tr("Save"));
     $smarty->assign("EDIT", _tr("Edit"));
     $smarty->assign("CANCEL", _tr("Cancel"));
     $smarty->assign("REQUIRED_FIELD", _tr("Required field"));
     $smarty->assign("icon", "images/list.png");
+
+
+    $fecha_inicial = getParameter("fecha_inicial");
+    $fecha_final = getParameter("fecha_final");
+    $tipo = getParameter("tipo");
+
+
+    $smarty->assign("fecha_inicial",$fecha_inicial);
+    $smarty->assign("fecha_final",$fecha_final);    
+    $smarty->assign("tipo",$tipo);    
+
 
     $htmlForm = $oForm->fetchForm("$local_templates_dir/form.tpl", _tr("Logs2"), $_DATA);
     $content = "<form  method='POST' style='margin-bottom:0;' action='?menu=$module_name'>" . $htmlForm . "</form>";
@@ -146,7 +158,7 @@ function createFieldForm()
     $arrOptions = array('' => 'Seleccione...', 'advertencia' => 'Advertencia', 'informativa' => 'Informativa', 'error' => 'Error', 'todos' => 'Todos');
 
     $arrFields = array(
-        "fecha_inicial"   => array(
+        "fecha_inicialf"   => array(
             "LABEL"                  => _tr("Fecha Inicial"),
             "REQUIRED"               => "no",
             "INPUT_TYPE"             => "DATE",
@@ -155,7 +167,7 @@ function createFieldForm()
             "EDITABLE"               => "si",
             "VALIDATION_EXTRA_PARAM" => ""
         ),
-        "fecha_final"   => array(
+        "fecha_finalf"   => array(
             "LABEL"                  => _tr("Fecha Final"),
             "REQUIRED"               => "no",
             "INPUT_TYPE"             => "DATE",
@@ -206,6 +218,9 @@ function getAction()
     $pLogs_Table = new paloSantoLogs_Table($pDB);
     $filter_field = getParameter("filter_field");
     $filter_value = getParameter("filter_value");
+    $fecha_inicial = getParameter("fecha_inicial");
+    $fecha_final = getParameter("fecha_final");    
+    $tipo = getParameter("tipo");    
 
     //begin grid parameters
     $oGrid  = new paloSantoGrid($smarty);
@@ -215,16 +230,32 @@ function getAction()
     $oGrid->enableExport();   // enable export.
     $oGrid->setNameFile_Export(_tr("Logs_Table"));
 
+    $postFilter =array(
+        "fecha_inicial" => $fecha_inicial,
+        "fecha_final" => $fecha_final,
+        "tipo" => $tipo,
+    );    
+
     $url = array(
         "menu"         =>  $module_name,
         "filter_field" =>  $filter_field,
-        "filter_value" =>  $filter_value);
+        "filter_value" =>  $filter_value,
+        "fecha_inicial" => $fecha_inicial,
+        "fecha_final" => $fecha_final,
+        "tipo" => $tipo,
+    );
+
+    $smarty->assign("fecha_inicial",$fecha_inicial);
+    $smarty->assign("fecha_final",$fecha_final);
+    $smarty->assign("tipo",$tipo);
+      
+
     $oGrid->setURL($url);
 
     $arrColumns = array(_tr("Fecha"),_tr("Tipo"),_tr("Descripción"),_tr("Módulo"), _tr("Acción"));
     $oGrid->setColumns($arrColumns);
 
-    $total   = $pLogs_Table->getNumLogs_Table($filter_field, $filter_value);
+    $total   = $pLogs_Table->getNumLogs_Table($filter_field, $filter_value, $postFilter);
     
     $arrData = null;
     if($oGrid->isExportAction()){
@@ -238,7 +269,7 @@ function getAction()
         $offset = $oGrid->calculateOffset();
     }
 
-    $arrResult =$pLogs_Table->getLogs_Table($limit, $offset, $filter_field, $filter_value);
+    $arrResult =$pLogs_Table->getLogs_Table($limit, $offset, $filter_field, $filter_value, $postFilter);
 
     if(is_array($arrResult) && $total>0){
         foreach($arrResult as $key => $value){ 
@@ -258,7 +289,7 @@ function getAction()
     $htmlFilter  = $oFilterForm->fetchForm("$local_templates_dir/filter.tpl","",$_POST);
     //end section filter
 
-    $oGrid->showFilter(trim($htmlFilter));
+    //$oGrid->showFilter(trim($htmlFilter));
     $content = $oGrid->fetchGrid();
     //end grid parameters
 

@@ -24,15 +24,14 @@
     </table>
     <table class="tabForm" style="font-size: 16px;" width="100%">
         <tr class="letra12">
-            <td align="left"><b>{$fecha_inicial.LABEL}: <span class="required">*</span></b></td>
+            <td align="left"><b>Fecha Inicial: <span class="required">*</span></b></td>
             <td align="left">
-                <!--{$fecha_inicial.INPUT}-->
-                <input type="text" name="fecha_inicial" id="fecha_inicial" value="" class="calendar-reports">
+                <input type="text" name="fecha_inicial" id="fecha_inicial" value="{$fecha_inicial}" class="calendar-reports">
             </td>
-            <td align="left"><b>{$fecha_final.LABEL}: <span class="required">*</span></b></td>
+            <td align="left"><b>Fecha Final: <span class="required">*</span></b></td>
             <td align="left">
-                <input type="text" name="fecha_final" id="fecha_final" value="" class="calendar-reports">
-            </td>
+                <input type="text" name="fecha_final" id="fecha_final" value="{$fecha_final}" class="calendar-reports">
+            </td>   
         </tr>
         <tr class="letra12">
             <td align="left"><b>{$tipo.LABEL}: <span class="required">*</span></b></td>
