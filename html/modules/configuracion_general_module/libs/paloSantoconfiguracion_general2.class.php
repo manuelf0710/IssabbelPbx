@@ -21,6 +21,7 @@
   | The Initial Developer of the Original Code is PaloSanto Solutions    |
   +----------------------------------------------------------------------+
   $Id: paloSantoconfiguracion_general2.class.php,v 1.1 2022-12-12 05:12:10 manuelf manuelf0710@gmail.com Exp $ */
+  include_once "/var/www/html/libs/misc.lib.php";
 class paloSantoconfiguracion_general2
 {
     var $_DB;
@@ -62,6 +63,7 @@ class paloSantoconfiguracion_general2
 
         if ($result == FALSE) {
             $this->errMsg = $this->_DB->errMsg;
+            insertLogToDB($this->_DB->errMsg, "Conexiones_bd", "Error", "getNumconfiguracion_general2");
             return 0;
         }
         return $result[0];
@@ -82,6 +84,7 @@ class paloSantoconfiguracion_general2
 
         if ($result == FALSE) {
             $this->errMsg = $this->_DB->errMsg;
+            insertLogToDB($this->_DB->errMsg, "Conexiones_bd", "Error", "getconfiguracion_general2");
             return array();
         }
         return $result;
@@ -95,6 +98,7 @@ class paloSantoconfiguracion_general2
 
         if ($result == FALSE) {
             $this->errMsg = $this->_DB->errMsg;
+            insertLogToDB($this->_DB->errMsg, "Conexiones_bd", "Error", "getconfiguracion_general2ById");
             return null;
         }
         return $result;
@@ -108,6 +112,7 @@ class paloSantoconfiguracion_general2
 
         if ($result == FALSE) {
             $this->errMsg = $this->_DB->errMsg;
+            insertLogToDB($this->_DB->errMsg, "Conexiones_bd", "Error", "getconfiguracion_general2ByName");            
             return null;
         }
         return $result;
@@ -122,6 +127,7 @@ class paloSantoconfiguracion_general2
 
         if ($result == FALSE) {
             $this->errMsg = $this->_DB->errMsg;
+            insertLogToDB($this->_DB->errMsg, "Conexiones_bd", "Error", "getconfiguracion_general2Active");             
             return null;
         }
         return $result;
@@ -155,6 +161,7 @@ class paloSantoconfiguracion_general2
             $bExito = TRUE;
         } else {
             $this->errMsg = $this->_DB->errMsg;
+            insertLogToDB($this->_DB->errMsg, "Conexiones_bd", "Error", "updateconfiguracion_general2ById"); 
         }
 
         /*

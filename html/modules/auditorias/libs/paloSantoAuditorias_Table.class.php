@@ -21,6 +21,8 @@
   | The Initial Developer of the Original Code is PaloSanto Solutions    |
   +----------------------------------------------------------------------+
   $Id: paloSantoAuditorias_Table.class.php,v 1.1 2022-12-12 08:12:29 Manuelf manuelf0710@gmail.com Exp $ */
+
+  include_once "/var/www/html/libs/misc.lib.php";
 class paloSantoAuditorias_Table{
     var $_DB;
     var $errMsg;
@@ -59,6 +61,8 @@ class paloSantoAuditorias_Table{
     function getNumAuditorias_Table($filter_field, $filter_value, $postFilter)
     {
 
+        
+
         $arrParam = null;
         /*if(isset($filter_field) & $filter_field !=""){
             $where    = "where $filter_field like ?";
@@ -79,13 +83,14 @@ class paloSantoAuditorias_Table{
         }
 
 
-        $query   = "SELECT COUNT(*) FROM auditoriasissabel where 1 $where";
+        $query   = "SELECT COUNT(*) FROM notificaciones_auditorias where 1 $where";
 
         $result=$this->_DB->getFirstRowQuery($query, false, $arrParam);
 
 
         if($result==FALSE){
             $this->errMsg = $this->_DB->errMsg;
+            insertLogToDB($this->_DB->errMsg, "Auditorias", "Error", "getNumAuditorias_Table");
             return 0;
         }
         return $result[0];
@@ -115,13 +120,14 @@ class paloSantoAuditorias_Table{
         }        
 
 
-        $query   = "SELECT * FROM auditoriasissabel where 1 $where LIMIT $limit OFFSET $offset";
+        $query   = "SELECT * FROM notificaciones_auditorias where 1 $where LIMIT $limit OFFSET $offset";
 
 
         $result=$this->_DB->fetchTable($query, true, $arrParam);
 
         if($result==FALSE){
             $this->errMsg = $this->_DB->errMsg;
+            insertLogToDB($this->_DB->errMsg, "Auditorias", "Error", "getAuditorias_Table");
             return array();
         }
         return $result;
@@ -129,12 +135,13 @@ class paloSantoAuditorias_Table{
 
     function getAuditorias_TableById($id)
     {
-        $query = "SELECT * FROM auditoriasissabel WHERE id=?";
+        $query = "SELECT * FROM notificaciones_auditorias WHERE id=?";
 
         $result=$this->_DB->getFirstRowQuery($query, true, array("$id"));
 
         if($result==FALSE){
             $this->errMsg = $this->_DB->errMsg;
+            insertLogToDB($this->_DB->errMsg, "Auditorias", "Error", "getAuditorias_TableById");
             return null;
         }
         return $result;

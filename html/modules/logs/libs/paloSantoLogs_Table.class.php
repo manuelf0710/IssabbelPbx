@@ -50,12 +50,12 @@ class paloSantoLogs_Table{
     {
         $where    = "";
         $arrParam = null;
-        if(isset($filter_field) & $filter_field !=""){
+        /*if(isset($filter_field) & $filter_field !=""){
             $where    = "where $filter_field like ?";
             $arrParam = array("$filter_value%");
-        }
+        }*/
 
-        $query   = "SELECT COUNT(*) FROM table $where";
+        $query   = "SELECT COUNT(*) FROM notificaciones_logs $where";
 
         $result=$this->_DB->getFirstRowQuery($query, false, $arrParam);
 
@@ -70,12 +70,12 @@ class paloSantoLogs_Table{
     {
         $where    = "";
         $arrParam = null;
-        if(isset($filter_field) & $filter_field !=""){
+  /*      if(isset($filter_field) & $filter_field !=""){
             $where    = "where $filter_field like ?";
             $arrParam = array("$filter_value%");
         }
-
-        $query   = "SELECT * FROM table $where LIMIT $limit OFFSET $offset";
+*/
+        $query   = "SELECT * FROM notificaciones_logs $where order by id desc LIMIT $limit OFFSET $offset";
 
         $result=$this->_DB->fetchTable($query, true, $arrParam);
 
@@ -88,7 +88,7 @@ class paloSantoLogs_Table{
 
     function getLogs_TableById($id)
     {
-        $query = "SELECT * FROM table WHERE id=?";
+        $query = "SELECT * FROM notificaciones_logs WHERE id=?";
 
         $result=$this->_DB->getFirstRowQuery($query, true, array("$id"));
 

@@ -21,6 +21,7 @@
   | The Initial Developer of the Original Code is PaloSanto Solutions    |
   +----------------------------------------------------------------------+
   $Id: paloSantoconfiguracion_general2.class.php,v 1.1 2022-12-12 05:12:10 manuelf manuelf0710@gmail.com Exp $ */
+  include_once "/var/www/html/libs/misc.lib.php";
 class paloSantoconfiguracionGeneral
 {
     public $_DB;
@@ -94,6 +95,7 @@ class paloSantoconfiguracionGeneral
 
             if ($result == false) {
             $this->errMsg = $this->_DB->errMsg;
+            insertLogToDB($this->_DB->errMsg, "Notificaciones_reportes", "Error", "getTrunksConfig"); 
             return null;
             }
 
@@ -126,6 +128,7 @@ class paloSantoconfiguracionGeneral
 
         if ($result == false) {
             $this->errMsg = $this->_DB->errMsg;
+            insertLogToDB($this->_DB->errMsg, "Notificaciones_reportes", "Error", "getTrunksDialPatern");             
             return null;
         }
 
@@ -214,6 +217,7 @@ class paloSantoconfiguracionGeneral
 
         if ($result == false) {
             $this->errMsg = $this->_DB->errMsg;
+            insertLogToDB($this->_DB->errMsg, "Notificaciones_reportes", "Error", "getNotificacionesConfiguracion");
             return null;
         }
         return $result;
@@ -306,6 +310,7 @@ public function updateNotificacionesConfiguracion($data)
         $bExito = true;
     } else {
         $this->errMsg = $this->_DB->errMsg;
+        insertLogToDB($this->_DB->errMsg, "Notificaciones_reportes", "Error", "updateNotificacionesConfiguracion");
     }
 
  

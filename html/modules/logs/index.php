@@ -56,6 +56,8 @@ function _moduleContent(&$smarty, $module_name)
     //conexion resource
     //$pDB = new paloDB($arrConf['dsn_conn_database']);
     $pDB = "";
+    $dsnAsterisk = generarDSNSistema('asteriskuser', 'asterisk');
+    $pDB = new paloDB($dsnAsterisk);      
 
 
     //actions
@@ -219,10 +221,11 @@ function getAction()
         "filter_value" =>  $filter_value);
     $oGrid->setURL($url);
 
-    $arrColumns = array(_tr("Fecha"),_tr("Tipo"),_tr("Descripción"),);
+    $arrColumns = array(_tr("Fecha"),_tr("Tipo"),_tr("Descripción"),_tr("Módulo"), _tr("Acción"));
     $oGrid->setColumns($arrColumns);
 
     $total   = $pLogs_Table->getNumLogs_Table($filter_field, $filter_value);
+    
     $arrData = null;
     if($oGrid->isExportAction()){
         $limit  = $total; // max number of rows.
@@ -241,7 +244,9 @@ function getAction()
         foreach($arrResult as $key => $value){ 
 	    $arrTmp[0] = $value['fecha'];
 	    $arrTmp[1] = $value['tipo'];
-	    $arrTmp[2] = $value['descripci_n'];
+	    $arrTmp[2] = $value['descripcion'];
+	    $arrTmp[3] = $value['modulo'];
+	    $arrTmp[4] = $value['accion'];
             $arrData[] = $arrTmp;
         }
     }

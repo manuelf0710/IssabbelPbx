@@ -713,12 +713,23 @@ function checkFrameworkDatabases($dbdir)
     }
 }
 
-function insertLogToDB($data){
+function insertLogToDB($descripcion, $modulo="Notificaciones", $tipo="Error",$accion=NULL){
     $dsnAsterisk = generarDSNSistema('asteriskuser', 'asterisk');
     $pDB = new paloDB($dsnAsterisk); 
 
 
-    $sql = 'INSERT INTO auditoriasissabel (fecha,usuario,descripcion,modulo)
+    $sql = 'INSERT INTO notificaciones_logs (descripcion,modulo,tipo,accion)
+    VALUES (?, ?, ?, ?)';
+
+    $pDB->genQuery($sql, array($descripcion, $modulo, $tipo, $accion));
+}
+
+function insertAuditoriaToDB($data){
+    $dsnAsterisk = generarDSNSistema('asteriskuser', 'asterisk');
+    $pDB = new paloDB($dsnAsterisk); 
+
+
+    $sql = 'INSERT INTO notificaciones_auditorias (fecha,usuario,descripcion,modulo)
     VALUES (?, ?, ?, ?)';
 
     $pDB->genQuery($sql, array($data['fecha'], $data['user'], $data['description'], $data['module']));
@@ -751,7 +762,7 @@ function writeLOG($logFILE, $log)
     
     $information = array("fecha"=> $dateNow, "type"=>$type, "user"=> $user, "module" => $module, "description" => $description);
 
-    insertLogToDB($information);
+    insertAuditoriaToDB($information);
 
     
     $logPATH = "/var/log/issabel";

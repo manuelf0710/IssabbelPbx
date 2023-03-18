@@ -5,6 +5,7 @@ ehthumbs_vista.db
 /html/assets
 /html/var/templates_c/*
 /html/mail/*
+/html/fop2/*
 
 # Folder config file
 Desktop.ini
