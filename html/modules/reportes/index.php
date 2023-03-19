@@ -103,6 +103,11 @@ function _moduleContent(&$smarty, $module_name)
             }			
             break;
         case "isReport":
+            $module = "Reportes >>".$criterioActive;
+            $criterioActive = $criterioActive == "forcampania_id" ? "forcampania_id ".getParameter('detalleid_filter') : $criterioActive; 
+            $user = isset($_SESSION['issabel_user']) ? $_SESSION['issabel_user'] : "unknown";
+            writeLOG("audit.log", 'Descarga '.$user.': Descarga de reporte '.$criterioActive.'. for '.$user.'  "'.$module.'" from '.$_SERVER["REMOTE_ADDR"]);        
+
             if($criterioActive == 'eventos'){
                 $content.="<div id='divcontent_eventos'>";
                 $content .= eventosTabla($smarty, $module_name, $local_templates_dir, $pDB, $arrConf, $infoToView);

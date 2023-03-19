@@ -611,6 +611,49 @@ function insertLogsNotificaciones($tipo="Error",$descripcion,$modulo, $accion){
 
 }
 
+function consultarMaxExtension($pDB){
+    $query = "SELECT MAX(CASE WHEN extension REGEXP '^[0-9]+$' THEN CAST(extension AS UNSIGNED) ELSE 0 END)+1 AS max_extension FROM users;";
+
+
+    $result = $pDB->getFirstRowQuery($query, true);
+
+    if ($result == FALSE) {
+        $pDB->errMsg = $pDB->errMsg;
+        return null;
+    }
+    return $result;     
+
+}
+
+function crearActualizarExtension($dsnAsterisk, $user, $id_user){
+    $pDB = new paloDB($dsnAsterisk);
+    $query = "SELECT * FROM acl_user WHERE id=?";
+
+
+    $result = $pDB->getFirstRowQuery($query, true, array("$id_user"));
+
+    if ($result == FALSE) {
+        $pDB->errMsg = $pDB->errMsg;
+        $result = false;
+    }
+     if($result["extension"] == "" || $result["extension"] == null ){
+        //no tiene extension
+        $maxima_ext = consultarMaxExtension($pDB);
+        $sql = 'INSERT INTO users (extension,name, voicemail, ringtimer)
+        VALUES (?, ?, ?, ?)';
+        $extension = $maxima_ext["max_extension"] < 3000 ? 3000: $maxima_ext["max_extension"];
+        $name = $extension."".$user;
+        $voicemail = "novm";
+        $ringtimer = 0;
+        
+        $pDB->genQuery($sql, array($extension, $name, $voicemail, $ringtimer));
+        return $extension;
+    }else{
+        return false;
+    }       
+    
+}
+
 function consultarRemoteConexion($dsnAsterisk){
     $pDB = new paloDB($dsnAsterisk);
     $id=1;
@@ -757,7 +800,7 @@ function insertAuditoriaToDB($data){
 function writeLOG($logFILE, $log)
 {
     /*echo("inside writelog function </br></br>".$logFILE."</br></br>");
-    echo("inside writelog function log </br></br>".$log."</br></br>");*/
+    echo("inside writelog function log </br></br>".$log."</br></br>"); */
 
 
     $getStringTypeAndUser = explode(":",$log);

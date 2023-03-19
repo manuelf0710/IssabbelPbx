@@ -1,6 +1,6 @@
 <?php
-/*ini_set('display_errors', 1);
-error_reporting(E_ALL); */
+ini_set('display_errors', 1);
+error_reporting(E_ALL); 
 //phpinfo();
 /* vim: set expandtab tabstop=4 softtabstop=4 shiftwidth=4:
   Codificación: UTF-8
@@ -234,24 +234,30 @@ if (isset($_POST['submit_login']) and !empty($_POST['input_user'])) {
 
             $id_user = $pACL->getIdUser($_POST['input_user']);
             $getRole = getMatchRole($ingreso[0]->ROL_ID);
-            echo("el id usuario inicial ".$id_user."<br>");
+
+             //$tieneExtension = consultarUserExtension($dsnAsterisk,$_POST['input_user']);
+             
+
+             //echo("tiene extension => ".json_encode($tieneExtension));
+             
 
                 if ($id_user !== false) {
-                    $r = $pACL->updateUser($id_user, $_POST['input_user'], $_POST['input_user']);
-                    echo("<br>entro for update method <br>");
+                    $crearExtension = crearActualizarExtension($dsnAsterisk, $_POST['input_user'], $id_user ); 
+
+                    $r = $pACL->updateUser($id_user, $_POST['input_user'], $_POST['input_user'],$crearExtension !== false? $crearExtension : null);
 
                     list($access_token, $refresh_token) = $iauthIssabel->acquire_jwt_token($_POST['input_user'], $_POST['input_pass']); 
+
                     $_SESSION['access_token']  = $access_token;
-                    $_SESSION['refresh_token'] = $refresh_token;
-            
+                    $_SESSION['refresh_token'] = $refresh_token;            
                     $_SESSION['issabel_user'] = $_POST['input_user'];
-                    $_SESSION['issabel_pass'] = $pass_md5;                      
+                    $_SESSION['issabel_pass'] = $pass_md5;                                         
                     header("Location: index.php");                
 
 
 
                 }else{
-                    $pACL->setUserExtension();
+                    //$pACL->setUserExtension();
 
                    $r = $pACL->createUser($_POST['input_user'], $ingreso[0]->ROL_NOMBRE, $pass_md5, $extension = NULL);
                    if (!is_null($id_user)) {
@@ -266,10 +272,14 @@ if (isset($_POST['submit_login']) and !empty($_POST['input_user'])) {
                         }
                     }
 
-                    echo("ingresa por crear usuario ".json_encode($getRole)."<br>");
+                    /*echo("ingresa por crear usuario ".json_encode($getRole)."<br>");
                     echo("in valor de iduser ".$id_user."<br>");
-                    echo("el valor de get role id = ".$getRole['id']);
+                    echo("el valor de get role id = ".$getRole['id']);*/
                     $id_user = $pACL->getIdUser($_POST['input_user']);
+
+                    $crearExtension = crearActualizarExtension($dsnAsterisk, $_POST['input_user'], $id_user ); 
+
+                    $ru = $pACL->updateUser($id_user, $_POST['input_user'], $_POST['input_user'],$crearExtension !== false? $crearExtension : null);                    
 
                     // Creo la membresia
                     $r = $pACL->addToGroup($id_user, $getRole['id']);
@@ -278,7 +288,6 @@ if (isset($_POST['submit_login']) and !empty($_POST['input_user'])) {
                     print_r($r);
 
                     list($access_token, $refresh_token) = $iauthIssabel->acquire_jwt_token($_POST['input_user'], $_POST['input_pass']);                     
-
                     $_SESSION['access_token']  = $access_token;
                     $_SESSION['refresh_token'] = $refresh_token;
             

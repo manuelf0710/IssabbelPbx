@@ -66,6 +66,8 @@ function _moduleContent(&$smarty, $module_name)
 
     if(getParameter("exportcsv") == "yes" || getParameter("exportpdf") == "yes" || getParameter("exportspreadsheet") == "yes"){
         $action = "isReport";
+        $user = isset($_SESSION['issabel_user']) ? $_SESSION['issabel_user'] : "unknown";
+        writeLOG("audit.log", 'Descarga '.$user.': Descarga de reporte auditorias. for '.$user.'  "auditorias" from '.$_SERVER["REMOTE_ADDR"]);        
     }
 
     switch ($action) {

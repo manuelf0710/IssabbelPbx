@@ -746,8 +746,8 @@ function insertAuditoriaToDB($data){
 
 function writeLOG($logFILE, $log)
 {
-    /*echo("inside writelog function </br></br>".$logFILE."</br></br>");
-    echo("inside writelog function log </br></br>".$log."</br></br>");*/
+    echo("inside writelog function </br></br>".$logFILE."</br></br>");
+    echo("inside writelog function log </br></br>".$log."</br></br>");
 
 
     $getStringTypeAndUser = explode(":",$log);

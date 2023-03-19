@@ -120,7 +120,7 @@ class paloSantoAuditorias_Table{
         }        
 
 
-        $query   = "SELECT * FROM notificaciones_auditorias where 1 $where LIMIT $limit OFFSET $offset";
+        $query   = "SELECT * FROM notificaciones_auditorias where 1 $where order by fecha desc LIMIT $limit OFFSET $offset";
 
 
         $result=$this->_DB->fetchTable($query, true, $arrParam);
