@@ -25,6 +25,7 @@ error_reporting(E_ALL);
   $Id: index.php, Thu 02 Jan 2020 10:38:55 AM EST, nicolas@issabel.com
 */
 
+
 function spl_issabel_class_autoload($sNombreClase)
 {
     if (!preg_match('/^\w+$/', $sNombreClase)) return;
@@ -74,6 +75,24 @@ load_default_timezone();
 
 session_name("issabelSession");
 session_start();
+/*
+if (!isset($_SESSION['inicio'])) {
+    $_SESSION['inicio'] = time(); // Almacena la fecha y hora actual en la variable de sesión 'inicio'
+  } else {
+    // Verifica si han pasado más de 10 minutos desde el inicio de la sesión
+    if (time() - $_SESSION['inicio'] > 600) {
+      // Si han pasado más de 10 minutos, destruye la sesión y redirige al usuario a la página de inicio de sesión
+      session_destroy();
+      session_name("issabelSession");
+      session_start();
+      header("Location: sessdel.php");
+      //header("Location: index.php");
+      exit;
+    } else {
+      // Si no han pasado más de 10 minutos, actualiza la fecha y hora de inicio de sesión
+      $_SESSION['inicio'] = time();
+    }
+  } */
 
 if (isset($_GET['logout']) && $_GET['logout'] == 'yes') {
     $user = isset($_SESSION['issabel_user']) ? $_SESSION['issabel_user'] : "unknown";
@@ -180,6 +199,8 @@ if (isset($_POST['input_code'])) {
 //- 1) SUBMIT. Si se hizo submit en el formulario de ingreso
 //-            autentico al usuario y lo ingreso a la sesion
 
+
+
 if (isset($_POST['submit_login']) and !empty($_POST['input_user'])) {
     include('modules/sec_2fa/libs/TwoFactorAuth.class.php');
     $pass_md5 = md5($_POST['input_pass']);
@@ -242,16 +263,21 @@ if (isset($_POST['submit_login']) and !empty($_POST['input_user'])) {
              
 
                 if ($id_user !== false) {
-                    $crearExtension = crearActualizarExtension($dsnAsterisk, $_POST['input_user'], $id_user ); 
+                    //$crearExtension = crearActualizarExtension($dsnAsterisk, $_POST['input_user'], $id_user ); 
+                    $crearExtension = false;
 
                     $r = $pACL->updateUser($id_user, $_POST['input_user'], $_POST['input_user'],$crearExtension !== false? $crearExtension : null);
 
                     list($access_token, $refresh_token) = $iauthIssabel->acquire_jwt_token($_POST['input_user'], $_POST['input_pass']); 
-
+                    $usuarioFop2 = consultarExtensionUser($dsnAsterisk, $_POST['input_user'], $id_user );
+                    if($usuarioFop2){
+                        $_SESSION['extension_pass'] = $usuarioFop2["secret"];
+                        $_SESSION['extension_user'] = $usuarioFop2["exten"];                          
+                    }
                     $_SESSION['access_token']  = $access_token;
                     $_SESSION['refresh_token'] = $refresh_token;            
                     $_SESSION['issabel_user'] = $_POST['input_user'];
-                    $_SESSION['issabel_pass'] = $pass_md5;                                         
+                    $_SESSION['issabel_pass'] = $pass_md5;                                                        
                     header("Location: index.php");                
 
 
@@ -277,22 +303,26 @@ if (isset($_POST['submit_login']) and !empty($_POST['input_user'])) {
                     echo("el valor de get role id = ".$getRole['id']);*/
                     $id_user = $pACL->getIdUser($_POST['input_user']);
 
-                    $crearExtension = crearActualizarExtension($dsnAsterisk, $_POST['input_user'], $id_user ); 
+                    //$crearExtension = crearActualizarExtension($dsnAsterisk, $_POST['input_user'], $id_user ); 
+                    $crearExtension = false;
 
                     $ru = $pACL->updateUser($id_user, $_POST['input_user'], $_POST['input_user'],$crearExtension !== false? $crearExtension : null);                    
 
                     // Creo la membresia
                     $r = $pACL->addToGroup($id_user, $getRole['id']);
 
-                    echo("<br>valor de r <br>");
-                    print_r($r);
 
                     list($access_token, $refresh_token) = $iauthIssabel->acquire_jwt_token($_POST['input_user'], $_POST['input_pass']);                     
+                    $usuarioFop2 = consultarExtensionUser($dsnAsterisk, $_POST['input_user'], $id_user );
+                    if($usuarioFop2){
+                        $_SESSION['extension_pass'] = $usuarioFop2["secret"];
+                        $_SESSION['extension_user'] = $usuarioFop2["exten"];                          
+                    }
                     $_SESSION['access_token']  = $access_token;
                     $_SESSION['refresh_token'] = $refresh_token;
             
                     $_SESSION['issabel_user'] = $_POST['input_user'];
-                    $_SESSION['issabel_pass'] = $pass_md5;                      
+                    $_SESSION['issabel_pass'] = $pass_md5;                                        
                     header("Location: index.php");         
 
 
@@ -332,7 +362,8 @@ if (isset($_POST['submit_login']) and !empty($_POST['input_user'])) {
                         $_SESSION['refresh_token'] = $refresh_token;
                 
                         $_SESSION['issabel_user'] = $_POST['input_user'];
-                        $_SESSION['issabel_pass'] = $pass_md5;  
+                        $_SESSION['issabel_pass'] = $pass_md5; 
+                         
                        header("Location: index.php");                                             
                     }
                 }

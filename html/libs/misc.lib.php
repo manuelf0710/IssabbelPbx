@@ -622,8 +622,131 @@ function consultarMaxExtension($pDB){
         return null;
     }
     return $result;     
+}
+
+function insertExtensionSIP($pDB, $extension, $descripcion){
+    $sql1 = "insert into sip (id,keyword,data,flags) values($extension, 'secret', '123prueba','2')";
+    $pDB->genQuery($sql1);
+    $sql1 = "insert into sip (id,keyword,data,flags) values($extension, 'dtmfmode', 'rfc2833','3')";
+    $pDB->genQuery($sql1);    
+    $sql1 = "insert into sip (id,keyword,data,flags) values($extension, 'canreinvite', 'no','4')";
+    $pDB->genQuery($sql1);    
+    $sql1 = "insert into sip (id,keyword,data,flags) values($extension, 'context', 'from-internal','5')";
+    $pDB->genQuery($sql1);    
+    $sql1 = "insert into sip (id,keyword,data,flags) values($extension, 'host', 'dynamic','6')";
+    $pDB->genQuery($sql1);    
+    $sql1 = "insert into sip (id,keyword,data,flags) values($extension, 'trustrpid', 'yes','7')";
+    $pDB->genQuery($sql1);    
+    $sql1 = "insert into sip (id,keyword,data,flags) values($extension, 'sendrpid', 'no','8')";
+    $pDB->genQuery($sql1);    
+    $sql1 = "insert into sip (id,keyword,data,flags) values($extension, 'type', 'friend','9')";
+    $pDB->genQuery($sql1);    
+    $sql1 = "insert into sip (id,keyword,data,flags) values($extension, 'nat', 'yes','10')";
+    $pDB->genQuery($sql1);    
+    $sql1 = "insert into sip (id,keyword,data,flags) values($extension, 'port', '5060','11')";
+    $pDB->genQuery($sql1);    
+    $sql1 = "insert into sip (id,keyword,data,flags) values($extension, 'qualify', 'yes','12')";
+    $pDB->genQuery($sql1);    
+    $sql1 = "insert into sip (id,keyword,data,flags) values($extension, 'qualifyfreq', '60','13')";
+    $pDB->genQuery($sql1);    
+    $sql1 = "insert into sip (id,keyword,data,flags) values($extension, 'transport', 'wss,ws,udp,tcp,tls','14')";
+    $pDB->genQuery($sql1);    
+    $sql1 = "insert into sip (id,keyword,data,flags) values($extension, 'avpf', 'yes','15')";
+    $pDB->genQuery($sql1);    
+    $sql1 = "insert into sip (id,keyword,data,flags) values($extension, 'force_avp', 'yes','16')";
+    $pDB->genQuery($sql1);    
+    $sql1 = "insert into sip (id,keyword,data,flags) values($extension, 'icesupport', 'yes','17')";
+    $pDB->genQuery($sql1);    
+    $sql1 = "insert into sip (id,keyword,data,flags) values($extension, 'dtlsenable', 'yes','18')";
+    $pDB->genQuery($sql1);    
+    $sql1 = "insert into sip (id,keyword,data,flags) values($extension, 'dtlsverify', 'fingerprint','19')";
+    $pDB->genQuery($sql1);    
+    $sql1 = "insert into sip (id,keyword,data,flags) values($extension, 'dtlssetup', 'actpass','20')";
+    $pDB->genQuery($sql1); 
+    
+    $sql1 = "insert into sip (id,keyword,data,flags) values($extension, 'dtlscertfile', '/etc/asterisk/keys/asterisk.pem','21')";
+    $pDB->genQuery($sql1);  
+    $sql1 = "insert into sip (id,keyword,data,flags) values($extension, 'dtlsprivatekey', '/etc/asterisk/keys/asterisk.pem','22')";
+    $pDB->genQuery($sql1);  
+    $sql1 = "insert into sip (id,keyword,data,flags) values($extension, 'encryption', 'yes','23')";
+    $pDB->genQuery($sql1);  
+    $sql1 = "insert into sip (id,keyword,data,flags) values($extension, 'callgroup', '','24')";
+    $pDB->genQuery($sql1);  
+    $sql1 = "insert into sip (id,keyword,data,flags) values($extension, 'pickupgroup', '','25')";
+    $pDB->genQuery($sql1);          
+    $sql1 = "insert into sip (id,keyword,data,flags) values($extension, 'disallow', '','26')";
+    $pDB->genQuery($sql1);  
+    $sql1 = "insert into sip (id,keyword,data,flags) values($extension, 'allow', '','27')";
+    $pDB->genQuery($sql1);  
+    $sql1 = "insert into sip (id,keyword,data,flags) values($extension, 'dial', 'SIP/$extension','28')";
+    $pDB->genQuery($sql1);  
+    $sql1 = "insert into sip (id,keyword,data,flags) values($extension, 'accountcode', '','29')";
+    $pDB->genQuery($sql1);  
+    $sql1 = "insert into sip (id,keyword,data,flags) values($extension, 'mailbox', '$extension@device','30')";
+    $pDB->genQuery($sql1);  
+    $sql1 = "insert into sip (id,keyword,data,flags) values($extension, 'deny', '0.0.0.0/0.0.0.0','31')";
+    $pDB->genQuery($sql1);  
+
+
+    $sql1 = "insert into sip (id,keyword,data,flags) values($extension, 'permit', '0.0.0.0/0.0.0.0','32')";
+    $pDB->genQuery($sql1);  
+
+    $sql1 = "insert into sip (id,keyword,data,flags) values($extension, 'account', $extension,'33')";
+    $pDB->genQuery($sql1);  
+
+    $sql1 = "insert into sip (id,keyword,data,flags) values($extension, 'callerid', 'device <$extension>','34')";
+    $pDB->genQuery($sql1);  
 
 }
+
+function createDevice($pDB, $extension, $description){
+    $query = "select * from devices where id=?";
+    $result = $pDB->getFirstRowQuery($query, true,array("$extension"));
+
+    echo("elquery ".$query."</br>");
+    if($result == false){
+        $sql = 'INSERT INTO devices (id,tech, dial, devicetype,user,description) VALUES (?, ?, ?, ?,?,?)';
+        $pDB->genQuery($sql, array($extension, 'sip', 'SIP/'.$extension, 'fixed', $extension, $description));
+        echo("creando el device");
+
+        insertExtensionSIP($pDB, $extension, $description);
+        
+
+
+    }
+}
+
+function consultarExtensionUser($dsnAsterisk, $user, $id_user){
+    $pDB = new paloDB($dsnAsterisk);
+    $query = "SELECT * FROM acl_user WHERE id=?";
+
+    $result = $pDB->getFirstRowQuery($query, true, array("$id_user"));
+
+    if ($result == FALSE) {
+        echo("sin resultados");
+        $pDB->errMsg = $pDB->errMsg;
+        return false;
+    }
+
+
+    if ($result["extension"] == "" && $result["extension"] == null) {
+        return false;
+    }else{
+        $query2 = "SELECT * FROM fop2users WHERE exten=?";
+
+        $result2 = $pDB->getFirstRowQuery($query2, true, array("".$result["extension"])); 
+        if ($result2 == FALSE) {
+            $pDB->errMsg = $pDB->errMsg;
+            return false;
+        }    
+        if ($result2["exten"] != "" && $result2["exten"] != null) {
+            return $result2;
+        }else{
+            return false;
+        }       
+    }   
+}
+
 
 function crearActualizarExtension($dsnAsterisk, $user, $id_user){
     $pDB = new paloDB($dsnAsterisk);
@@ -636,7 +759,7 @@ function crearActualizarExtension($dsnAsterisk, $user, $id_user){
         $pDB->errMsg = $pDB->errMsg;
         $result = false;
     }
-     if($result["extension"] == "" || $result["extension"] == null ){
+     if($result["extension"] == "" && $result["extension"] == null ){       
         //no tiene extension
         $maxima_ext = consultarMaxExtension($pDB);
         $sql = 'INSERT INTO users (extension,name, voicemail, ringtimer)
@@ -645,8 +768,11 @@ function crearActualizarExtension($dsnAsterisk, $user, $id_user){
         $name = $extension."".$user;
         $voicemail = "novm";
         $ringtimer = 0;
+
+         /*create device adn more functions */
         
         $pDB->genQuery($sql, array($extension, $name, $voicemail, $ringtimer));
+        createDevice($pDB, $extension, $name);
         return $extension;
     }else{
         return false;

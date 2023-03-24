@@ -233,6 +233,13 @@ class paloSantoNavigation extends paloSantoNavigationBase
         $link = $this->_menunodes[$selectedModule]['Link'];
         $link = str_replace('{NAME_SERVER}', $_SERVER['SERVER_NAME'], $link);
         $link = str_replace('{IP_SERVER}', $_SERVER['SERVER_ADDR'], $link);
+
+        if($link=="fop2" && isset($_SESSION['extension_pass']) && isset($_SESSION['extension_user'])
+                && $_SESSION['extension_pass'] != "" && $_SESSION['extension_user'] != "")
+        {
+            $link = $link."?exten=".$_SESSION['extension_user']."&pass=".$_SESSION['extension_pass'];
+        }
+
         return  "<iframe marginwidth=\"0\" marginheight=\"0\" class=\"frameModule\"".
                 "\" src=\"$link\" name=\"myframe\" id=\"myframe\" frameborder=\"0\"".
                 " width=\"100%\" onLoad=\"calcHeight();\"></iframe>";
