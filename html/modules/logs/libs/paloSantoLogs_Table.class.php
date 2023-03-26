@@ -110,6 +110,7 @@ class paloSantoLogs_Table{
         }  
         $query   = "SELECT * FROM notificaciones_logs where 1 $where order by id desc LIMIT $limit OFFSET $offset";
 
+
         $result=$this->_DB->fetchTable($query, true, $arrParam);
 
         if($result==FALSE){

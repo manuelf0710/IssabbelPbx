@@ -85,10 +85,12 @@ class paloSantoevento_tabla{
             
         }        
 
-        $query   = "SELECT count(*)
-      FROM notificaciones_campania nc 
-     inner join  notificaciones_llamadas n1 on nc.id = n1.campania_id
-     where 1 $where";
+        $query   = "select count(*) 
+        from 
+        (SELECT count(*)
+              FROM notificaciones_campania nc 
+             inner join  notificaciones_llamadas n1 on nc.id = n1.campania_id
+             where 1 $where  group by n1.campania_id, n1.eve_id ) a";
 
         $result=$this->_DB->getFirstRowQuery($query, false, $arrParam);
 
@@ -156,7 +158,7 @@ class paloSantoevento_tabla{
         nc.id campania
       FROM notificaciones_campania nc 
      inner join  notificaciones_llamadas n1 on nc.id = n1.campania_id
-     where 1 $where group by n1.campania_id order by campania_id desc LIMIT $limit OFFSET $offset";
+     where 1 $where group by n1.campania_id, n1.eve_id order by campania_id desc LIMIT $limit OFFSET $offset";
 
         $result=$this->_DB->fetchTable($query, true, $arrParam);
 

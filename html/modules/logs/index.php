@@ -71,6 +71,7 @@ function _moduleContent(&$smarty, $module_name)
             break;
         default: // view_form
             $content = viewFormLogs2($smarty, $module_name, $local_templates_dir, $pDB, $arrConf);
+            $content .= reportLogs_Table($smarty, $module_name, $local_templates_dir, $pDB, $arrConf);
             break;
     }
     return $content;
@@ -268,6 +269,11 @@ function getAction()
         $oGrid->setTotal($total);
         $offset = $oGrid->calculateOffset();
     }
+    $first_record = $offset + 1;
+    $last_record = $offset + $limit;
+    if($last_record > $total) {
+        $last_record = $total;
+    }       
 
     $arrResult =$pLogs_Table->getLogs_Table($limit, $offset, $filter_field, $filter_value, $postFilter);
 
@@ -290,7 +296,13 @@ function getAction()
     //end section filter
 
     //$oGrid->showFilter(trim($htmlFilter));
-    $content = $oGrid->fetchGrid();
+    if( $total > 0){
+        $content = "<div style='margin-top:10px;'>mostrando $first_record a $last_record de $total registros</div>";
+    }else{
+        $content = "<div style='margin-top:10px;'>0 registros encontrados</div>";
+    }
+
+    $content .= $oGrid->fetchGrid();
     //end grid parameters
 
     return $content;

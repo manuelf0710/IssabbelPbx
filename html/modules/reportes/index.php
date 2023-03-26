@@ -426,8 +426,8 @@ function eventosTablaDetalle($smarty, $module_name, $local_templates_dir, &$pDB,
 
     //$oGrid->showFilter(trim($htmlFilter));
     
-    //$content = "<div style='margin-top:10px;'>mostrando $first_record a $last_record de $total registros</div>";
-    $content = $oGrid->fetchGrid();
+    $content = "<div style='margin-top:10px;'>mostrando $first_record a $last_record de $total registros</div>";
+    $content .= $oGrid->fetchGrid();
     //end grid parameters
 
     return $content;
@@ -530,8 +530,8 @@ function eventosTabla($smarty, $module_name, $local_templates_dir, &$pDB, $arrCo
 
     //$oGrid->showFilter(trim($htmlFilter));
     
-    //$content = "<div style='margin-top:10px;'>mostrando $first_record a $last_record de $total registros</div>";
-    $content = $oGrid->fetchGrid();
+    $content = "<div style='margin-top:10px;'>mostrando $first_record a $last_record de $total registros</div>";
+    $content .= $oGrid->fetchGrid();
     //end grid parameters
 
     return $content;
@@ -634,6 +634,11 @@ function otrosTabla($smarty, $module_name, $local_templates_dir, &$pDB, $arrConf
         $oGrid->setTotal($total);
         $offset = $oGrid->calculateOffset();
     }
+    $first_record = $offset + 1;
+    $last_record = $offset + $limit;
+    if($last_record > $total) {
+        $last_record = $total;
+    }
 
     $arrResult =$potros_tabla->getotros_tabla($limit, $offset, $filter_field, $filter_value, $postFilter);
 
@@ -659,7 +664,12 @@ function otrosTabla($smarty, $module_name, $local_templates_dir, &$pDB, $arrConf
     //end section filter
 
     //$oGrid->showFilter(trim($htmlFilter));
-    $content = $oGrid->fetchGrid();
+    if( $total > 0){
+        $content = "<div style='margin-top:10px;'>mostrando $first_record a $last_record de $total registros</div>";
+    }else{
+        $content = "<div style='margin-top:10px;'>0 registros encontrados</div>";
+    }
+    $content .= $oGrid->fetchGrid();
     //end grid parameters
 
     return $content;

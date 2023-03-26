@@ -265,6 +265,11 @@ function reportAuditorias_Table($smarty, $module_name, $local_templates_dir, &$p
         $oGrid->setTotal($total);
         $offset = $oGrid->calculateOffset();
     }
+    $first_record = $offset + 1;
+    $last_record = $offset + $limit;
+    if($last_record > $total) {
+        $last_record = $total;
+    }    
 
     $arrResult =$pAuditorias_Table->getAuditorias_Table($limit, $offset, $filter_field, $filter_value, $postFilter);
 
@@ -286,7 +291,12 @@ function reportAuditorias_Table($smarty, $module_name, $local_templates_dir, &$p
 
 
     $oGrid->showFilter(trim($htmlFilter)); */
-    $content = $oGrid->fetchGrid();
+    if( $total > 0){
+        $content = "<div style='margin-top:10px;'>mostrando $first_record a $last_record de $total registros</div>";
+    }else{
+        $content = "<div style='margin-top:10px;'>0 registros encontrados</div>";
+    }
+    $content .= $oGrid->fetchGrid();
     //end grid parameters
 
     return $content;

@@ -74,11 +74,7 @@
 
                         </select>
                     </td>
-                </tr>
-                <tr class="letra12">
-                    <td align="left"></td>
-                    <td align="left"></td>
-                    <td align="left"><input class="button" type="submit" name="save_new" value="Aceptar"></td>
+                    <td align="right" colspan="2"><input class="button" type="submit" name="save_new" value="Aceptar"></td>                    
                 </tr>
 
             </table>
@@ -116,11 +112,7 @@
                     <input type="text" name="id_eventootros" id="id_eventootros" value="{$id_eventootros}">
   
                     </td>
-                </tr>
-                <tr class="letra12">
-                    <td align="left"></td>
-                    <td align="left"></td>
-                    <td align="left"><input class="button" type="submit" name="save_new" value="Aceptar"></td>
+                    <td align="right"><input class="button" type="submit" name="save_new" value="Aceptar"></td>                    
                 </tr>
             </table>
         </fieldset>
