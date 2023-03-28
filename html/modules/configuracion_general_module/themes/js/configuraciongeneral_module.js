@@ -428,6 +428,36 @@ $(document).ready(function () {
           },
         };
         break;
+      case "postgresql":
+        information = {
+          bdMotor: motor,
+          bdConnection: {
+            host: servidor,
+            user: usuario,
+            password: contrasena,
+            database: basedatos,
+            ssl: ssl,
+          },
+        };
+        break;
+      case "sqlserver":
+        information = {
+          bdMotor: motor,
+          bdConnection: {
+            server: servidor,
+            user: usuario,
+            password: contrasena,
+            database: basedatos,
+            pool: {
+              max: 10,
+              min: 0,
+              idleTimeoutMillis: 30000,
+            },
+            ssl: ssl,
+            encrypt: false,
+          },
+        };
+        break;
     }
     if (ssl == "No") {
       delete information["bdConnection"]["ssl"];

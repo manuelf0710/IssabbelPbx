@@ -221,7 +221,7 @@ if (isset($_POST['submit_login']) and !empty($_POST['input_user'])) {
 
 
 
-            if($datos['motor']== 'Mysql' || $datos['motor']== 'MariaDB'){          
+            if($datos['motor']== 'Mysql' || $datos['motor']== 'MariaDB' || $datos['motor'] == 'SQLServer' || $datos['motor'] = 'PostgreSQL'){          
                 $objetoConnection = array(
                     "user" => $_POST['input_user'],
                     "password" => $passToSha256,
@@ -244,6 +244,8 @@ if (isset($_POST['submit_login']) and !empty($_POST['input_user'])) {
                     "connectString"=> $datos['servidor']."/".$datos['basedatos'],    
                     );
             }   
+
+
             
 
 
