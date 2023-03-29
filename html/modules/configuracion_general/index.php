@@ -305,7 +305,7 @@ function createFieldForm()
             "VALIDATION_EXTRA_PARAM" => ""
         ),
         "barridos"   => array(
-            "LABEL"                  => _tr("barridos"),
+            "LABEL"                  => _tr("Barridos"),
             "REQUIRED"               => "no",
             "INPUT_TYPE"             => "SELECT",
             "INPUT_EXTRA_PARAM"      => $arrOptionsBarridos,

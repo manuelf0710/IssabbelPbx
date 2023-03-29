@@ -190,9 +190,9 @@
                 <table>
                     <tr>
                         <td class="letra12">
-                            <b>Fecha Busqueda</b>
+                            <b>Fecha Búsqueda</b>
                             <br>
-                            YYYY-mm-dd H:i:s
+                            YYYY-mm-dd HH:MM:SS
                         </td>
                         <td>
                             <input class="calendar-configgeneral" type="text" id="fecha_busqueda" name="fecha_busqueda"
