@@ -24,7 +24,7 @@
 global $arrLangModule;
 $arrLangModule=array(
 "Reporte Notificacion Eventos" => "Reporte Notificacion Eventos",
-"criterio" => "Seleccione su criterio de busqueda",
+"criterio" => "Seleccione su criterio de búsqueda",
 "eventoTabla" => "Reporte Eventos",
 "otrosTabla" => "Reporte Otros",
 "fecha_inicial" => "Fecha Inicial"

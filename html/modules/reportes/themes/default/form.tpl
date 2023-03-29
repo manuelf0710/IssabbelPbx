@@ -88,13 +88,13 @@
             <legend><span> Otros </span> </legend>
             <table class="tabForm" cellpading="10" width="700" style="margin-top:2em">
                 <tr class="letra12">
-                    <td align="left"><b>Nus: </b></td>
+                    <td align="left"><b>NUS: </b></td>
                     <td align="left">
                     <input type="text" name="nus" id="nus" value="{$nus}">
                     </td>
                 </tr>
                 <tr class="letra12">
-                    <td align="left"><b>Telefono: </b></td>
+                    <td align="left"><b>Teléfono: </b></td>
                     <td align="left">
                     <input type="number" name="telefono" id="telefono" value="{$telefono}">
                     </td>

@@ -297,7 +297,7 @@ function getAction()
 
     //$oGrid->showFilter(trim($htmlFilter));
     if( $total > 0){
-        $content = "<div style='margin-top:10px;'>mostrando $first_record a $last_record de $total registros</div>";
+        $content = "<div style='margin-top:10px;'>Mostrando $first_record a $last_record de $total registros</div>";
     }else{
         $content = "<div style='margin-top:10px;'>0 registros encontrados</div>";
     }
