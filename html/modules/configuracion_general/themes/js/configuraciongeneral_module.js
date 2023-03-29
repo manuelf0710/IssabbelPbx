@@ -36,54 +36,54 @@ $(document).ready(function () {
   $("#btnguardardatos").click(function () {
     validarDestinos = validarformDestinos();
     if (validarDestinos > 0) {
-      alert("debe ingresar un destino para el evento marcado");
+      alert("Debe ingresar un destino para el evento marcado");
       return;
     }
 
     if ($("#cant_lineas").val() == "") {
-      alert("debe ingresar la cantidad de líneas");
+      alert("Debe ingresar la cantidad de líneas");
       return;
     }
     if ($("#barridos").val() == "") {
-      alert("debe ingresar el campo barridos");
+      alert("Debe ingresar el campo barrido");
       return;
     }
     if ($("#fecha_busqueda").val() == "") {
-      alert("debe ingresar una fecha de busqueda");
+      alert("Debe ingresar una fecha de búsqueda");
       return;
     }
     if ($("#horainicialnot").val() == "") {
-      alert("debe ingresar la hora inicial notificación");
+      alert("Debe ingresar la hora inicial notificación");
       return;
     }
     if ($("#minutoinicialnot").val() == "") {
-      alert("debe ingresar el minuto inicial notificación");
+      alert("Debe ingresar el minuto inicial notificación");
       return;
     }
     if ($("#horafinalnot").val() == "") {
-      alert("debe ingresar la hora final notificación");
+      alert("Debe ingresar la hora final notificación");
       return;
     }
     if ($("#minutofinalnot").val() == "") {
-      alert("debe ingresar el minuto final notificación");
+      alert("Debe ingresar el minuto final notificación");
       return;
     }
     if ($("#diainicialnot").val() == "") {
-      alert("debe ingresar el dia inicial notificación");
+      alert("Debe ingresar el día inicial notificación");
       return;
     }
     if ($("#diafinalnot").val() == "") {
-      alert("debe ingresar el dia final notificación");
+      alert("Debe ingresar el día final notificación");
       return;
     }
 
     /*if (validateOutboundRoutes() == 0) {
-      alert("debe marcar alguna ruta de plan de marcado");
+      alert("Debe marcar alguna ruta de plan de marcado");
       return;
     } */
 
     if ($("#notificacion_troncal").val() == "") {
-      alert("debe selecciona un plan de marcado");
+      alert("Debe selecciona un plan de marcado");
       return;
     }
 

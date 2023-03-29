@@ -60,18 +60,18 @@ $(document).ready(function () {
         var prueba = response;
         if (response && messageContainSuccess(response.json)) {
           $("#conexionexitosa").css("display", "block");
-          alert("conexion exitosa");
+          alert("Conexion exitosa");
 
           console.log("response.json = ", response.json);
           document.form_configuraciongeneral.action = "index.php?menu=configuracion_general_module&action=save";
           document.form_configuraciongeneral.submit();
         } else {
           $("#conexionnoexitosa").text("conexion no exitosa " + response.json);
-          alert("conexion no exitosa " + response.json);
+          alert("Conexion no exitosa " + response.json);
         }
       })
       .catch((errno) => {
-        console.log("ocurrio un error ", errno);
+        console.log("Ocurrio un error ", errno);
       });
 
     /*
@@ -145,17 +145,17 @@ $(document).ready(function () {
       success: function (data, textStatus, xhr) {
         if (xhr.status == 200 && data && messageContainSuccess(data)) {
           $("#conexionexitosa").css("display", "block");
-          alert("conexion exitosa");
+          alert("Conexion exitosa");
           document.form_configuraciongeneral.action = "index.php?menu=configuracion_general_module&action=save";
           document.form_configuraciongeneral.submit();
         } else {
           $("#conexionnoexitosa").text("conexion no exitosa " + JSON.stringify(data));
-          alert("conexion no exitosa " + JSON.stringify(data));
+          alert("Conexion no exitosa " + JSON.stringify(data));
         }
       },
       error: function (data, textStatus, xhr) {
         $("#conexionnoexitosa").text("conexion no exitosa " + JSON.stringify(data));
-        alert("conexion no exitosa " + JSON.stringify(data));
+        alert("Conexion no exitosa " + JSON.stringify(data));
       },
       processData: false,
       type: "POST",
@@ -177,7 +177,7 @@ $(document).ready(function () {
     if (validateOmsSave() == false) {
       createConnection();
     } else {
-      alert("debe ingresar todos los valores requeridos");
+      alert("Debe ingresar todos los valores requeridos");
     }
   });
 
@@ -221,7 +221,7 @@ $(document).ready(function () {
         var prueba = response;
         if (response && messageContainSuccess(response.json)) {
           $("#conexionexitosa").css("display", "block");
-          alert("conexion exitosa");
+          alert("Conexion exitosa");
 
           console.log("response.json = ", response.json);
           /*document.form_configuraciongeneral.action = "index.php?menu=configuracion_general_module&action=saveLocal";
@@ -238,7 +238,7 @@ $(document).ready(function () {
           );
         } else {
           $("#conexionnoexitosa").text("conexion no exitosa " + response.json);
-          alert("conexion no exitosa " + response.json);
+          alert("Conexion no exitosa " + response.json);
         }
       })
       .catch((errno) => {
@@ -253,7 +253,7 @@ $(document).ready(function () {
       /*document.form_configuraciongeneral.action = "index.php?menu=configuracion_general_module&action=saveLocal";
       document.form_configuraciongeneral.submit(); */
     } else {
-      alert("debe ingresar todos los valores requeridos");
+      alert("Debe ingresar todos los valores requeridos");
     }
   });
 
