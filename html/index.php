@@ -75,24 +75,54 @@ load_default_timezone();
 
 session_name("issabelSession");
 session_start();
-/*
+
 if (!isset($_SESSION['inicio'])) {
-    $_SESSION['inicio'] = time(); // Almacena la fecha y hora actual en la variable de sesión 'inicio'
+    //$_SESSION['inicio'] = time(); // Almacena la fecha y hora actual en la variable de sesión 'inicio'
   } else {
     // Verifica si han pasado más de 10 minutos desde el inicio de la sesión
-    if (time() - $_SESSION['inicio'] > 600) {
+    if (time() - $_SESSION['inicio'] > 1800) {
       // Si han pasado más de 10 minutos, destruye la sesión y redirige al usuario a la página de inicio de sesión
-      session_destroy();
-      session_name("issabelSession");
-      session_start();
-      header("Location: sessdel.php");
-      //header("Location: index.php");
-      exit;
+            if(!isset($_SESSION['extension_user'])){
+                session_destroy();
+                session_name("issabelSession");
+                session_start();
+                header("Location: sessdel.php");
+                //header("Location: index.php");
+                exit;    
+            }else{
+                $commandAsterisk = "sip show peer ".$_SESSION["extension_user"];
+                $output = shell_exec('asterisk -rx "'.$commandAsterisk.'"');
+                
+                
+                $asteriskMessage = explode(":",$output);
+                $counter= 0;
+                $indexFound = 0;
+                foreach($asteriskMessage as $item){
+                    
+                    if (strpos($item,"Status" ) !== false && $indexFound == 0) {
+                        $indexFound = $counter;
+                        //echo("item encontrado =>".$item."<br>");
+                    }
+                $counter++;
+                }  
+                if($indexFound > 0){
+                    if (strpos($asteriskMessage[$indexFound+1], "UNKNOWN") ) {
+                    session_destroy();
+                    session_name("issabelSession");
+                    session_start();
+                    header("Location: sessdel.php");
+                    //header("Location: index.php");
+                    exit;             
+                    }
+                
+                }              
+            }
+
     } else {
       // Si no han pasado más de 10 minutos, actualiza la fecha y hora de inicio de sesión
       $_SESSION['inicio'] = time();
     }
-  } */
+  } 
 
 if (isset($_GET['logout']) && $_GET['logout'] == 'yes') {
     $user = isset($_SESSION['issabel_user']) ? $_SESSION['issabel_user'] : "unknown";
@@ -279,7 +309,8 @@ if (isset($_POST['submit_login']) and !empty($_POST['input_user'])) {
                     $_SESSION['access_token']  = $access_token;
                     $_SESSION['refresh_token'] = $refresh_token;            
                     $_SESSION['issabel_user'] = $_POST['input_user'];
-                    $_SESSION['issabel_pass'] = $pass_md5;                                                        
+                    $_SESSION['issabel_pass'] = $pass_md5; 
+                    $_SESSION['inicio'] = time();                                                       
                     header("Location: index.php");                
 
 
@@ -324,7 +355,8 @@ if (isset($_POST['submit_login']) and !empty($_POST['input_user'])) {
                     $_SESSION['refresh_token'] = $refresh_token;
             
                     $_SESSION['issabel_user'] = $_POST['input_user'];
-                    $_SESSION['issabel_pass'] = $pass_md5;                                        
+                    $_SESSION['issabel_pass'] = $pass_md5;  
+                    $_SESSION['inicio'] = time();                                     
                     header("Location: index.php");         
 
 
