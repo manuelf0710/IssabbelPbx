@@ -222,7 +222,7 @@ function createFieldForm()
 {
     $arrOptions = array('desactivar' => 'Desactivar', 'activar' => 'Activar');
     $arrOptionsBarridos = array('' => 'Seleccione...', '1' => '1', '2' => '2', '3' => '3', '4' => '4', '5' => '5');
-    $arrOptionsMotor = array('' => 'Seleccione...', 'Oracle' => 'Oracle', 'PostgreSQL' => 'PostgreSQL', 'Mysql' => 'Mysql', 'SQLServer'=>'SQLServer');
+    $arrOptionsMotor = array('' => 'Seleccione...', 'Mysql' => 'Mysql', 'Oracle' => 'Oracle', 'PostgreSQL' => 'PostgreSQL', 'SQLServer'=>'SQLServer');
     $arrOptionsMotorMariaDB = array('MariaDB' => 'MariaDB');
     $arrOptionsActivo = array('' => 'Seleccione...', 'Activo' => 'Activo', 'Inactivo' => 'Inactivo');
     $arrOptionsSSL = array('' => 'Seleccione...', 'Si' => 'Si', 'No' => 'No');
