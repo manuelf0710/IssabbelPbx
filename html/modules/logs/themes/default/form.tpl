@@ -36,6 +36,17 @@
         <tr class="letra12">
             <td align="left"><b>{$tipo.LABEL}: <span class="required">*</span></b></td>
             <td align="left">{$tipo.INPUT}</td>
+            <td align="left"><b>Módulo</b></td>
+            <td align="left">
+                <select name="modulo" id="modulo">
+                    <option value="php" {if "php" == $modulo}selected{/if}>PHP</option>
+                    <option value="asterisk" {if "asterisk" == $modulo}selected{/if}>Asterisk</option>
+                    <option value="apache" {if "apache" == $modulo}selected{/if}>Apache</option>
+                    <option value="cronjob" {if "cronjob" == $modulo}selected{/if}>Notificación Eventos</option>
+                    <option value="Auditorias" {if "Auditorias" == $modulo}selected{/if}>Auditorias</option>
+                    <option value="conexionbd" {if "conexionbd" == $modulo}selected{/if}>Conexión a Base de datos</option>
+                </select>
+            </td>
         </tr>
         <tr class="letra12">
             <td colspan="4" align="right">

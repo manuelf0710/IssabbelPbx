@@ -76,7 +76,10 @@ class paloSantoLogs_Table{
             }   
             if($postFilter['tipo']!= ''){
                 $where .= " and tipo =  '".$postFilter['tipo']."'";
-            }                    
+            } 
+            if($postFilter['modulo']!= ''){
+                $where .= " and modulo =  '".$postFilter['modulo']."'";
+            }                                
         }        
 
         $query   = "SELECT COUNT(*) FROM notificaciones_logs where 1 $where";
@@ -106,7 +109,10 @@ class paloSantoLogs_Table{
             }   
             if($postFilter['tipo']!= ''){
                 $where .= " and tipo <=  '".$postFilter['tipo']."'";
-            }                    
+            }   
+            if($postFilter['modulo']!= ''){
+                $where .= " and modulo =  '".$postFilter['modulo']."'";
+            }                              
         }  
         $query   = "SELECT * FROM notificaciones_logs where 1 $where order by id desc LIMIT $limit OFFSET $offset";
 

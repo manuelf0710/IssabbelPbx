@@ -64,20 +64,82 @@ function _moduleContent(&$smarty, $module_name)
     $action = getAction();
     $content = "";
 
+    $modulo = getParameter("modulo");
+    if(!$modulo){ $modulo = "cronjob";}
+    $modulesFiles = array("cronjob","Auditorias","conexionbd");
+
+
+
+ 
+
     switch ($action) {
         case "save_new":
-            $content = saveNewLogs2($smarty, $module_name, $local_templates_dir, $pDB, $arrConf);
-            $content .= reportLogs_Table($smarty, $module_name, $local_templates_dir, $pDB, $arrConf);
+            $content = saveNewLogs2($smarty, $module_name, $local_templates_dir, $pDB, $arrConf, $modulo);
+            if (in_array($modulo, $modulesFiles)) {
+                $content .= reportLogs_Table($smarty, $module_name, $local_templates_dir, $pDB, $arrConf, $modulo);
+            } else{
+                $content .= reportLogsFiles_Table($smarty, $module_name, $local_templates_dir, $pDB, $arrConf, $modulo);
+            }
+                         
             break;
         default: // view_form
-            $content = viewFormLogs2($smarty, $module_name, $local_templates_dir, $pDB, $arrConf);
-            $content .= reportLogs_Table($smarty, $module_name, $local_templates_dir, $pDB, $arrConf);
+            $content = viewFormLogs2($smarty, $module_name, $local_templates_dir, $pDB, $arrConf, $modulo);
+            if (in_array($modulo, $modulesFiles)) {
+                $content .= reportLogs_Table($smarty, $module_name, $local_templates_dir, $pDB, $arrConf, $modulo);
+            } else{
+                $content .= reportLogsFiles_Table($smarty, $module_name, $local_templates_dir, $pDB, $arrConf, $modulo);
+            }
             break;
     }
     return $content;
 }
 
-function viewFormLogs2($smarty, $module_name, $local_templates_dir, &$pDB, $arrConf)
+function readErrorLogAsterisk(){
+
+}
+
+function readErrorLogPhp(){
+
+}
+
+function readErrorLogApache(){
+
+    $log_file = '/var/log/httpd/error_log';
+    $log_data = file($log_file);
+    
+    // Obtener las últimas 200 líneas del archivo de registro
+    $log_data = array_slice($log_data, -200, 200);
+    $arrData = [];
+    
+    foreach($log_data as $line){
+      // Procesa cada línea del archivo de registro
+      $parts = explode(' ', $line);
+      if (count($parts) > 7){
+        $ip = $parts[0];
+        $datetime = date('Y-m-d H:i:s', strtotime(substr($parts[3], 1)));
+        $type = $parts[5];
+        $type = strpos($parts[5],"error" ) ? "Error" : "Informativa";
+        $typ = 
+
+        $description =$line;
+        $modulo = "Apache";    
+ 
+        
+	    $arrTmp[0] = $datetime;
+	    $arrTmp[1] = $type;
+	    $arrTmp[2] = $description;
+	    $arrTmp[3] = $modulo;
+	    $arrTmp[4] ="";
+            $arrData[] = $arrTmp;
+        }        
+ 
+    } 
+    
+    return $arrData;
+}
+
+
+function viewFormLogs2($smarty, $module_name, $local_templates_dir, &$pDB, $arrConf, $modulo)
 {
     $pLogs2 = new paloSantoLogs2($pDB);
     $arrFormLogs2 = createFieldForm();
@@ -115,11 +177,13 @@ function viewFormLogs2($smarty, $module_name, $local_templates_dir, &$pDB, $arrC
 
     $fecha_inicial = getParameter("fecha_inicial");
     $fecha_final = getParameter("fecha_final");
+   
     $tipo = getParameter("tipo");
 
 
     $smarty->assign("fecha_inicial",$fecha_inicial);
     $smarty->assign("fecha_final",$fecha_final);    
+    $smarty->assign("modulo",$modulo);    
     $smarty->assign("tipo",$tipo);    
 
 
@@ -129,7 +193,7 @@ function viewFormLogs2($smarty, $module_name, $local_templates_dir, &$pDB, $arrC
     return $content;
 }
 
-function saveNewLogs2($smarty, $module_name, $local_templates_dir, &$pDB, $arrConf)
+function saveNewLogs2($smarty, $module_name, $local_templates_dir, &$pDB, $arrConf, $modulo)
 {
     $pLogs2 = new paloSantoLogs2($pDB);
     $arrFormLogs2 = createFieldForm();
@@ -145,11 +209,11 @@ function saveNewLogs2($smarty, $module_name, $local_templates_dir, &$pDB, $arrCo
                 $strErrorMsg .= "$k, ";
         }
         $smarty->assign("mb_message", $strErrorMsg);
-        $content = viewFormLogs2($smarty, $module_name, $local_templates_dir, $pDB, $arrConf);
+        $content = viewFormLogs2($smarty, $module_name, $local_templates_dir, $pDB, $arrConf, $modulo);
     } else {
         //NO ERROR, HERE IMPLEMENTATION OF SAVE
         //$content = "Code to save yet undefined.";
-        $content = viewFormLogs2($smarty, $module_name, $local_templates_dir, $pDB, $arrConf);
+        $content = viewFormLogs2($smarty, $module_name, $local_templates_dir, $pDB, $arrConf, $modulo);
     }
     return $content;
 }
@@ -214,13 +278,13 @@ function getAction()
 * functions for table logs
  */
 
- function reportLogs_Table($smarty, $module_name, $local_templates_dir, &$pDB, $arrConf)
+ function reportLogs_Table($smarty, $module_name, $local_templates_dir, &$pDB, $arrConf, $modulo)
 {
     $pLogs_Table = new paloSantoLogs_Table($pDB);
     $filter_field = getParameter("filter_field");
     $filter_value = getParameter("filter_value");
     $fecha_inicial = getParameter("fecha_inicial");
-    $fecha_final = getParameter("fecha_final");    
+    $fecha_final = getParameter("fecha_final");        
     $tipo = getParameter("tipo");    
 
     //begin grid parameters
@@ -235,6 +299,7 @@ function getAction()
         "fecha_inicial" => $fecha_inicial,
         "fecha_final" => $fecha_final,
         "tipo" => $tipo,
+        "modulo" => $modulo,
     );    
 
     $url = array(
@@ -243,11 +308,13 @@ function getAction()
         "filter_value" =>  $filter_value,
         "fecha_inicial" => $fecha_inicial,
         "fecha_final" => $fecha_final,
+        "modulo" => $modulo,
         "tipo" => $tipo,
     );
 
     $smarty->assign("fecha_inicial",$fecha_inicial);
     $smarty->assign("fecha_final",$fecha_final);
+    $smarty->assign("modulo",$modulo);
     $smarty->assign("tipo",$tipo);
       
 
@@ -288,6 +355,109 @@ function getAction()
         }
     }
     $oGrid->setData($arrData);
+
+    //begin section filter
+    $oFilterForm = new paloForm($smarty, createFieldFilter());
+    $smarty->assign("SHOW", _tr("Show"));
+    $htmlFilter  = $oFilterForm->fetchForm("$local_templates_dir/filter.tpl","",$_POST);
+    //end section filter
+
+    //$oGrid->showFilter(trim($htmlFilter));
+    if( $total > 0){
+        $content = "<div style='margin-top:10px;'>Mostrando $first_record a $last_record de $total registros</div>";
+    }else{
+        $content = "<div style='margin-top:10px;'>0 registros encontrados</div>";
+    }
+
+    $content .= $oGrid->fetchGrid();
+    //end grid parameters
+
+    return $content;
+}
+
+
+/*table for reading logs*/
+function reportLogsFiles_Table($smarty, $module_name, $local_templates_dir, &$pDB, $arrConf, $modulo)
+{
+    $pLogs_Table = new paloSantoLogsFile_Table($pDB);
+    $filter_field = getParameter("filter_field");
+    $filter_value = getParameter("filter_value");
+    $fecha_inicial = getParameter("fecha_inicial");
+    $fecha_final = getParameter("fecha_final");      
+    $tipo = getParameter("tipo");    
+
+    //begin grid parameters
+    $oGrid  = new paloSantoGrid($smarty);
+    $oGrid->setTitle(_tr("Logs_Table"));
+    $oGrid->pagingShow(true); // show paging section.
+
+    $oGrid->enableExport();   // enable export.
+    $oGrid->setNameFile_Export(_tr("LogsFile_Table"));
+
+    $postFilter =array(
+        "fecha_inicial" => $fecha_inicial,
+        "fecha_final" => $fecha_final,
+        "tipo" => $tipo,
+        "modulo" => $modulo,
+    );    
+
+    $url = array(
+        "menu"         =>  $module_name,
+        "filter_field" =>  $filter_field,
+        "filter_value" =>  $filter_value,
+        "fecha_inicial" => $fecha_inicial,
+        "fecha_final" => $fecha_final,
+        "modulo" => $modulo,
+        "tipo" => $tipo,
+    );
+
+    $smarty->assign("fecha_inicial",$fecha_inicial);
+    $smarty->assign("fecha_final",$fecha_final);
+    $smarty->assign("modulo",$modulo);
+    $smarty->assign("tipo",$tipo);
+      
+
+    $oGrid->setURL($url);
+
+    $arrColumns = array(_tr("Fecha"),_tr("Tipo"),_tr("Descripción"),_tr("Módulo"), _tr("Acción"));
+    $oGrid->setColumns($arrColumns);
+
+    $dataForTable = null;
+    if($modulo == "apache"){
+        $dataForTable = readErrorLogApache();
+    }
+
+    $total   = $pLogs_Table->getNumLogsFile_Table(200);
+    
+    $arrData = $dataForTable;
+    if($oGrid->isExportAction()){
+        $limit  = $total; // max number of rows.
+        $offset = 0;      // since the start.
+    }
+    else{
+        $limit  = 200;
+        $oGrid->setLimit($limit);
+        $oGrid->setTotal($total);
+        $offset = $oGrid->calculateOffset();
+    }
+    $first_record = $offset + 1;
+    $last_record = $offset + $limit;
+    if($last_record > $total) {
+        $last_record = $total;
+    }       
+
+    $arrResult =$pLogs_Table->getLogsFile_Table($dataForTable);
+    /*if(is_array($arrResult) && $total>0){
+        foreach($arrResult as $key => $value){ 
+	    $arrTmp[0] = $value['fecha'];
+	    $arrTmp[1] = $value['tipo'];
+	    $arrTmp[2] = $value['descripcion'];
+	    $arrTmp[3] = $value['modulo'];
+	    $arrTmp[4] = $value['accion'];
+            $arrData[] = $arrTmp;
+        }
+    } */
+    $oGrid->setData($arrResult);
 
     //begin section filter
     $oFilterForm = new paloForm($smarty, createFieldFilter());
