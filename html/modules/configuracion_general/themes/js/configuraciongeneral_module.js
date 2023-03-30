@@ -36,7 +36,7 @@ $(document).ready(function () {
   $("#btnguardardatos").click(function () {
     validarDestinos = validarformDestinos();
     if (validarDestinos > 0) {
-      alert("Debe ingresar un destino para el evento marcado");
+      alert("Debe ingresar un destino");
       return;
     }
 

@@ -60,7 +60,7 @@ $(document).ready(function () {
         var prueba = response;
         if (response && messageContainSuccess(response.json)) {
           $("#conexionexitosa").css("display", "block");
-          alert("Conexion exitosa");
+          alert("Conexión exitosa");
 
           console.log("response.json = ", response.json);
           document.form_configuraciongeneral.action = "index.php?menu=configuracion_general_module&action=save";
@@ -145,7 +145,7 @@ $(document).ready(function () {
       success: function (data, textStatus, xhr) {
         if (xhr.status == 200 && data && messageContainSuccess(data)) {
           $("#conexionexitosa").css("display", "block");
-          alert("Conexion exitosa");
+          alert("Conexión exitosa");
           document.form_configuraciongeneral.action = "index.php?menu=configuracion_general_module&action=save";
           document.form_configuraciongeneral.submit();
         } else {
@@ -220,8 +220,8 @@ $(document).ready(function () {
         console.log("Response function respuesta ", response);
         var prueba = response;
         if (response && messageContainSuccess(response.json)) {
-          $("#conexionexitosa").css("display", "block");
-          alert("Conexion exitosa");
+          $("#conexionexitosamariadb").css("display", "block");
+          alert("Conexión exitosa");
 
           console.log("response.json = ", response.json);
           /*document.form_configuraciongeneral.action = "index.php?menu=configuracion_general_module&action=saveLocal";

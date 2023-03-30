@@ -294,6 +294,7 @@ function getAction()
 
     $oGrid->enableExport();   // enable export.
     $oGrid->setNameFile_Export(_tr("Logs_Table"));
+    $oGrid->setTplFile('themes/customTheme/_custom_list.tpl');
 
     $postFilter =array(
         "fecha_inicial" => $fecha_inicial,
@@ -393,6 +394,7 @@ function reportLogsFiles_Table($smarty, $module_name, $local_templates_dir, &$pD
 
     $oGrid->enableExport();   // enable export.
     $oGrid->setNameFile_Export(_tr("LogsFile_Table"));
+    $oGrid->setTplFile('themes/customTheme/_custom_list.tpl');
 
     $postFilter =array(
         "fecha_inicial" => $fecha_inicial,

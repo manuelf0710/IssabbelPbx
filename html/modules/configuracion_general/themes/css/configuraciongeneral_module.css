@@ -13,8 +13,10 @@ fieldset legend {
 }
 
 #tabla_vista,
-#barridos {
-  width: 100%;
+#barridos,
+#cant_lineas,
+#notificacion_troncal {
+  width: 120px;
 }
 
 .notificacionesTable .letra12 {
