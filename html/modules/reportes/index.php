@@ -539,7 +539,7 @@ function eventosTabla($smarty, $module_name, $local_templates_dir, &$pDB, $arrCo
 
 function createFieldFilterEvento(){
     $arrFilter = array(
-	    "id_evento" => _tr("ID Eventos"),
+	    "id_evento" => _tr("ID del evento"),
 	    "tipo" => _tr("Tipo"),
 	    "fecha_llamada" => _tr("Fecha llamada"),
 	    "barridos" => _tr("Barridos"),
