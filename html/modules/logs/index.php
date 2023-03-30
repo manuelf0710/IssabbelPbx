@@ -220,7 +220,7 @@ function saveNewLogs2($smarty, $module_name, $local_templates_dir, &$pDB, $arrCo
 
 function createFieldForm()
 {
-    $arrOptions = array('' => 'Seleccione...', 'advertencia' => 'Advertencia', 'informativa' => 'Informativa', 'error' => 'Error', 'todos' => 'Todos');
+    $arrOptions = array('' => 'Seleccione...', 'advertencia' => 'Advertencia', 'error' => 'Error', 'informativa' => 'Informativa',  'todos' => 'Todos');
 
     $arrFields = array(
         "fecha_inicialf"   => array(
@@ -293,7 +293,7 @@ function getAction()
     $oGrid->pagingShow(true); // show paging section.
 
     $oGrid->enableExport();   // enable export.
-    $oGrid->setNameFile_Export(_tr("Logs_Table"));
+    $oGrid->setNameFile_Export(_tr("Reporte_Logs"));
     $oGrid->setTplFile('themes/customTheme/_custom_list.tpl');
 
     $postFilter =array(

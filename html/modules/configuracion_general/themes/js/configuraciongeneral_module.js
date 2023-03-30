@@ -9,6 +9,31 @@ $(document).ready(function () {
     changeMonth: true,
     showWeek: true,
   });
+  const formulario = document.querySelector("#form_configuraciongeneral");
+  const campos = formulario.querySelectorAll("input, select");
+
+  // Bandera para indicar si ha habido cambios
+  let haHabidoCambios = false;
+
+  // Agregar un listener a cada campo para detectar cambios
+  campos.forEach((campo) => {
+    campo.addEventListener("input", () => {
+      haHabidoCambios = true;
+    });
+  });
+
+  // Agregar el evento onbeforeunload a la ventana
+  window.addEventListener("beforeunload", (event) => {
+    if (haHabidoCambios) {
+      event.preventDefault();
+      event.returnValue = "Si continúa, se perderán los cambios. ¿Desea continuar?.";
+    }
+  });
+
+  function handleBeforeUnload(event) {
+    event.preventDefault();
+    event.returnValue = ""; // Necesario para que el mensaje de confirmación no aparezca
+  }
 
   function validarformDestinos() {
     validacionesDestino = 0;
@@ -86,6 +111,8 @@ $(document).ready(function () {
       alert("Debe selecciona un plan de marcado");
       return;
     }
+
+    window.removeEventListener("beforeunload", handleBeforeUnload);
 
     document.form_configuraciongeneral.action = "index.php?menu=configuracion_general&action=save";
     document.form_configuraciongeneral.submit();

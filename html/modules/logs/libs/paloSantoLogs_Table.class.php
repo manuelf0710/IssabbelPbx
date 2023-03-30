@@ -74,7 +74,7 @@ class paloSantoLogs_Table{
                 $fechaFinal = $this->convertirToMysqlFormat($postFilter['fecha_final']);
                 $where .= " and fecha <=  str_to_date('".$fechaFinal."', '%Y-%m-%d %H:%i')";
             }   
-            if($postFilter['tipo']!= ''){
+            if($postFilter['tipo']!= '' && $postFilter['tipo']!= 'todos'){
                 $where .= " and tipo =  '".$postFilter['tipo']."'";
             } 
             if($postFilter['modulo']!= ''){
@@ -107,9 +107,9 @@ class paloSantoLogs_Table{
                 $fechaFinal = $this->convertirToMysqlFormat($postFilter['fecha_final']);
                 $where .= " and fecha <=  str_to_date('".$fechaFinal."', '%Y-%m-%d %H:%i')";
             }   
-            if($postFilter['tipo']!= ''){
-                $where .= " and tipo <=  '".$postFilter['tipo']."'";
-            }   
+            if($postFilter['tipo']!= '' && $postFilter['tipo']!= 'todos'){
+                $where .= " and tipo =  '".$postFilter['tipo']."'";
+            }  
             if($postFilter['modulo']!= ''){
                 $where .= " and modulo =  '".$postFilter['modulo']."'";
             }                              

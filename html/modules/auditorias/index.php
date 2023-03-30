@@ -228,7 +228,7 @@ function reportAuditorias_Table($smarty, $module_name, $local_templates_dir, &$p
     $oGrid->pagingShow(true); // show paging section.
 
     $oGrid->enableExport();   // enable export.
-    $oGrid->setNameFile_Export(_tr("Auditorias_Table"));
+    $oGrid->setNameFile_Export(_tr("Reporte_Auditorias"));
     $oGrid->setTplFile('themes/customTheme/_custom_list.tpl');
 
     $postFilter =array(

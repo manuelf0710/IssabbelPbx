@@ -42,7 +42,7 @@
 
         <fieldset style="border-radius: 5px; padding: 5px; min-height:150px;">
             <legend><span> Eventos </span> </legend>
-            <h4 style="margin: 0px">Realice la búsqueda con cualquier de los <br> siguientes criterios:</h4>
+            <h4 style="margin: 0px">Realice la búsqueda con cualquiera de los <br> siguientes criterios:</h4>
             <table class="tabForm" cellpading="10" width="700" style="margin-top:2em">
                 <tr class="letra12">
                     <td align="left"><b>Fecha Inicial: <span class="required">*</span></b></td>
@@ -62,28 +62,13 @@
                     <td align="left">
                         <input type="number" name="id_evento" id="id_evento" value="{$id_evento}">
                     </td>
-                </tr>
-                <tr class="letra12">
-                    <td align="left"><b>Tipo Evento: <span class="required">*</span></b></td>
-                    <td align="left">
-                        <select class="form-control" id="tipo_evento" name="tipo_evento">
-                            <option value="">Seleccione...</option>
-                            {foreach from= $configListas['tipoEventosLista'] key=k item=v}
-                                <option value="{$k}" {if $k == $tipo_evento}selected{/if}>{$v}
-                                </option>
-                            {/foreach}
-
-                        </select>
-                    </td>
-                    <td align="right" colspan="2"><input class="button" type="submit" name="save_new" value="Aceptar"></td>                    
+                    <td align="right" colspan="5"><input class="button" type="submit" name="save_new" value="Aceptar"></td>                    
                 </tr>
 
             </table>
         </fieldset>
         {if $id_evento neq ""}
-            <fieldset>
-                <p>Registros relacionados con ID evento $id_evento</p>
-            </fieldset>
+                <p style="margin-top:1em">Registros relacionados con ID evento {$id_evento}</p>
         {/if}
     {/if}
 
