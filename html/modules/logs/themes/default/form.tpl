@@ -2,6 +2,7 @@
 <script type='text/javascript' src="modules/logs/themes/js/logs_module.js"></script>
 <fieldset style="border-radius: 5px; padding: 5px; min-height:150px;">
     <legend><span> Logs </span> </legend>
+    <h4 style="margin: 0px">Filtrar por: </h4>
     <table width="100%" border="0" cellspacing="0" cellpadding="4" align="center">
         <tr class="letra12">
             {if $mode eq 'input'}
