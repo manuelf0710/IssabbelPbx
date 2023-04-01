@@ -58,7 +58,7 @@
                     </td>
                 </tr>
                 <tr class="letra12">
-                    <td align="left"><b>Id Evento: <span class="required">*</span></b></td>
+                    <td align="left"><b>ID Evento: <span class="required">*</span></b></td>
                     <td align="left">
                         <input type="number" name="id_evento" id="id_evento" value="{$id_evento}">
                     </td>

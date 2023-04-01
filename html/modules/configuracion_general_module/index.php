@@ -225,7 +225,7 @@ function createFieldForm()
     $arrOptionsMotor = array('' => 'Seleccione...', 'Mysql' => 'Mysql', 'Oracle' => 'Oracle', 'PostgreSQL' => 'PostgreSQL', 'SQLServer'=>'SQLServer');
     $arrOptionsMotorMariaDB = array('MariaDB' => 'MariaDB');
     $arrOptionsActivo = array('' => 'Seleccione...', 'Activo' => 'Activo', 'Inactivo' => 'Inactivo');
-    $arrOptionsSSL = array('' => 'Seleccione...', 'Si' => 'Si', 'No' => 'No');
+    $arrOptionsSSL = array('' => 'Seleccione...', 'No' => 'No', 'Si' => 'Sí');
 
     $arrFields = array(
         "motormariadb"   => array(
@@ -239,7 +239,7 @@ function createFieldForm()
             "EDITABLE"               => "si",
         ),
         "sslmariadb"   => array(
-            "LABEL"                  => _tr("SslMariadb"),
+            "LABEL"                  => _tr("Requiere SSL"),
             "REQUIRED"               => "no",
             "INPUT_TYPE"             => "SELECT",
             "INPUT_EXTRA_PARAM"      => $arrOptionsSSL,
@@ -249,7 +249,7 @@ function createFieldForm()
             "EDITABLE"               => "si",
         ),        
         "sslmdb"   => array(
-            "LABEL"                  => _tr("require SSL"),
+            "LABEL"                  => _tr("Requiere SSL"),
             "REQUIRED"               => "no",
             "INPUT_TYPE"             => "SELECT",
             "INPUT_EXTRA_PARAM"      => $arrOptionsSSL,

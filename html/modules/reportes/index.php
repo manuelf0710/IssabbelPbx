@@ -625,7 +625,7 @@ function otrosTabla($smarty, $module_name, $local_templates_dir, &$pDB, $arrConf
     );
     $oGrid->setURL($url);
 
-    $arrColumns = array(_tr("Nus"),_tr("Teléfono"),_tr("Resultado"),_tr("Duración de la llamada"),_tr("ID evento"),_tr("Fecha llamada"),_tr("Agente"),_tr("Grabación"),);
+    $arrColumns = array(_tr("NUS"),_tr("Teléfono"),_tr("Resultado"),_tr("Duración de la llamada"),_tr("ID evento"),_tr("Fecha llamada"),_tr("Agente"),_tr("Grabación"),);
     $oGrid->setColumns($arrColumns);
 
     $total   = $potros_tabla->getNumotros_tabla($filter_field, $filter_value, $postFilter);
