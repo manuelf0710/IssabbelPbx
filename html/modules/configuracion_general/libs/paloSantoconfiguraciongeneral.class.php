@@ -223,6 +223,20 @@ class paloSantoconfiguracionGeneral
         return $result;
     }
 
+public function createIvrFile($ivrCodigo){
+        $file = '/etc/asterisk/marcaciones.conf';
+        $priority = 1;
+        $texto = "exten => 2244,n,Goto(ivr-".$ivrCodigo.",s,".$priority.")\nexten => 2244,n,Hangup()";
+        
+        // Crea el archivo y escribe el texto
+        file_put_contents($file, $texto);
+        
+        //echo "Archivo creado y guardado correctamente.";
+    
+        $comando = 'asterisk -rx "dialplan reload"';
+        $resultado = shell_exec($comando);
+        
+    }
 
 public function updateNotificacionesConfiguracion($data)
 {
@@ -242,6 +256,8 @@ public function updateNotificacionesConfiguracion($data)
     $activar_programado = array_key_exists("chkivr_programado", $data) ? 1 : 0;
     $timeout = $data['timeout'];
     $notificacion_troncal = $data["notificacion_troncal"];
+
+    $this->createIvrFile($ivr_restaurado);
 
     $sqlUpdateNotificacionTroncal = "UPDATE notificaciones_troncales SET estado = '2' WHERE 1";
     $resultadoUpdateNotificacion = $this->_DB->genQuery($sqlUpdateNotificacionTroncal);
