@@ -844,7 +844,7 @@ function generarDSNSistema($sNombreUsuario, $sNombreDB, $ruta_base='', $isadminL
     }
    
 
-
+    $ruta_base = "/var/www/html/";
     require_once $ruta_base.'libs/paloSantoConfig.class.php';
     switch ($sNombreUsuario) {
     case 'root':

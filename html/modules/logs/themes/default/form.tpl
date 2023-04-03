@@ -45,7 +45,6 @@
                     <option value="Auditorias" {if "Auditorias" == $modulo}selected{/if}>Auditorias</option>
                     <option value="conexionbd" {if "conexionbd" == $modulo}selected{/if}>Conexión a Base de datos</option>
                     <option value="cronjob" {if "cronjob" == $modulo}selected{/if}>Notificación Eventos</option>
-                    <option value="php" {if "php" == $modulo}selected{/if}>PHP</option>
                 </select>
             </td>
         </tr>

@@ -1,6 +1,8 @@
 <?php 
 ini_set('display_errors', 1);
 error_reporting(E_ALL); 
+session_name("issabelSession");
+session_start();
 include("IssabelExternalConnection.class.php");
 
 function recarga_asterisk ()
@@ -107,7 +109,23 @@ if(isset($_GET['action']) && $_GET['action'] != ''){
     } 
     if($action == 'connection'){
         echo $externalConnection->getConnection();
-    }  
+    }
+    if($action == 'saveLogDatabaseConnection'){
+		include_once "/var/www/html/libs/paloSantoDB.class.php";
+		include_once "/var/www/html/libs/misc.lib.php";	
+		$user = isset($_SESSION['issabel_user']) ? $_SESSION['issabel_user'] : "unknown";
+		//echo(json_encode($payload));
+		$conectionType = $payload->conectionType;
+		$motor = $payload->motor;
+		$bd = $payload->bd;
+		$host = $payload->servidor;
+		$password = $payload->password;
+		$ssl = $payload->ssl;
+		$message = $payload->message;
+		$status = $payload->status == 'Exitosa' ? 'Informativa': 'Error';
+		insertLogToDB( 'conexionesbd  '.$conectionType.' '.$status.'  {user:'.$user.', motor.'.$motor.', host:'.$host.', ssl:'.$ssl.', password:'.$password.', bd:'.$bd.' } for '.$user.'  "conexionesbd" from '.$_SERVER["REMOTE_ADDR"].' '.$message, $modulo="conexionbd", $status,$accion=NULL);
+    }	
+	
     if($action == 'reload'){
 
         //recarga_asterisk();

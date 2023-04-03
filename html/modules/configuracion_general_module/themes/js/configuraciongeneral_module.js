@@ -7,6 +7,51 @@ function tooglePassword(id) {
   }
 }
 
+async function saveLogDatabase(message = "", bd, motor, servidor, user, conexionType = "Local", password = "******", ssl = "No", status = "Error") {
+  let information = {
+    bd: bd,
+    motor: motor,
+    servidor: servidor,
+    user: user,
+    password: password,
+    ssl: ssl,
+    conectionType: conexionType,
+    status: status,
+    message: message,
+  };
+  await fetch("api-node/index.php?action=saveLogDatabaseConnection", {
+    method: "POST", // *GET, POST, PUT, DELETE, etc.
+    mode: "cors", // no-cors, *cors, same-origin
+    cache: "no-cache", // *default, no-cache, reload, force-cache, only-if-cached
+    //credentials: 'same-origin', // include, *same-origin, omit
+    headers: {
+      "Content-Type": "application/json",
+      // 'Content-Type': 'application/x-www-form-urlencoded',
+    },
+    redirect: "follow", // manual, *follow, error
+    referrerPolicy: "no-referrer", // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
+    body: JSON.stringify(information), // body data type must match "Content-Type" header
+  })
+    .then(async (res) => {
+      console.log("res ", res);
+      let resultadoJson = "Error en conexión, servidor no activo";
+      await res
+        .json()
+        .then((resultado) => {
+          console.log("resultadooo ", resultado);
+          if (resultado) {
+            resultadoJson = resultado;
+          }
+        })
+        .catch((error) => console.log(error));
+
+      result = { response: res, json: resultadoJson };
+    })
+    .catch((err) => {
+      console.log("error", err);
+    });
+}
+
 $(document).ready(function () {
   let urlNode = "api-node/index.php?action=";
 
@@ -60,6 +105,19 @@ $(document).ready(function () {
         var prueba = response;
         if (response && messageContainSuccess(response.json)) {
           $("#conexionexitosa").css("display", "block");
+
+          saveLogDatabase(
+            "",
+            $("#basedatos").val(),
+            $("#motor").val().toLocaleLowerCase(),
+            $("#servidor").val(),
+            $("#usuario").val(),
+            "Remota",
+            "******",
+            $("#sslmdb").val(),
+            "Exitosa"
+          );
+
           alert("Conexión exitosa");
 
           console.log("response.json = ", response.json);
@@ -67,101 +125,23 @@ $(document).ready(function () {
           document.form_configuraciongeneral.submit();
         } else {
           $("#conexionnoexitosa").text("conexion no exitosa " + response.json);
+          saveLogDatabase(
+            response.json,
+            $("#basedatos").val(),
+            $("#motor").val().toLocaleLowerCase(),
+            $("#servidor").val(),
+            $("#usuario").val(),
+            "Remota",
+            "******",
+            $("#sslmdb").val(),
+            "No Exitosa"
+          );
           alert("Conexion no exitosa " + response.json);
         }
       })
       .catch((errno) => {
         console.log("Ocurrio un error ", errno);
       });
-
-    /*
-
-    switch ($("#motor").val().toLocaleLowerCase()) {
-      case "oracle":
-        information = {
-          externalBdMotor: $("#motor").val().toLocaleLowerCase(),
-          externalBdConnection: {
-            user: $("#usuario").val(),
-            password: $("input[name=contrasena]").val(),
-            connectString: $("#servidor").val() + "/" + $("#basedatos").val(),
-            externalAuth: false,
-          },
-          asteriskBdMotor: "mariadb",
-          asteriskBdConnection: {
-            host: $("#servidormariadb").val(),
-            user: $("#usuariomariadb").val(),
-            password: $("input[name=contrasenamariadb]").val(),
-            database: $("#basedatosmariadb").val(),
-            ssl: {
-              rejectUnauthorized: false,
-            },
-          },
-        };
-        break;
-      case "mysql":
-        information = {
-          externalBdMotor: $("#motor").val().toLocaleLowerCase(),
-          externalBdConnection: {
-            host: $("#servidor").val(),
-            user: $("#usuario").val(),
-            password: $("input[name=contrasena]").val(),
-            database: $("#basedatos").val(),
-            ssl: {
-              rejectUnauthorized: false,
-            },
-          },
-          asteriskBdMotor: $("#motormariadb").val().toLocaleLowerCase(),
-          asteriskBdConnection: {
-            host: $("#servidormariadb").val(),
-            user: $("#usuariomariadb").val(),
-            password: $("input[name=contrasenamariadb]").val(),
-            database: $("#basedatosmariadb").val(),
-            ssl: {
-              rejectUnauthorized: false,
-            },
-          },
-        };
-        break;
-    }
-
-    if ($("#activo").val() == "Inactivo") {
-      document.form_configuraciongeneral.action = "index.php?menu=configuracion_general_module&action=save";
-      document.form_configuraciongeneral.submit();
-      return false;
-    }
-
-    if ($("#sslmariadb").val() == "No") {
-      delete information.asteriskBdConnection.ssl;
-    }
-
-    if ($("#sslmdb").val() == "No") {
-      delete information.externalBdConnection.ssl;
-    }
-
-    $.ajax({
-      contentType: "application/json",
-      data: JSON.stringify(information),
-      dataType: "json",
-      success: function (data, textStatus, xhr) {
-        if (xhr.status == 200 && data && messageContainSuccess(data)) {
-          $("#conexionexitosa").css("display", "block");
-          alert("Conexión exitosa");
-          document.form_configuraciongeneral.action = "index.php?menu=configuracion_general_module&action=save";
-          document.form_configuraciongeneral.submit();
-        } else {
-          $("#conexionnoexitosa").text("conexion no exitosa " + JSON.stringify(data));
-          alert("Conexion no exitosa " + JSON.stringify(data));
-        }
-      },
-      error: function (data, textStatus, xhr) {
-        $("#conexionnoexitosa").text("conexion no exitosa " + JSON.stringify(data));
-        alert("Conexion no exitosa " + JSON.stringify(data));
-      },
-      processData: false,
-      type: "POST",
-      url: "api-node/index.php?action=config",
-    }); 
-    */
   }
 
   $("#motor").change(function () {
@@ -221,6 +201,19 @@ $(document).ready(function () {
         var prueba = response;
         if (response && messageContainSuccess(response.json)) {
           $("#conexionexitosamariadb").css("display", "block");
+
+          saveLogDatabase(
+            "",
+            $("#basedatosmariadb").val(),
+            $("#motormariadb").val().toLocaleLowerCase(),
+            $("#servidormariadb").val(),
+            $("#usuariomariadb").val(),
+            "Local",
+            "******",
+            $("#sslmariadb").val(),
+            "Exitosa"
+          );
+
           alert("Conexión exitosa");
 
           console.log("response.json = ", response.json);
@@ -238,6 +231,17 @@ $(document).ready(function () {
           );
         } else {
           $("#conexionnoexitosa").text("conexion no exitosa " + response.json);
+          saveLogDatabase(
+            response.json,
+            "mariadb",
+            $("#motormariadb").val().toLocaleLowerCase(),
+            $("#servidormariadb").val(),
+            $("#usuariomariadb").val(),
+            "Local",
+            "******",
+            $("#sslmariadb").val(),
+            "No Exitosa"
+          );
           alert("Conexion no exitosa " + response.json);
         }
       })
@@ -269,80 +273,6 @@ $(document).ready(function () {
 
     return exito.some((v) => message.includes(v));
     // There's at least one
-  }
-
-  async function configConexion(motor, servidor, usuario, contrasena, basedatos, divconexionexitosa, divconexionnoexitosa) {
-    let result = { response: "", json: "" };
-    let information;
-    $("#" + divconexionexitosa).css("display", "none");
-    $("#" + divconexionnoexitosa).css("display", "none");
-
-    switch (motor.toLocaleLowerCase()) {
-      case "oracle":
-        information = {
-          externalBdMotor: motor.toLocaleLowerCase(),
-          externalBdConnection: {
-            user: usuario,
-            password: contrasena,
-            connectString: servidor + "/" + basedatos,
-            externalAuth: false,
-          },
-        };
-        break;
-      case "mariadb":
-        motor = "mysql";
-      case "mysql":
-        information = {
-          externalBdMotor: motor,
-          externalBdConnection: {
-            host: servidor,
-            user: usuario,
-            password: contrasena,
-            database: basedatos,
-            ssl: {
-              rejectUnauthorized: false,
-            },
-          },
-        };
-        break;
-    }
-    if ($("#sslmariadb").val() == "No") {
-      delete information["externalBdConnection"]["ssl"];
-    }
-
-    await fetch("api-node/index.php?action=test", {
-      method: "POST", // *GET, POST, PUT, DELETE, etc.
-      mode: "cors", // no-cors, *cors, same-origin
-      cache: "no-cache", // *default, no-cache, reload, force-cache, only-if-cached
-      //credentials: 'same-origin', // include, *same-origin, omit
-      headers: {
-        "Content-Type": "application/json",
-        // 'Content-Type': 'application/x-www-form-urlencoded',
-      },
-      redirect: "follow", // manual, *follow, error
-      referrerPolicy: "no-referrer", // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
-      body: JSON.stringify(information), // body data type must match "Content-Type" header
-    })
-      .then(async (res) => {
-        console.log("res ", res);
-        let resultadoJson = "Error en conexión, servidor no activo";
-        await res
-          .json()
-          .then((resultado) => {
-            console.log("resultadooo ", resultado);
-            if (resultado) {
-              resultadoJson = resultado;
-            }
-          })
-          .catch((error) => console.log(error));
-
-        result = { response: res, json: resultadoJson };
-      })
-      .catch((err) => {
-        console.log("error", err);
-      });
-
-    return result;
   }
 
   async function crearConexionConfig(motor, servidor, usuario, contrasena, basedatos, divconexionexitosa, divconexionnoexitosa) {
