@@ -5,7 +5,7 @@ $(document).ready(function () {
     buttonImageOnly: true,
     buttonImage: "images/calendar.gif",
     dateFormat: "yy-mm-dd",
-    timeFormat: "HH:mm:ss",
+    timeFormat: "HH:mm:ss.l",
     changeMonth: true,
     showWeek: true,
   });
