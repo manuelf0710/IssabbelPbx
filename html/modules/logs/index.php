@@ -95,16 +95,73 @@ function _moduleContent(&$smarty, $module_name)
 }
 
 function readErrorLogAsterisk(){
+    $arrData = [];
+    $ruta_archivo = "/var/log/asterisk/full";
 
+    // Leer el archivo en un array
+    $lineas = file($ruta_archivo);
+
+    $log_data = array_slice($lineas, -500, 500);
+    
+    // Iterar sobre el array y buscar las líneas que te interesan
+    foreach ($log_data as $linea) {
+        // Dividir el contenido de la línea en diferentes partes utilizando la tubería como separador
+        $partes = explode("|", $linea);
+        // Hacer algo con las diferentes partes
+        /*echo "Fecha: " . $partes[0] . "<br>";
+        echo "Canal: " . $partes[1] . "<br>";
+        echo "Mensaje: " . $partes[2] . "<br>"; */
+        if(count($partes) > 1){
+            $arrTmp[0] = $partes[0];
+            $arrTmp[1] = "Informativa";
+            $arrTmp[2] = $partes[2];
+            $arrTmp[3] = "Asterisk";
+            $arrTmp[4] ="";
+            $arrData[] = $arrTmp;
+        }
+        
+    }
+
+
+
+    return $arrData;
 }
 
-function readErrorLogPhp(){
 
+function validateDatesLogsFilter($desde, $hasta, $fechaDesde, $fechaHasta, $datetime){
+    $valid = 1;
+    if ($desde != "" || $hasta != "") {
+        $fechaComparar = new DateTime($datetime);
+    }
+
+    if ($desde != "") {
+        $valid = 0;
+        if ( $fechaComparar->format('Y-m-d H:i:s') > $fechaDesde->format('Y-m-d H:i:s') ) {
+            $valid = 2;
+        }
+    }
+
+    if ($hasta != "") {
+        if ($fechaComparar->format('Y-m-d H:i:s') < $fechaHasta->format('Y-m-d H:i:s')) {
+            $valid = 2;
+        }else{
+            $valid = 0;
+        }
+    } 
+    return $valid;
 }
 
-function readErrorLogApache($tipo=null ){
+function readErrorLogApache($tipo="", $desde= "", $hasta=""){
+    $fechaDesde = "";
+    $fechaHasta = "";
 
-    echo "valor de tipo => ".$tipo;
+    if($desde != ""){
+        $fechaDesde = DateTime::createFromFormat('d/m/Y H:i', $desde);    
+    }
+    if($hasta != ""){
+        $fechaHasta = DateTime::createFromFormat('d/m/Y H:i', $hasta);    
+    }
+    
 
     $log_file = '/var/log/httpd/error_log';
     $linesToRead = 200;
@@ -114,88 +171,50 @@ function readErrorLogApache($tipo=null ){
     $log_data = array_slice($log_data, -500, 500);
     $arrData = [];
     
-    foreach($log_data as $line){
-      // Procesa cada línea del archivo de registro
-      $parts = explode(' ', $line);
-      if (count($parts) > 7){
+foreach ($log_data as $line) {
+    // Procesa cada línea del archivo de registro
+    $parts = explode(' ', $line);
+    if (count($parts) > 7) {
         $ip = $parts[0];
         $datetime = date('Y-m-d H:i:s', strtotime(substr($parts[3], 1)));
         $type = $parts[5];
-        $type = strpos($parts[5],"error" ) ? "Error" : "Informativa";
-        if(strtoupper($type) == strtoupper($tipo) ){
+        $type = strpos($parts[5], "error") ? "Error" : "Informativa";
+        if (strtoupper($type) == strtoupper($tipo)) {
             
-            $description =$line;
-            $modulo = "Apache";    
-            
-            $arrTmp[0] = $datetime;
-            $arrTmp[1] = $type;
-            $arrTmp[2] = $description;
-            $arrTmp[3] = $modulo;
-            $arrTmp[4] ="";
-                $arrData[] = $arrTmp;
-            
-        }
-        
-        
-        if($tipo == null || $tipo == "todos"){
-            $description =$line;
-            $modulo = "Apache";    
-            
-            $arrTmp[0] = $datetime;
-            $arrTmp[1] = $type;
-            $arrTmp[2] = $description;
-            $arrTmp[3] = $modulo;
-            $arrTmp[4] ="";
-                $arrData[] = $arrTmp;
-            }            
-        }
-    } 
-    
-    return $arrData;
-}
-function readErrorLogApacheBK($tipo=null ){
+            $valid = validateDatesLogsFilter($desde, $hasta, $fechaDesde, $fechaHasta, $datetime);
 
-    $log_file = '/var/log/httpd/error_log';
-    $log_data = file($log_file);
-    
-    // Obtener las últimas 200 líneas del archivo de registro
-    $log_data = array_slice($log_data, -200, 200);
-    $arrData = [];
-    
-    foreach($log_data as $line){
-      // Procesa cada línea del archivo de registro
-      $parts = explode(' ', $line);
-      if (count($parts) > 7){
-        $ip = $parts[0];
-        $datetime = date('Y-m-d H:i:s', strtotime(substr($parts[3], 1)));
-        $type = $parts[5];
-        $type = strpos($parts[5],"error" ) ? "Error" : "Informativa";
-        if($tipo !=null && strtoupper($type) == strtoupper($tipo)){
-            
-            $description =$line;
-            $modulo = "Apache";    
-            
-            $arrTmp[0] = $datetime;
-            $arrTmp[1] = $type;
-            $arrTmp[2] = $description;
-            $arrTmp[3] = $modulo;
-            $arrTmp[4] ="";
+
+            if ($valid > 0) {
+                $description =$line;
+                $modulo = "Apache";
+
+                $arrTmp[0] = $datetime;
+                $arrTmp[1] = $type;
+                $arrTmp[2] = $description;
+                $arrTmp[3] = $modulo;
+                $arrTmp[4] ="";
                 $arrData[] = $arrTmp;
-            
-        }else{
-            $description =$line;
-            $modulo = "Apache";    
-            
-            $arrTmp[0] = $datetime;
-            $arrTmp[1] = $type;
-            $arrTmp[2] = $description;
-            $arrTmp[3] = $modulo;
-            $arrTmp[4] ="";
-                $arrData[] = $arrTmp;
-            }            
+            }
         }
-    } 
-    
+
+        if ($tipo == null || $tipo == "todos") {
+            $valid = validateDatesLogsFilter($desde, $hasta, $fechaDesde, $fechaHasta, $datetime);
+
+            if ($valid > 0) {
+                $description =$line;
+                $modulo = "Apache";
+
+                $arrTmp[0] = $datetime;
+                $arrTmp[1] = $type;
+                $arrTmp[2] = $description;
+                $arrTmp[3] = $modulo;
+                $arrTmp[4] ="";
+                $arrData[] = $arrTmp;
+            }
+        
+        }
+    }
+}
     return $arrData;
 }
 
@@ -302,7 +321,7 @@ function createFieldForm()
             "EDITABLE"               => "si",
             "VALIDATION_EXTRA_PARAM" => ""
         ),
-        "tipo"   => array(
+        "tipof"   => array(
             "LABEL"                  => _tr("Tipo"),
             "REQUIRED"               => "no",
             "INPUT_TYPE"             => "SELECT",
@@ -489,7 +508,10 @@ function reportLogsFiles_Table($smarty, $module_name, $local_templates_dir, &$pD
 
     $dataForTable = null;
     if($modulo == "apache"){
-        $dataForTable = readErrorLogApache($tipo);
+        $dataForTable = readErrorLogApache($tipo, $fecha_inicial, $fecha_final);
+    }
+    if($modulo == "asterisk"){
+        $dataForTable = readErrorLogAsterisk($tipo, $fecha_inicial, $fecha_final);
     }
 
     $total   = $pLogs_Table->getNumLogsFile_Table($filter_field, $filter_value, $postFilter, count($dataForTable));

@@ -20,22 +20,22 @@
                     <input class="button" type="submit" name="cancel" value="{$CANCEL}">
                 </td>
             {/if}
-            <td align="right" nowrap><span class="letra12"><span class="required">*</span> {$REQUIRED_FIELD}</span></td>
+            <td align="right" nowrap><span class="letra12"></td>
         </tr>
     </table>
     <table class="tabForm" style="font-size: 16px;" width="100%">
         <tr class="letra12">
-            <td align="left"><b>Fecha Inicial: <span class="required">*</span></b></td>
+            <td align="left"><b>Fecha Inicial: </b></td>
             <td align="left">
                 <input type="text" name="fecha_inicial" id="fecha_inicial" value="{$fecha_inicial}" class="calendar-reports">
             </td>
-            <td align="left"><b>Fecha Final: <span class="required">*</span></b></td>
+            <td align="left"><b>Fecha Final: </b></td>
             <td align="left">
                 <input type="text" name="fecha_final" id="fecha_final" value="{$fecha_final}" class="calendar-reports">
             </td>   
         </tr>
         <tr class="letra12">
-            <td align="left"><b>{$tipo.LABEL}: <span class="required">*</span></b></td>
+            <td align="left"><b>Tipo:</b></td>
             <td align="left">
             <select name="tipo" id="tipo">
                     <option value="error" {if "error" == $tipo}selected{/if}>Error</option>
@@ -43,11 +43,11 @@
                     <option value="todos" {if "todos" == $tipo}selected{/if}>Todos</option>
             </select>            
             </td>
-            <td align="left"><b>Módulo</b></td>
+            <td align="left"><b>Módulo:</b></td>
             <td align="left">
                 <select name="modulo" id="modulo">
                     <option value="apache" {if "apache" == $modulo}selected{/if}>Apache</option>
-                    <option value="asterisk" {if "asterisk" == $modulo}selected{/if}>Asterisk</option>
+                    <!--<option value="asterisk" {if "asterisk" == $modulo}selected{/if}>Asterisk</option>-->
                     <option value="Auditorias" {if "Auditorias" == $modulo}selected{/if}>Auditorias</option>
                     <option value="conexionbd" {if "conexionbd" == $modulo}selected{/if}>Conexión a Base de datos</option>
                     <option value="cronjob" {if "cronjob" == $modulo}selected{/if}>Notificación Eventos</option>
