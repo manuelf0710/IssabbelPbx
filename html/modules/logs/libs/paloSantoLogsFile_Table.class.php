@@ -46,15 +46,18 @@ class paloSantoLogsFile_Table{
 
     /*HERE YOUR FUNCTIONS*/
 
-    function getNumLogsFile_Table($total)
+    function getNumLogsFile_Table($filter_field, $filter_value, $postFilter, $total)
     {
         return $total;
     }
 
-    function getLogsFile_Table($data)
-    {
+    function getLogsFile_Table($limit, $offset, $filter_field, $filter_value, $postFilter, $dataForTable){
+        $data =  array_slice($dataForTable, $offset, $limit );
+        //echo $limit."-".$offset;
         return $data;
-    }
+
+    }    
+
 
 
 }

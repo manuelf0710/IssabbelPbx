@@ -36,7 +36,13 @@
         </tr>
         <tr class="letra12">
             <td align="left"><b>{$tipo.LABEL}: <span class="required">*</span></b></td>
-            <td align="left">{$tipo.INPUT}</td>
+            <td align="left">
+            <select name="tipo" id="tipo">
+                    <option value="error" {if "error" == $tipo}selected{/if}>Error</option>
+                    <option value="informativa" {if "informativa" == $tipo}selected{/if}>Informativa</option>
+                    <option value="todos" {if "todos" == $tipo}selected{/if}>Todos</option>
+            </select>            
+            </td>
             <td align="left"><b>Módulo</b></td>
             <td align="left">
                 <select name="modulo" id="modulo">

@@ -102,7 +102,58 @@ function readErrorLogPhp(){
 
 }
 
-function readErrorLogApache(){
+function readErrorLogApache($tipo=null ){
+
+    echo "valor de tipo => ".$tipo;
+
+    $log_file = '/var/log/httpd/error_log';
+    $linesToRead = 200;
+    $log_data = file($log_file);
+    
+    // Obtener las últimas 200 líneas del archivo de registro
+    $log_data = array_slice($log_data, -500, 500);
+    $arrData = [];
+    
+    foreach($log_data as $line){
+      // Procesa cada línea del archivo de registro
+      $parts = explode(' ', $line);
+      if (count($parts) > 7){
+        $ip = $parts[0];
+        $datetime = date('Y-m-d H:i:s', strtotime(substr($parts[3], 1)));
+        $type = $parts[5];
+        $type = strpos($parts[5],"error" ) ? "Error" : "Informativa";
+        if(strtoupper($type) == strtoupper($tipo) ){
+            
+            $description =$line;
+            $modulo = "Apache";    
+            
+            $arrTmp[0] = $datetime;
+            $arrTmp[1] = $type;
+            $arrTmp[2] = $description;
+            $arrTmp[3] = $modulo;
+            $arrTmp[4] ="";
+                $arrData[] = $arrTmp;
+            
+        }
+        
+        
+        if($tipo == null || $tipo == "todos"){
+            $description =$line;
+            $modulo = "Apache";    
+            
+            $arrTmp[0] = $datetime;
+            $arrTmp[1] = $type;
+            $arrTmp[2] = $description;
+            $arrTmp[3] = $modulo;
+            $arrTmp[4] ="";
+                $arrData[] = $arrTmp;
+            }            
+        }
+    } 
+    
+    return $arrData;
+}
+function readErrorLogApacheBK($tipo=null ){
 
     $log_file = '/var/log/httpd/error_log';
     $log_data = file($log_file);
@@ -119,20 +170,30 @@ function readErrorLogApache(){
         $datetime = date('Y-m-d H:i:s', strtotime(substr($parts[3], 1)));
         $type = $parts[5];
         $type = strpos($parts[5],"error" ) ? "Error" : "Informativa";
-        $typ = 
-
-        $description =$line;
-        $modulo = "Apache";    
- 
-        
-	    $arrTmp[0] = $datetime;
-	    $arrTmp[1] = $type;
-	    $arrTmp[2] = $description;
-	    $arrTmp[3] = $modulo;
-	    $arrTmp[4] ="";
-            $arrData[] = $arrTmp;
-        }        
- 
+        if($tipo !=null && strtoupper($type) == strtoupper($tipo)){
+            
+            $description =$line;
+            $modulo = "Apache";    
+            
+            $arrTmp[0] = $datetime;
+            $arrTmp[1] = $type;
+            $arrTmp[2] = $description;
+            $arrTmp[3] = $modulo;
+            $arrTmp[4] ="";
+                $arrData[] = $arrTmp;
+            
+        }else{
+            $description =$line;
+            $modulo = "Apache";    
+            
+            $arrTmp[0] = $datetime;
+            $arrTmp[1] = $type;
+            $arrTmp[2] = $description;
+            $arrTmp[3] = $modulo;
+            $arrTmp[4] ="";
+                $arrData[] = $arrTmp;
+            }            
+        }
     } 
     
     return $arrData;
@@ -321,7 +382,8 @@ function getAction()
 
     $oGrid->setURL($url);
 
-    $arrColumns = array(_tr("Fecha"),_tr("Tipo"),_tr("Descripción"),_tr("Módulo"), _tr("Acción"));
+    //$arrColumns = array(_tr("Fecha"),_tr("Tipo"),_tr("Descripción"),_tr("Módulo"), _tr("Acción"));
+    $arrColumns = array(_tr("Fecha"),_tr("Tipo"),_tr("Descripción"),_tr("Módulo"));
     $oGrid->setColumns($arrColumns);
 
     $total   = $pLogs_Table->getNumLogs_Table($filter_field, $filter_value, $postFilter);
@@ -351,7 +413,7 @@ function getAction()
 	    $arrTmp[1] = $value['tipo'];
 	    $arrTmp[2] = $value['descripcion'];
 	    $arrTmp[3] = $value['modulo'];
-	    $arrTmp[4] = $value['accion'];
+	    //$arrTmp[4] = $value['accion'];
             $arrData[] = $arrTmp;
         }
     }
@@ -421,15 +483,16 @@ function reportLogsFiles_Table($smarty, $module_name, $local_templates_dir, &$pD
 
     $oGrid->setURL($url);
 
-    $arrColumns = array(_tr("Fecha"),_tr("Tipo"),_tr("Descripción"),_tr("Módulo"), _tr("Acción"));
+    //$arrColumns = array(_tr("Fecha"),_tr("Tipo"),_tr("Descripción"),_tr("Módulo"), _tr("Acción"));
+    $arrColumns = array(_tr("Fecha"),_tr("Tipo"),_tr("Descripción"),_tr("Módulo"));
     $oGrid->setColumns($arrColumns);
 
     $dataForTable = null;
     if($modulo == "apache"){
-        $dataForTable = readErrorLogApache();
+        $dataForTable = readErrorLogApache($tipo);
     }
 
-    $total   = $pLogs_Table->getNumLogsFile_Table(200);
+    $total   = $pLogs_Table->getNumLogsFile_Table($filter_field, $filter_value, $postFilter, count($dataForTable));
     
     $arrData = $dataForTable;
     if($oGrid->isExportAction()){
@@ -437,7 +500,7 @@ function reportLogsFiles_Table($smarty, $module_name, $local_templates_dir, &$pD
         $offset = 0;      // since the start.
     }
     else{
-        $limit  = 200;
+        $limit  = 20;
         $oGrid->setLimit($limit);
         $oGrid->setTotal($total);
         $offset = $oGrid->calculateOffset();
@@ -448,7 +511,7 @@ function reportLogsFiles_Table($smarty, $module_name, $local_templates_dir, &$pD
         $last_record = $total;
     }       
 
-    $arrResult =$pLogs_Table->getLogsFile_Table($dataForTable);
+    $arrResult =$pLogs_Table->getLogsFile_Table($limit, $offset, $filter_field, $filter_value, $postFilter, $dataForTable);    
     /*if(is_array($arrResult) && $total>0){
         foreach($arrResult as $key => $value){ 
 	    $arrTmp[0] = $value['fecha'];
