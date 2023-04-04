@@ -23,7 +23,7 @@ class IvrModel extends Model
    */
   public function index()
   {
-    $query = "SELECT id, name  FROM `asterisk`.`ivr_details`";
+    $query = "SELECT id, name  FROM `asterisk`.`ivr_details` ORDER BY name ASC";
     $parameters = ['id'];
 
     return $this->fetchRows($query);

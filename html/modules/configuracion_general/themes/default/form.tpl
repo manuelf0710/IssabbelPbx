@@ -43,7 +43,7 @@
                         <td></td>
                     </tr>
                     <tr class="letra12">
-                    <td>Destino</td>
+                    <td>Destino:</td>
 
                         <td  align="right">
                         <b>{$cant_lineas.LABEL}</b>
@@ -119,7 +119,7 @@
                 <table>
                     <tr>
                         <td class="letra12">
-                            <b>Fecha Búsqueda</b>
+                            <b>Fecha Búsqueda:</b>
                             <br>
                             YYYY-mm-dd HH:MM:SS
                         </td>
@@ -130,7 +130,7 @@
                     </tr>
                     <tr>
                         <td class="letra12">
-                            <b>Timeout</b>
+                            <b><span title="Tiempo en segundos que puede durar la llamada antes de que el usuario final conteste">Timeout:<span></b>
                             <br>
                             en segundos
                         </td>

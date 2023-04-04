@@ -153,7 +153,7 @@
             <td>
             {$sslmdb.INPUT}
         </td>
-            <td align="left"><B>Estado</B></td>
+            <td align="left"><B>Estado:</B></td>
             <td align="left">
                 {$activo.INPUT}
             </td>

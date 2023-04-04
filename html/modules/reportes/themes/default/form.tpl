@@ -42,7 +42,7 @@
 
         <fieldset style="border-radius: 5px; padding: 5px; min-height:150px;">
             <legend><span> Eventos </span> </legend>
-            <h4 style="margin: 0px">Realice la búsqueda con cualquiera de los <br> siguientes criterios:</h4>
+            <td style="margin: 0tdx">Realice la búsqueda con cualquiera de los <br> siguientes criterios:</p>
             <table class="tabForm" cellpading="10" width="700" style="margin-top:2em">
                 <tr class="letra12">
                     <td align="left"><b>Fecha Inicial: <span class="required">*</span></b></td>
@@ -77,6 +77,7 @@
     {if $criterioActive eq 'otros'}
         <fieldset style="border-radius: 5px; padding: 5px; min-height:150px;">
             <legend><span> Otros </span> </legend>
+            <td style="margin: 0tdx">Realice la búsqueda con cualquiera de los <br> siguientes criterios:</p>
             <table class="tabForm" cellpading="10" width="700" style="margin-top:2em">
                 <tr class="letra12">
                     <td align="left"><b>NUS: </b></td>

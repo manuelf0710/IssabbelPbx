@@ -249,7 +249,7 @@ function createFieldForm()
             "EDITABLE"               => "si",
         ),        
         "sslmdb"   => array(
-            "LABEL"                  => _tr("Requiere SSL"),
+            "LABEL"                  => _tr("Requiere SSL:"),
             "REQUIRED"               => "no",
             "INPUT_TYPE"             => "SELECT",
             "INPUT_EXTRA_PARAM"      => $arrOptionsSSL,

@@ -76,7 +76,6 @@ function _moduleContent(&$smarty, $module_name)
     $dialplanAndRouteList = $configuracionNotificaciones->getTrunksConfig();
 
     $arrOptionsDias = array(
-        "" => "...",
         "1" => "Lunes",
         "2" => "Martes",
         "3" => "Miercoles",
@@ -297,7 +296,7 @@ function createFieldForm()
             "VALIDATION_EXTRA_PARAM" => ""
         ),
         "cant_lineas"   => array(
-            "LABEL"                  => _tr("Cant líneas"),
+            "LABEL"                  => _tr("Cant líneas:"),
             "REQUIRED"               => "no",
             "INPUT_TYPE"             => "TEXT",
             "INPUT_EXTRA_PARAM"      => "",
