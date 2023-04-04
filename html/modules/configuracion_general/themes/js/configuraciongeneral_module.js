@@ -38,7 +38,6 @@ $(document).ready(function () {
   function validarformDestinos() {
     validacionesDestino = 0;
     $(".chkivr").each(function () {
-      console.log("algo" + $(this).is(":checked"));
       if ($(this).is(":checked")) {
         if ($("#" + $(this).attr("data-destino")).val() == "") {
           validacionesDestino++;
@@ -48,15 +47,15 @@ $(document).ready(function () {
     return validacionesDestino;
   }
 
-  function validateOutboundRoutes() {
-    let counter = 0;
-    $(".chkrouteoutbounds").each(function () {
-      if ($(this).is(":checked")) {
-        counter++;
-      }
-    });
-    return counter;
-  }
+  // function validateOutboundRoutes() {
+  //   let counter = 0;
+  //   $(".chkrouteoutbounds").each(function () {
+  //     if ($(this).is(":checked")) {
+  //       counter++;
+  //     }
+  //   });
+  //   return counter;
+  // }
 
   $("#btnguardardatos").click(function () {
     validarDestinos = validarformDestinos();
@@ -112,6 +111,7 @@ $(document).ready(function () {
       return;
     }
 
+    haHabidoCambios = false;
     window.removeEventListener("beforeunload", handleBeforeUnload);
 
     document.form_configuraciongeneral.action = "index.php?menu=configuracion_general&action=save";
