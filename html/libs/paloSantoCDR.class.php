@@ -218,7 +218,7 @@ SQL_COND_EXTENSION;
         if (is_null($sWhere)) return NULL;
         // Cuenta del total de registros recuperados
         $sPeticionSQL = 
-            'SELECT COUNT(*) FROM cdr '.
+            'SELECT COUNT(*) FROM asteriskcdrdb.cdr '.
             'LEFT JOIN asterisk.ringgroups '.
                 'ON asteriskcdrdb.cdr.dst = asterisk.ringgroups.grpnum '.
             $sWhere;
@@ -237,7 +237,7 @@ SQL_COND_EXTENSION;
         $sPeticionSQL = 
             'SELECT calldate, IF(cnum<>src,cnum,src), dst, channel, dstchannel, disposition, '.
                 'uniqueid, duration, billsec, accountcode, grpnum, description, recordingfile, cnum, cnam, outbound_cnum, did, userfield '.
-            'FROM cdr '.
+            'FROM asteriskcdrdb.cdr '.
             'LEFT JOIN asterisk.ringgroups '.
                 'ON asteriskcdrdb.cdr.dst = asterisk.ringgroups.grpnum '.
             $sWhere.
@@ -269,7 +269,7 @@ SQL_COND_EXTENSION;
 
         // Cuenta del total de registros recuperados
         $sPeticionSQL = 
-            'SELECT COUNT(*) FROM cdr '.
+            'SELECT COUNT(*) FROM asteriskcdrdb.cdr '.
             'LEFT JOIN asterisk.ringgroups '.
                 'ON asteriskcdrdb.cdr.dst = asterisk.ringgroups.grpnum '.
             $sWhere;
@@ -303,7 +303,7 @@ SQL_COND_EXTENSION;
 
         // Borrado de los registros seleccionados
         $sPeticionSQL = 
-            'DELETE cdr FROM cdr '.
+            'DELETE cdr FROM asteriskcdrdb.cdr '.
             'LEFT JOIN asterisk.ringgroups '.
                 'ON asteriskcdrdb.cdr.dst = asterisk.ringgroups.grpnum '.
             $sWhere;

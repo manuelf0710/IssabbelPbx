@@ -186,7 +186,7 @@ SQL_DEVICES;
         }
         
     	$sql = <<<TOP_N_LLAMADAS
-SELECT COUNT(*) AS num, $target FROM cdr
+SELECT COUNT(*) AS num, $target FROM asteriskcdrdb.cdr
 WHERE calldate BETWEEN ? AND ?
     AND ($sel = ? OR SUBSTRING_INDEX(SUBSTRING_INDEX($selchannel,'-',1),'/',-1) = ?)
 GROUP BY $target

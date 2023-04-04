@@ -315,7 +315,7 @@ class core_CDR
 
         $sRegExp = "^[[:alnum:]]+/{$sExtUsuario}[^[:digit:]]+";
         // Se construye la condición WHERE
-        $sFromWhere = "FROM cdr ";
+        $sFromWhere = "FROM asteriskcdrdb.cdr ";
 	$paramSQL = array();
 
 	if(!$isUserAdmin){

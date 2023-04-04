@@ -162,7 +162,7 @@ SQL_COND_EXTENSION;
         list($sWhere, $paramSQL) = $this->_construirWhereMonitoring($param);
         if (is_null($sWhere)) return NULL;
 
-        $query = 'SELECT COUNT(*) FROM cdr '.$sWhere;
+        $query = 'SELECT COUNT(*) FROM asteriskcdrdb.cdr '.$sWhere;
         $r = $this->_DB->getFirstRowQuery($query, FALSE, $paramSQL);
         if (!is_array($r)){
             $this->errMsg = $this->_DB->errMsg;
@@ -177,7 +177,7 @@ SQL_COND_EXTENSION;
         if (is_null($sWhere)) return NULL;
 
         // TODO: paloSantoCDR ordena por calldate DESC. ¿Debería ser concordante?
-        $query = 'SELECT * FROM cdr '.$sWhere.' ORDER BY uniqueid DESC';
+        $query = 'SELECT * FROM asteriskcdrdb.cdr '.$sWhere.' ORDER BY uniqueid DESC';
         if (!empty($limit)) {
             $query .= " LIMIT ? OFFSET ?";
             array_push($paramSQL, $limit, $offset);
@@ -209,7 +209,7 @@ SQL_COND_EXTENSION;
 
     function getAudioByUniqueId($id, $namefile = NULL)
     {
-        $query = 'SELECT recordingfile FROM cdr WHERE uniqueid = ?';
+        $query = 'SELECT recordingfile FROM asteriskcdrdb.cdr WHERE uniqueid = ?';
         $parame = array($id);
         if (!is_null($namefile)) {
             $query .= ' AND recordingfile LIKE ?';
@@ -321,7 +321,7 @@ SQL_COND_EXTENSION;
     function recordBelongsToUser($uniqueid, $extension)
     {
         $sql = <<<RECORD_BELONGS_TO_EXTENSION
-SELECT COUNT(*) FROM cdr
+SELECT COUNT(*) FROM asteriskcdrdb.cdr
 WHERE uniqueid = ? AND (
        src = ?
     OR dst = ?

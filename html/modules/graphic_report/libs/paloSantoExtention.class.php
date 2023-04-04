@@ -69,7 +69,7 @@ SELECT
         AS num_incoming_call,
     SUM(IF(src = ? OR SUBSTRING_INDEX(SUBSTRING_INDEX(channel,'-',1),'/',-1) = ?, 1, 0))
         AS num_outgoing_call
-FROM cdr
+FROM asteriskcdrdb.cdr
 WHERE calldate BETWEEN ? AND ?
 COUNT_CALLS_BY_EXTENSION;
         $result = $this->_DB->getFirstRowQuery($sql, TRUE, $paramSQL);
@@ -98,7 +98,7 @@ COUNT_CALLS_BY_EXTENSION;
 
     function countQueue($queue, $date_ini, $date_fin)
     {
-        $query = "SELECT count(*) FROM cdr WHERE dst='$queue' ";
+        $query = "SELECT count(*) FROM asteriskcdrdb.cdr WHERE dst='$queue' ";
 
         if( strlen($date_ini) >= 5 ){
             if( strlen($date_fin) <= 5 )
@@ -154,7 +154,7 @@ COUNT_CALLS_BY_EXTENSION;
 SELECT 
     IFNULL(SUM(IF(($sCondicionSQL_channel), duration, 0)), 0) AS totIn,
     IFNULL(SUM(IF(($sCondicionSQL_dstchannel), duration, 0)), 0) AS totOut
-FROM cdr
+FROM asteriskcdrdb.cdr
 WHERE calldate >= ? AND calldate <= ?
 SQL_LOADTRUNKS_MIN;
             $paramSQL = array_merge($paramTrunk, $paramTrunk, array($sFechaInicial.' 00:00:00', $sFechaFinal.' 23:59:59'));
@@ -164,7 +164,7 @@ SQL_LOADTRUNKS_MIN;
 SELECT 
     IFNULL(SUM(IF(($sCondicionSQL_channel), 1, 0)), 0) AS numIn,
     IFNULL(SUM(IF(($sCondicionSQL_dstchannel), 1, 0)), 0) AS numOut
-FROM cdr
+FROM asteriskcdrdb.cdr
 WHERE calldate >= ? AND calldate <= ?
 SQL_LOADTRUNKS_NUMCALL;
             $paramSQL = array_merge($paramTrunk, $paramTrunk, array($sFechaInicial.' 00:00:00', $sFechaFinal.' 23:59:59'));

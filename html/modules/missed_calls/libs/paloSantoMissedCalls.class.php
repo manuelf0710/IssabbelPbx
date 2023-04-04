@@ -56,7 +56,7 @@ class paloSantoMissedCalls{
 	$dates = array($date_start, $date_end);
 	$arrParam = array_merge($dates,$arrParam);
 
-	$query   = "select COUNT(*) from cdr where (lastapp = 'Dial' OR lastapp = 'Hangup' OR lastapp = 'Voicemail') AND calldate >= ? AND calldate <= ? $where order by calldate desc;";
+	$query   = "select COUNT(*) from asteriskcdrdb.cdr where (lastapp = 'Dial' OR lastapp = 'Hangup' OR lastapp = 'Voicemail') AND calldate >= ? AND calldate <= ? $where order by calldate desc;";
         $result=$this->_DB->getFirstRowQuery($query, false, $arrParam);
 
         if($result==FALSE){
@@ -90,10 +90,10 @@ class paloSantoMissedCalls{
     cdr.billsec,
     UCASE(TRIM(cdr.disposition)) AS disposition,
     MAX(succ_cdr.maxcalldate) AS maxcalldate
-FROM cdr
+FROM asteriskcdrdb.cdr
 LEFT JOIN (
     SELECT src, dst, MAX(calldate) AS maxcalldate
-    FROM cdr
+    FROM asteriskcdrdb.cdr
     WHERE lastapp = 'Dial' AND disposition = 'ANSWERED' AND billsec > 0 AND calldate BETWEEN ? AND ?
     GROUP BY src, dst
 ) succ_cdr ON ((succ_cdr.src = cdr.src AND succ_cdr.dst = cdr.dst) OR (succ_cdr.src = cdr.dst AND succ_cdr.dst = cdr.src))
@@ -115,7 +115,7 @@ SELECT
     NULL,
     NULL,
     MAX(calldate) AS maxcalldate
-FROM cdr
+FROM asteriskcdrdb.cdr
 WHERE lastapp = 'Dial' AND disposition = 'ANSWERED' AND billsec > 0 AND calldate BETWEEN ? AND ?
 GROUP BY src, dst 
 )

@@ -37,7 +37,7 @@ class Applet_Calls extends Applet_ReportForExtension
             $respuesta['message'] = _tr('Error at read yours calls.').$pDB->errMsg;
         } else {
             $sql = <<<SQL_LLAMADAS_RECIBIDAS
-SELECT calldate, src, duration, disposition FROM cdr
+SELECT calldate, src, duration, disposition FROM asteriskcdrdb.cdr
 WHERE dst = ? OR SUBSTRING_INDEX(SUBSTRING_INDEX(dstchannel,'-',1),'/',-1) = ?
 ORDER BY calldate DESC LIMIT ?
 SQL_LLAMADAS_RECIBIDAS;

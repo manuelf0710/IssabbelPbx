@@ -108,7 +108,7 @@ function check_table() {
 	global $cdrdb;
 	global $debug;
 	outn("Verifying CDR 'uniqueid' field exisits..");
-	$sql = "SELECT uniqueid FROM cdr WHERE NOT uniqueid=\"\"";
+	$sql = "SELECT uniqueid FROM asteriskcdrdb.cdr WHERE NOT uniqueid=\"\"";
 	if ($debug) {out(""); debug("Query: ".$sql);}
 	$result = $cdrdb->query($sql); 
 	if($cdrdb->IsError($result)) {     
@@ -146,7 +146,7 @@ function get_cdr($datetime,$uniqueid,$calltype) {
 	global $cdrdb;
 	global $debug;
 	$datetimes = fix_datetime($datetime);
-	$sql = "SELECT * FROM cdr WHERE uniqueid = '$uniqueid' AND calldate BETWEEN '".$datetimes['allow']."' AND '".$datetimes['exact']."'";
+	$sql = "SELECT * FROM asteriskcdrdb.cdr WHERE uniqueid = '$uniqueid' AND calldate BETWEEN '".$datetimes['allow']."' AND '".$datetimes['exact']."'";
 	if ($debug) {out(""); debug("Query: ".$sql);}
 	$result = $cdrdb->getRow($sql); 
 	if($cdrdb->IsError($result)) {     
