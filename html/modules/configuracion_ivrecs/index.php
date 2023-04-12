@@ -1,4 +1,6 @@
 <?php
+ ini_set('display_errors', 1);
+ error_reporting(E_ALL); 
   /* vim: set expandtab tabstop=4 softtabstop=4 shiftwidth=4:
   Codificación: UTF-8
   +----------------------------------------------------------------------+
@@ -53,8 +55,9 @@ function _moduleContent(&$smarty, $module_name)
 
     //conexion resource
     //$pDB = new paloDB($arrConf['dsn_conn_database']);
-    $pDB = "";
-
+    $dsnAsterisk = generarDSNSistema('asteriskuser', 'asterisk');
+    $pDB = new paloDB($dsnAsterisk);
+    //$pConfiguracionIVRECS2 = new paloSantoConfiguracionIVRECS2($pDB);
 
     //actions
     $action = getAction();
@@ -74,6 +77,8 @@ function _moduleContent(&$smarty, $module_name)
 function viewFormConfiguracionIVRECS2($smarty, $module_name, $local_templates_dir, &$pDB, $arrConf)
 {
     $pConfiguracionIVRECS2 = new paloSantoConfiguracionIVRECS2($pDB);
+    $configuracionIVR = $pConfiguracionIVRECS2->getConfiguracionIVRECS2();
+    $ivrMiscList = $pConfiguracionIVRECS2->getIvrMisc();
     $arrFormConfiguracionIVRECS2 = createFieldForm();
     $oForm = new paloForm($smarty,$arrFormConfiguracionIVRECS2);
 
@@ -98,6 +103,9 @@ function viewFormConfiguracionIVRECS2($smarty, $module_name, $local_templates_di
             $smarty->assign("mb_message", $pConfiguracionIVRECS2->errMsg);
         }
     }
+
+    $smarty->assign("configuracionIVR", $configuracionIVR);
+    $smarty->assign("ivrMiscList", $ivrMiscList);
 
     $smarty->assign("SAVE", _tr("Save"));
     $smarty->assign("EDIT", _tr("Edit"));
@@ -131,7 +139,9 @@ function saveNewConfiguracionIVRECS2($smarty, $module_name, $local_templates_dir
     }
     else{
         //NO ERROR, HERE IMPLEMENTATION OF SAVE
-        $content = "Code to save yet undefined.";
+        $pConfiguracionIVRECS2->updateNotificacionesConfiguracion($_POST);
+        $content="";
+        header("Location: index.php?menu=configuracion_ivrecs");
     }
     return $content;
 }
@@ -148,7 +158,7 @@ function createFieldForm()
                                             "VALIDATION_TYPE"        => "text",
                                             "VALIDATION_EXTRA_PARAM" => ""
                                             ),
-            "ruta"   => array(      "LABEL"                  => _tr("Ruta"),
+            "rutao"   => array(      "LABEL"                  => _tr("Ruta"),
                                             "REQUIRED"               => "no",
                                             "INPUT_TYPE"             => "TEXT",
                                             "INPUT_EXTRA_PARAM"      => "",
@@ -163,7 +173,7 @@ function createFieldForm()
                                             "VALIDATION_EXTRA_PARAM" => "",
                                             "EDITABLE"               => "si",
                                             ),
-            "cola_desborde"   => array(      "LABEL"                  => _tr("Cola Desborde"),
+            "cola_desbordeo"   => array(      "LABEL"                  => _tr("Cola Desborde"),
                                             "REQUIRED"               => "no",
                                             "INPUT_TYPE"             => "SELECT",
                                             "INPUT_EXTRA_PARAM"      => $arrOptions,
@@ -171,14 +181,14 @@ function createFieldForm()
                                             "VALIDATION_EXTRA_PARAM" => "",
                                             "EDITABLE"               => "si",
                                             ),
-            "usuario"   => array(      "LABEL"                  => _tr("Usuario"),
+            "usuarioo"   => array(      "LABEL"                  => _tr("Usuario"),
                                             "REQUIRED"               => "no",
                                             "INPUT_TYPE"             => "TEXT",
                                             "INPUT_EXTRA_PARAM"      => "",
                                             "VALIDATION_TYPE"        => "text",
                                             "VALIDATION_EXTRA_PARAM" => ""
                                             ),
-            "contrasena"   => array(      "LABEL"                  => _tr("Contraseña"),
+            "contrasenao"   => array(      "LABEL"                  => _tr("Contraseña"),
                                             "REQUIRED"               => "no",
                                             "INPUT_TYPE"             => "TEXT",
                                             "INPUT_EXTRA_PARAM"      => "",

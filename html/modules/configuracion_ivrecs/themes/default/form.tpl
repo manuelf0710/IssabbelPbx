@@ -24,27 +24,49 @@
     <table class="tabForm" style="font-size: 16px;" width="100%">
         <tr class="letra12">
             <td align="left"><b>{$ip_servidor_oms.LABEL}: <span class="required">*</span></b></td>
-            <td align="left">{$ip_servidor_oms.INPUT}</td>
+            <td align="left">
+                <input type="text" name="ip" id="ip" value="{$configuracionIVR.ip}">
+            </td>
         </tr>
         <tr class="letra12">
-            <td align="left"><b>{$ruta.LABEL}: <span class="required">*</span></b></td>
-            <td align="left">{$ruta.INPUT}</td>
+            <td align="left"><b>{$rutao.LABEL}: <span class="required">*</span></b></td>
+            <td align="left">
+                <input type="text" name="ruta" id="ruta" value="{$configuracionIVR.ruta}">
+            </td>
         </tr>
         <tr class="letra12">
             <td align="left"><b>{$identificador_ivr.LABEL}: <span class="required">*</span></b></td>
-            <td align="left">{$identificador_ivr.INPUT}</td>
+            <td align="left">
+                <select name="ivr_misc" id="ivr_misc">
+                    <option value="">Seleccione...</option>
+                    
+                    {foreach $ivrMiscList as $ivr}
+                        <option value="{$ivr.id}"
+                            {if $ivr.id == $configuracionIVR.identificador}selected{/if}>
+                            {$ivr.description}-{$ivr.destdial}</option>
+                    {/foreach}                    
+                </select>            
+            </td>
         </tr>
         <tr class="letra12">
-            <td align="left"><b>{$cola_desborde.LABEL}: <span class="required">*</span></b></td>
-            <td align="left">{$cola_desborde.INPUT}</td>
+            <td align="left"><b>{$cola_desbordeo.LABEL}: <span class="required">*</span></b></td>
+            <td align="left">
+                <select name="cola" id="cola">
+                    <option value="">Seleccione...</option>
+                </select>
+            </td>
         </tr>
         <tr class="letra12">
-            <td align="left"><b>{$usuario.LABEL}: <span class="required">*</span></b></td>
-            <td align="left">{$usuario.INPUT}</td>
+            <td align="left"><b>{$usuarioo.LABEL}: <span class="required">*</span></b></td>
+            <td align="left">
+                <input type="text" name="usuario" id="usuario" value="{$configuracionIVR.usuario}">
+            </td>
         </tr>
         <tr class="letra12">
-            <td align="left"><b>{$contrasena.LABEL}: <span class="required">*</span></b></td>
-            <td align="left">{$contrasena.INPUT}</td>
+            <td align="left"><b>{$contrasenao.LABEL}: <span class="required">*</span></b></td>
+            <td align="left">
+            <input type="text" name="contrasena" id="contrasena" value="{$configuracionIVR.contrasena}">
+            </td>
         </tr>
         <tr class="letra12">
             <td colspan="2" align="right"><input class="button" type="submit" name="save_new" value="{$SAVE}"></td>

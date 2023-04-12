@@ -66,29 +66,38 @@ class paloSantoConfiguracionIVRECS2{
         return $result[0];
     }
 
-    function getConfiguracionIVRECS2($limit, $offset, $filter_field, $filter_value)
+    public function getIvrMisc(){
+                                    $query = 'SELECT * FROM miscdests';
+
+                            $result = $this->_DB->fetchTable($query, true);
+
+                            if ($result == false) {
+                            $this->errMsg = $this->_DB->errMsg;
+                            //insertLogToDB($this->_DB->errMsg, "Notificaciones_reportes", "Error", "getTrunksConfig"); 
+                            return null;
+                            }
+
+                            return $result;        
+        }    
+
+    function getConfiguracionIVRECS2()
     {
-        $where    = "";
-        $arrParam = null;
-        if(isset($filter_field) & $filter_field !=""){
-            $where    = "where $filter_field like ?";
-            $arrParam = array("$filter_value%");
-        }
 
-        $query   = "SELECT * FROM table $where LIMIT $limit OFFSET $offset";
+        $query = "SELECT * FROM notificaciones_ivrecsconf WHERE id=1";
 
-        $result=$this->_DB->fetchTable($query, true, $arrParam);
+        $result=$this->_DB->getFirstRowQuery($query, true);
 
         if($result==FALSE){
             $this->errMsg = $this->_DB->errMsg;
-            return array();
+            return null;
         }
         return $result;
     }
+    
 
     function getConfiguracionIVRECS2ById($id)
     {
-        $query = "SELECT * FROM table WHERE id=?";
+        $query = "SELECT * FROM notificaciones_ivrecsconf WHERE id=1";
 
         $result=$this->_DB->getFirstRowQuery($query, true, array("$id"));
 
@@ -98,4 +107,41 @@ class paloSantoConfiguracionIVRECS2{
         }
         return $result;
     }
+
+
+    public function updateNotificacionesConfiguracion($data)
+    {
+        $id=1;
+    echo json_encode($data);
+    
+        $sPeticionSQL = $this->_DB->construirUpdate(
+            "notificaciones_ivrecsconf",
+            array(
+                "ip"          =>  $this->_DB->DBCAMPO($data['ip']),
+                "ruta"          =>  $this->_DB->DBCAMPO($data['ruta']),
+                "identificador"          =>  $this->_DB->DBCAMPO($data['ivr_misc']),
+                "cola_desborde"          =>  $this->_DB->DBCAMPO("1"),
+                "usuario"   =>  $this->_DB->DBCAMPO($data['usuario']),
+                "contrasena"         =>  $this->_DB->DBCAMPO($data['contrasena']),
+            ),
+            array(
+                "id"  => $id
+            )
+        );
+    
+        //echo "<br>".$sPeticionSQL;
+        if ($this->_DB->genQuery($sPeticionSQL)) {
+            $bExito = true;
+            echo("exito");
+        } else {
+            $this->errMsg = $this->_DB->errMsg;
+            echo json_encode($this->_DB->errMsg);
+            //insertLogToDB($this->_DB->errMsg, "Notificaciones_reportes", "Error", "updateNotificacionesConfiguracion");
+        }
+    
+     
+    
+        return 0;
+    }
+
 }
