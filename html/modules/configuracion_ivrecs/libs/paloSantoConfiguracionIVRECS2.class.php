@@ -46,6 +46,50 @@ class paloSantoConfiguracionIVRECS2{
 
     /*HERE YOUR FUNCTIONS*/
 
+    function getDataAdditionalFilesConf($miscCod, $queueExt)
+    {
+        $query = "select * from miscdests where id = ".$miscCod;
+        $result=$this->_DB->getFirstRowQuery($query, true);
+
+        $query2 = "select * from queues_config where extension = ".$queueExt;
+        $result2=$this->_DB->getFirstRowQuery($query2, true);        
+
+        if($result==FALSE){
+            $this->errMsg = $this->_DB->errMsg;
+            return null;
+        }
+        return  array(
+            "misc" => $result,
+            "queue" => $result2
+        );
+    }    
+
+    public function createExtensionCuartic($data){
+
+        $additionalData = $this->getDataAdditionalFilesConf($data['ivr_misc'], $data['cola']);
+
+        $file = '/etc/asterisk/extension_cuartic.conf';
+        $priority = 1;
+        $texto = "exten => ".$additionalData['misc']['destdial'].",1,Answer\nexten => ".$additionalData['misc']['destdial'].",n,Noop(".$additionalData['misc']['destdial'].":AGI ".$additionalData['queue']['descr'].")\nexten => ".$additionalData['misc']['destdial'].",n,AGI(agi://".$data['ip']."/".$data['ruta'].")\nexten => ".$additionalData['misc']['destdial'].",n Goto(ext-queues,".$data['cola'].",1)\nexten => ".$additionalData['misc']['destdial'].",n,Hangup()";
+        
+        // Crea el archivo y escribe el texto
+        file_put_contents($file, $texto);
+
+        $file2 = '/etc/asterisk/manager_cuartic.conf';
+
+        $texto2 = "[".$data['usuario']."]\nsecret=".$data['contrasena']."\ndeny=0.0.0.0/0.0.0.0\npermit=".$data['ip']."/255.255.255.0\nread = all\nwrite = all";
+        
+        // Crea el archivo y escribe el texto
+        file_put_contents($file2, $texto2);        
+
+
+        
+        //echo "Archivo creado y guardado correctamente.";
+    
+        $comando = 'asterisk -rx "dialplan reload"';
+        $resultado = shell_exec($comando);  
+    }    
+
     function getNumConfiguracionIVRECS2($filter_field, $filter_value)
     {
         $where    = "";
@@ -126,7 +170,6 @@ class paloSantoConfiguracionIVRECS2{
     public function updateNotificacionesConfiguracion($data)
     {
         $id=1;
-    echo json_encode($data);
     
         $sPeticionSQL = $this->_DB->construirUpdate(
             "notificaciones_ivrecsconf",
@@ -146,7 +189,7 @@ class paloSantoConfiguracionIVRECS2{
         //echo "<br>".$sPeticionSQL;
         if ($this->_DB->genQuery($sPeticionSQL)) {
             $bExito = true;
-            echo("exito");
+            $this->createExtensionCuartic($data);            
         } else {
             $this->errMsg = $this->_DB->errMsg;
             echo json_encode($this->_DB->errMsg);

@@ -142,7 +142,7 @@ function saveNewConfiguracionIVRECS2($smarty, $module_name, $local_templates_dir
     else{
         //NO ERROR, HERE IMPLEMENTATION OF SAVE
         $pConfiguracionIVRECS2->updateNotificacionesConfiguracion($_POST);
-        $content="";
+        //$content="";
         header("Location: index.php?menu=configuracion_ivrecs");
     }
     return $content;
