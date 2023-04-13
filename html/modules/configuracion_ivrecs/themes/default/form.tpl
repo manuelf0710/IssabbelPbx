@@ -53,6 +53,12 @@
             <td align="left">
                 <select name="cola" id="cola">
                     <option value="">Seleccione...</option>
+                    
+                    {foreach $queueList as $ivr}
+                        <option value="{$ivr.extension}"
+                            {if $ivr.extension == $configuracionIVR.cola_desborde}selected{/if}>
+                            {$ivr.extension}-{$ivr.descr}</option>
+                    {/foreach}                      
                 </select>
             </td>
         </tr>

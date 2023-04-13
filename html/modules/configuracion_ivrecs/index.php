@@ -79,6 +79,7 @@ function viewFormConfiguracionIVRECS2($smarty, $module_name, $local_templates_di
     $pConfiguracionIVRECS2 = new paloSantoConfiguracionIVRECS2($pDB);
     $configuracionIVR = $pConfiguracionIVRECS2->getConfiguracionIVRECS2();
     $ivrMiscList = $pConfiguracionIVRECS2->getIvrMisc();
+    $queueList = $pConfiguracionIVRECS2->getQueues();
     $arrFormConfiguracionIVRECS2 = createFieldForm();
     $oForm = new paloForm($smarty,$arrFormConfiguracionIVRECS2);
 
@@ -106,8 +107,9 @@ function viewFormConfiguracionIVRECS2($smarty, $module_name, $local_templates_di
 
     $smarty->assign("configuracionIVR", $configuracionIVR);
     $smarty->assign("ivrMiscList", $ivrMiscList);
+    $smarty->assign("queueList", $queueList);
 
-    $smarty->assign("SAVE", _tr("Save"));
+    $smarty->assign("SAVE", _tr("Guardar"));
     $smarty->assign("EDIT", _tr("Edit"));
     $smarty->assign("CANCEL", _tr("Cancel"));
     $smarty->assign("REQUIRED_FIELD", _tr("Required field"));

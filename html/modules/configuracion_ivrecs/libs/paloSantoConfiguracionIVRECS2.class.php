@@ -78,7 +78,21 @@ class paloSantoConfiguracionIVRECS2{
                             }
 
                             return $result;        
-        }    
+        } 
+        
+    public function getQueues(){
+            $query = 'SELECT * FROM queues_config';
+
+    $result = $this->_DB->fetchTable($query, true);
+
+    if ($result == false) {
+    $this->errMsg = $this->_DB->errMsg;
+    //insertLogToDB($this->_DB->errMsg, "Notificaciones_reportes", "Error", "getTrunksConfig"); 
+    return null;
+    }
+
+    return $result;        
+}         
 
     function getConfiguracionIVRECS2()
     {
@@ -120,7 +134,7 @@ class paloSantoConfiguracionIVRECS2{
                 "ip"          =>  $this->_DB->DBCAMPO($data['ip']),
                 "ruta"          =>  $this->_DB->DBCAMPO($data['ruta']),
                 "identificador"          =>  $this->_DB->DBCAMPO($data['ivr_misc']),
-                "cola_desborde"          =>  $this->_DB->DBCAMPO("1"),
+                "cola_desborde"          =>  $this->_DB->DBCAMPO($data['cola']),
                 "usuario"   =>  $this->_DB->DBCAMPO($data['usuario']),
                 "contrasena"         =>  $this->_DB->DBCAMPO($data['contrasena']),
             ),
