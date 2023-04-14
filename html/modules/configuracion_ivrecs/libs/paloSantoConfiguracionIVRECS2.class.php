@@ -70,7 +70,7 @@ class paloSantoConfiguracionIVRECS2{
 
         $file = '/etc/asterisk/extension_cuartic.conf';
         $priority = 1;
-        $texto = "exten => ".$additionalData['misc']['destdial'].",1,Answer\nexten => ".$additionalData['misc']['destdial'].",n,Noop(".$additionalData['misc']['destdial'].":AGI ".$additionalData['queue']['descr'].")\nexten => ".$additionalData['misc']['destdial'].",n,AGI(agi://".$data['ip']."/".$data['ruta'].")\nexten => ".$additionalData['misc']['destdial'].",n Goto(ext-queues,".$data['cola'].",1)\nexten => ".$additionalData['misc']['destdial'].",n,Hangup()";
+        $texto = "exten => ".$additionalData['misc']['destdial'].",1,Answer\nexten => ".$additionalData['misc']['destdial'].",n,Noop(".$additionalData['misc']['destdial'].":AGI ".$additionalData['queue']['descr'].")\nexten => ".$additionalData['misc']['destdial'].",n,AGI(agi://".$data['ip']."/".$data['ruta'].")\nexten => ".$additionalData['misc']['destdial'].",n,Goto(ext-queues,".$data['cola'].",1)\nexten => ".$additionalData['misc']['destdial'].",n,Hangup()";
         
         // Crea el archivo y escribe el texto
         file_put_contents($file, $texto);
