@@ -51,7 +51,7 @@
                     {/foreach}
                 </select>
             </td>
-            <td class="letra12" width="250"><b>Fecha Búsqueda:</b><br>YYYY-mm-dd HH:MM:SS</td> 
+            <td class="letra12 pl" width="250"><b>Fecha Búsqueda:</b><br>YYYY-mm-dd HH:MM:SS</td> 
             <td>
                 <input class="calendar-configgeneral" type="text" id="fecha_busqueda" name="fecha_busqueda" value="{$dataForm.configuracionGeneral.fecha_busqueda}" readonly>                      
             </td>
@@ -61,7 +61,7 @@
             <td align="right">
                 <input type="number" name="cant_lineas" id="cant_lineas" value="{$dataForm.configuracionGeneral.cant_lineas}">
             </td>
-            <td align="left"><b> Hora Inicial Notif:</b></td> 
+            <td align="left" class="pl"><b> Hora Inicial Notif:</b></td> 
             <td>
                     <select name="horainicialnot" id="horainicialnot">
                     {foreach from= $configListas['optionsHours'] key=k item=v}
@@ -92,7 +92,7 @@
                     {/foreach}
                 </select>
             </td> 
-            <td>
+            <td class="pl">
             <b> Hora Final Notif:</b>
             </td>
             <td>
@@ -125,7 +125,7 @@
                 
             </select>                        
             </td>
-            <td> <b>{$diainicialnot.LABEL}:</b></td>
+            <td class="pl"> <b>{$diainicialnot.LABEL}:</b></td>
             <td>
                 <select name="diainicialnot" id="diainicialnot">
                     <option value="">Seleccione...</option>
@@ -144,7 +144,7 @@
                 <b>(segundos)</b>
             </td>
             <td align="right"><input type="number" id="timeout" name="timeout"value="{$dataForm.configuracionGeneral.timeout}"></td>  
-            <td> <b>{$diafinalnot.LABEL}:</b></td>
+            <td class="pl"> <b>{$diafinalnot.LABEL}:</b></td>
             <td>
                 <select name="diafinalnot" id="diafinalnot">
                     <option value="">Seleccione...</option>
