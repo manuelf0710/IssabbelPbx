@@ -13,11 +13,15 @@ fieldset legend {
 }
 
 #tabla_vista,
-#barridos,
 #cant_lineas,
-#notificacion_troncal,
 #timeout {
   width: 120px;
+}
+
+#ivrrestaurado,
+#barridos,
+#notificacion_troncal {
+  width: 125px;
 }
 
 .notificacionesTable .letra12 {
