@@ -15,7 +15,8 @@ fieldset legend {
 #tabla_vista,
 #barridos,
 #cant_lineas,
-#notificacion_troncal {
+#notificacion_troncal,
+#timeout {
   width: 120px;
 }
 
