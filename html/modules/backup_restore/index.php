@@ -460,6 +460,7 @@ function process_backup($smarty, $local_templates_dir, $module_name)
         ' 2>&1';
     exec($sComando, $output, $retval);
     if ($retval == 0) {
+        system("tar --append --file=$sDirBackup/$sArchivoBackup /var/www/html/modules");        
         $smarty->assign('ERROR_MSG', _tr('Backup Complete!').': '.$sArchivoBackup);
     } else {
         $sMensaje = _tr('Could not generate backup file').': '.$sArchivoBackup.'<br/>'.

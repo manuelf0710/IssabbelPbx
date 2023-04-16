@@ -80,4 +80,12 @@
 
     </table>
     <input class="button" type="hidden" name="id" value="{$ID}" />
+    {if $s eq '1'}
+    <div class="alert alert-success alert-dismissible" role="alert">
+        <strong>Guardado exitoso!</strong> se han almacenado todas las configuraciones correctamente.
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close" onclick="location.href='index.php?menu=configuracion_ivrecs'">
+        <span aria-hidden="true">&times;</span>
+        </button>
+    </div> 
+    {/if}   
 </fieldset>

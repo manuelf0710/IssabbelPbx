@@ -87,6 +87,7 @@ function viewFormConfiguracionIVRECS2($smarty, $module_name, $local_templates_di
     $_DATA  = $_POST;
     $action = getParameter("action");
     $id     = getParameter("id");
+    $s     = getParameter("s");
     $smarty->assign("ID", $id); //persistence id with input hidden in tpl
 
     if($action=="view")
@@ -108,6 +109,7 @@ function viewFormConfiguracionIVRECS2($smarty, $module_name, $local_templates_di
     $smarty->assign("configuracionIVR", $configuracionIVR);
     $smarty->assign("ivrMiscList", $ivrMiscList);
     $smarty->assign("queueList", $queueList);
+    $smarty->assign("s", $s);
 
     $smarty->assign("SAVE", _tr("Guardar"));
     $smarty->assign("EDIT", _tr("Edit"));
@@ -143,7 +145,7 @@ function saveNewConfiguracionIVRECS2($smarty, $module_name, $local_templates_dir
         //NO ERROR, HERE IMPLEMENTATION OF SAVE
         $pConfiguracionIVRECS2->updateNotificacionesConfiguracion($_POST);
         //$content="";
-        header("Location: index.php?menu=configuracion_ivrecs");
+        header("Location: index.php?menu=configuracion_ivrecs&s=1");
     }
     return $content;
 }
