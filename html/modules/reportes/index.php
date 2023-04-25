@@ -373,7 +373,7 @@ function eventosTablaDetalle($smarty, $module_name, $local_templates_dir, &$pDB,
     );
     $oGrid->setURL($url);
 
-    $arrColumns = array(_tr("Uniqueid"),_tr("Nus"),_tr("Tel Marcado"),_tr("Resultado"),_tr("Duración LLamada"),_tr("Fecha LLamada"),_tr("Agente"),_tr("Grabación"));
+    $arrColumns = array(_tr("Uniqueid"),_tr("NUS"),_tr("Tel Marcado"),_tr("Resultado"),_tr("Duración LLamada (Seg)"),_tr("Fecha LLamada"),_tr("Agente"),_tr("Grabación"));
     $oGrid->setColumns($arrColumns); 
     $oGrid->addLinkAction("index.php?menu=reportes&action=retornoeventos&criterio=eventos","Volver a lista de Eventos");
       
@@ -485,7 +485,7 @@ function eventosTabla($smarty, $module_name, $local_templates_dir, &$pDB, $arrCo
     );
     $oGrid->setURL($url);
 
-    $arrColumns = array(_tr("ID Evento"),_tr("Fecha llamada"),_tr("Barridos"),_tr("Cant Usuario"),_tr("Informados"),_tr("Fallidos"),_tr("Destino"),_tr("Campaña"));
+    $arrColumns = array(_tr("ID Evento"),_tr("Fecha llamada"),_tr("Barridos"),_tr("Cant Usuarios"),_tr("Informados"),_tr("Fallidos"),_tr("Destino"),_tr("Campaña"));
     $oGrid->setColumns($arrColumns);
    
 
@@ -550,7 +550,7 @@ function createFieldFilterEvento(){
 	    "tipo" => _tr("Tipo"),
 	    "fecha_llamada" => _tr("Fecha llamada"),
 	    "barridos" => _tr("Barridos"),
-	    "cant_usuario" => _tr("Cant Usuario"),
+	    "cant_usuario" => _tr("Cant Usuarios"),
 	    "informados" => _tr("Informados"),
 	    "fallidos" => _tr("Fallidos"),
 	    "destino" => _tr("Destino"),
