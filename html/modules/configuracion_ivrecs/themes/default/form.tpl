@@ -1,4 +1,6 @@
 <link href="modules/configuracion_ivrecs/themes/css/configuracion_ivrecs_module.css" rel="stylesheet" />
+<script type='text/javascript' src="modules/configuracion_ivrecs/themes/js/reportes_module.js">
+</script>
 <fieldset style="border-radius: 5px; padding: 5px; min-height:150px;">
     <legend><span> Configuración IVR ECS </span> </legend>
     <table width="100%" border="0" cellspacing="0" cellpadding="4" align="center">
@@ -71,8 +73,13 @@
         <tr class="letra12">
             <td align="left"><b>{$contrasenao.LABEL}: <span class="required">*</span></b></td>
             <td align="left">
-            <input type="text" name="contrasena" id="contrasena" value="{$configuracionIVR.contrasena}">
+                <input type="password" 
+                    name="contrasena" id="contrasena" value="{$configuracionIVR.contrasena}"
+                >
+                <i class="fa fa-eye toogle-type-password" onclick="tooglePassword('contrasena')"></i>
             </td>
+            <td align="left">{$contrasenamariadb.INPUT}</td>
+
         </tr>
         <tr class="letra12">
             <td colspan="2" align="right"><input class="button" type="submit" name="save_new" value="{$SAVE}"></td>
