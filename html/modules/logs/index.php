@@ -257,6 +257,15 @@ function viewFormLogs2($smarty, $module_name, $local_templates_dir, &$pDB, $arrC
 
     $fecha_inicial = getParameter("fecha_inicial");
     $fecha_final = getParameter("fecha_final");
+
+    if($fecha_inicial == ""){
+        // fecha final
+       $fecha_inicial = date('d/m/Y', strtotime('-30 days', strtotime($fecha_final)));   
+       
+       $fecha_final = date('Y-m-d H:i', strtotime('now +1 day')); // fecha final
+       $fecha_inicial = date('d/m/Y', strtotime('-30 days', strtotime($fecha_final)))." 00:00"; // fecha inicial
+       $fecha_final = date('d/m/Y', strtotime('now +1 day'))." 00:00";
+   }     
    
     $tipo = getParameter("tipo");
 
@@ -268,7 +277,7 @@ function viewFormLogs2($smarty, $module_name, $local_templates_dir, &$pDB, $arrC
 
 
     $htmlForm = $oForm->fetchForm("$local_templates_dir/form.tpl", _tr("Logs2"), $_DATA);
-    $content = "<form  method='POST' style='margin-bottom:0;' action='?menu=$module_name'>" . $htmlForm . "</form>";
+    $content = "<form  method='POST' style='margin-bottom:0;' name='form_logs' action='?menu=$module_name'>" . $htmlForm . "</form>";
 
     return $content;
 }
@@ -375,6 +384,15 @@ function getAction()
     $oGrid->enableExport();   // enable export.
     $oGrid->setNameFile_Export(_tr("Reporte_Logs"));
     $oGrid->setTplFile('themes/customTheme/_custom_list.tpl');
+
+    if($fecha_inicial == ""){
+        // fecha final
+       $fecha_inicial = date('d/m/Y', strtotime('-30 days', strtotime($fecha_final)));   
+       
+       $fecha_final = date('Y-m-d H:i', strtotime('now +1 day')); // fecha final
+       $fecha_inicial = date('d/m/Y', strtotime('-30 days', strtotime($fecha_final)))." 00:00"; // fecha inicial
+       $fecha_final = date('d/m/Y', strtotime('now +1 day'))." 00:00";
+   }     
 
     $postFilter =array(
         "fecha_inicial" => $fecha_inicial,

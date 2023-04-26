@@ -56,7 +56,7 @@
         </tr>
         <tr class="letra12">
             <td colspan="4" align="right">
-                <input class="button" type="submit" name="save_new" value="Aceptar">
+                <input class="button" type="button" id="btnsearchlogs" name="save_new" value="Aceptar">
             </td>
         </tr>
 

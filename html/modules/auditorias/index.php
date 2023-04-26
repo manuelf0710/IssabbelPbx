@@ -69,7 +69,6 @@ function _moduleContent(&$smarty, $module_name)
         $user = isset($_SESSION['issabel_user']) ? $_SESSION['issabel_user'] : "unknown";
         writeLOG("audit.log", 'Descarga '.$user.': Descarga de reporte auditorias. for '.$user.'  "auditorias" from '.$_SERVER["REMOTE_ADDR"]);        
     }
-
     switch ($action) {
         case "save_new":
             $content = saveNewAuditorias2($smarty, $module_name, $local_templates_dir, $pDB, $arrConf);
@@ -82,6 +81,7 @@ function _moduleContent(&$smarty, $module_name)
         default: // view_form
             $content = viewFormAuditorias2($smarty, $module_name, $local_templates_dir, $pDB, $arrConf);
             $content .= reportAuditorias_Table($smarty, $module_name, $local_templates_dir, $pDB, $arrConf);
+           
             break;
     }
     return $content;
@@ -124,6 +124,15 @@ function viewFormAuditorias2($smarty, $module_name, $local_templates_dir, &$pDB,
     $fecha_inicial = getParameter("fecha_inicial");
     $fecha_final = getParameter("fecha_final");
 
+    if($fecha_inicial == ""){
+        // fecha final
+       $fecha_inicial = date('d/m/Y', strtotime('-30 days', strtotime($fecha_final)));   
+       
+       $fecha_final = date('Y-m-d H:i', strtotime('now +1 day')); // fecha final
+       $fecha_inicial = date('d/m/Y', strtotime('-30 days', strtotime($fecha_final)))." 00:00"; // fecha inicial
+       $fecha_final = date('d/m/Y', strtotime('now +1 day'))." 00:00";
+   } 
+
 
     $fecha_inicial_filter = $fecha_inicial;
     $fecha_final_filter   = $fecha_final;
@@ -133,7 +142,7 @@ function viewFormAuditorias2($smarty, $module_name, $local_templates_dir, &$pDB,
     $smarty->assign("fecha_final_filter",$fecha_final_filter);
 
     $htmlForm = $oForm->fetchForm("$local_templates_dir/form.tpl", _tr("Auditorias2"), $_DATA);
-    $content = "<form  method='POST' style='margin-bottom:0;' action='?menu=$module_name'>" . $htmlForm . "</form>";
+    $content = "<form  method='POST' style='margin-bottom:0;' name='form_auditorias' id='form_auditorias' action='?menu=$module_name'>" . $htmlForm . "</form>";
 
     return $content;
 }
@@ -230,6 +239,15 @@ function reportAuditorias_Table($smarty, $module_name, $local_templates_dir, &$p
     $oGrid->enableExport();   // enable export.
     $oGrid->setNameFile_Export(_tr("Reporte_Auditorias"));
     $oGrid->setTplFile('themes/customTheme/_custom_list.tpl');
+
+    if($fecha_inicial == ""){
+        // fecha final
+       $fecha_inicial = date('d/m/Y', strtotime('-30 days', strtotime($fecha_final)));   
+       
+       $fecha_final = date('Y-m-d H:i', strtotime('now +1 day')); // fecha final
+       $fecha_inicial = date('d/m/Y', strtotime('-30 days', strtotime($fecha_final)))." 00:00"; // fecha inicial
+       $fecha_final = date('d/m/Y', strtotime('now +1 day'))." 00:00";
+   }    
 
     $postFilter =array(
         "fecha_inicial" => $fecha_inicial,
