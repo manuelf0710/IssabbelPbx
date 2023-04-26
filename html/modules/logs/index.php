@@ -195,45 +195,28 @@ function readErrorLogMariadb($tipo="", $desde= "", $hasta="")
         $datetime = "";
         $valid = 1;
         $type ="Informativa";
-        if (in_array($parts[2], $arrayErrors)) {
-            if($parts[2] == "[ERROR]") {
-                $type = "Error";
-            } 
-        }
-
-        if(is_numeric($parts[0]) && strlen($parts[0])==6) {
-            $datetime = formatDateLog($parts[0])." ".$parts[1];
-           
-        }else{
-            $datetime= "";
-        }
-
-        if(strtoupper($type) == strtoupper($tipo)) {
-            if($datetime == "") {
-                $valid = 0;
+        if (count($parts) > 3) {
+            if (in_array($parts[2], $arrayErrors)) {
+                if($parts[2] == "[ERROR]") {
+                    $type = "Error";
+                }
             }
-            if($include_fecha == 1) {
-                $valid = 1;
-            }
-            if($valid ==1) {
-                $arrTmp[0] = $datetime;
-                $arrTmp[1] = $type;
-                $arrTmp[2] = $line;
-                $arrTmp[3] = $modulo;
-                $arrTmp[4] ="";
-                $arrData[] = $arrTmp;
-            }
-        }
 
-        if ($tipo == null || $tipo == "todos") {
-            if (count($parts) > 3) {
+            if(is_numeric($parts[0]) && strlen($parts[0])==6) {
+                $datetime = formatDateLog($parts[0])." ".$parts[1];
+
+            } else {
+                $datetime= "";
+            }
+
+            if(strtoupper($type) == strtoupper($tipo)) {
                 if($datetime == "") {
                     $valid = 0;
                 }
                 if($include_fecha == 1) {
                     $valid = 1;
                 }
-                if($valid == 1) {
+                if($valid ==1) {
                     $arrTmp[0] = $datetime;
                     $arrTmp[1] = $type;
                     $arrTmp[2] = $line;
@@ -243,6 +226,25 @@ function readErrorLogMariadb($tipo="", $desde= "", $hasta="")
                 }
             }
 
+            if ($tipo == null || $tipo == "todos") {
+                if (count($parts) > 3) {
+                    if($datetime == "") {
+                        $valid = 0;
+                    }
+                    if($include_fecha == 1) {
+                        $valid = 1;
+                    }
+                    if($valid == 1) {
+                        $arrTmp[0] = $datetime;
+                        $arrTmp[1] = $type;
+                        $arrTmp[2] = $line;
+                        $arrTmp[3] = $modulo;
+                        $arrTmp[4] ="";
+                        $arrData[] = $arrTmp;
+                    }
+                }
+
+            }
         }
        
     }
