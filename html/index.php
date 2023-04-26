@@ -75,7 +75,7 @@ load_default_timezone();
 
 session_name("issabelSession");
 session_start();
-
+/*
 if (!isset($_SESSION['inicio'])) {
     //$_SESSION['inicio'] = time(); // Almacena la fecha y hora actual en la variable de sesión 'inicio'
   } else {
@@ -122,7 +122,7 @@ if (!isset($_SESSION['inicio'])) {
       // Si no han pasado más de 10 minutos, actualiza la fecha y hora de inicio de sesión
       $_SESSION['inicio'] = time();
     }
-  } 
+  } */
 
 if (isset($_GET['logout']) && $_GET['logout'] == 'yes') {
     $user = isset($_SESSION['issabel_user']) ? $_SESSION['issabel_user'] : "unknown";

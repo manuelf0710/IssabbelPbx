@@ -151,6 +151,104 @@ function validateDatesLogsFilter($desde, $hasta, $fechaDesde, $fechaHasta, $date
     return $valid;
 }
 
+function formatDateLog($fecha){
+    $anio = "20" . substr($fecha, 0, 2);
+    $mes = substr($fecha, 2, 2);
+    $dia = substr($fecha, 4, 2);
+    
+    $fecha_formateada = $anio . "-" . $mes . "-" . $dia;
+    return $fecha_formateada; // Output: "2023-04-25"
+}
+
+function readErrorLogMariadb($tipo="", $desde= "", $hasta="")
+{
+    $fechaDesde = "";
+    $fechaHasta = "";
+
+    if($desde != "") {
+        $fechaDesde = DateTime::createFromFormat('d/m/Y H:i', $desde);
+    }
+    if($hasta != "") {
+        $fechaHasta = DateTime::createFromFormat('d/m/Y H:i', $hasta);
+    }
+
+
+    $log_file = '/var/log/mariadb/mariadb.log';
+    $linesToRead = 200;
+    $log_data = file($log_file);
+
+    // Obtener las últimas 200 líneas del archivo de registro
+    $log_data = array_slice($log_data, -5000, 5000);
+    $arrData = [];
+
+    $include_fecha = 0;
+    if(getParameter("include_fecha") != "") {
+        $include_fecha = getParameter("include_fecha");
+    }
+
+    $arrayErrors = array("[ERROR]","[Warning]","[Note]");
+    $modulo = "MariaDB";
+
+    foreach ($log_data as $line) {
+        // Procesa cada línea del archivo de registro
+        $parts = explode(' ', $line);
+        $datetime = "";
+        $valid = 1;
+        $type ="Informativa";
+        if (in_array($parts[2], $arrayErrors)) {
+            if($parts[2] == "[ERROR]") {
+                $type = "Error";
+            } 
+        }
+
+        if(is_numeric($parts[0]) && strlen($parts[0])==6) {
+            $datetime = formatDateLog($parts[0])." ".$parts[1];
+           
+        }else{
+            $datetime= "";
+        }
+
+        if(strtoupper($type) == strtoupper($tipo)) {
+            if($datetime == "") {
+                $valid = 0;
+            }
+            if($include_fecha == 1) {
+                $valid = 1;
+            }
+            if($valid ==1) {
+                $arrTmp[0] = $datetime;
+                $arrTmp[1] = $type;
+                $arrTmp[2] = $line;
+                $arrTmp[3] = $modulo;
+                $arrTmp[4] ="";
+                $arrData[] = $arrTmp;
+            }
+        }
+
+        if ($tipo == null || $tipo == "todos") {
+            if (count($parts) > 3) {
+                if($datetime == "") {
+                    $valid = 0;
+                }
+                if($include_fecha == 1) {
+                    $valid = 1;
+                }
+                if($valid == 1) {
+                    $arrTmp[0] = $datetime;
+                    $arrTmp[1] = $type;
+                    $arrTmp[2] = $line;
+                    $arrTmp[3] = $modulo;
+                    $arrTmp[4] ="";
+                    $arrData[] = $arrTmp;
+                }
+            }
+
+        }
+       
+    }
+    return $arrData;
+}
+
 function readErrorLogApache($tipo="", $desde= "", $hasta=""){
     $fechaDesde = "";
     $fechaHasta = "";
@@ -170,6 +268,11 @@ function readErrorLogApache($tipo="", $desde= "", $hasta=""){
     // Obtener las últimas 200 líneas del archivo de registro
     $log_data = array_slice($log_data, -500, 500);
     $arrData = [];
+
+    $include_fecha = 0;
+    if(getParameter("include_fecha") != ""){
+        $include_fecha = getParameter("include_fecha");
+    }
     
 foreach ($log_data as $line) {
     // Procesa cada línea del archivo de registro
@@ -177,11 +280,21 @@ foreach ($log_data as $line) {
     if (count($parts) > 7) {
         $ip = $parts[0];
         $datetime = date('Y-m-d H:i:s', strtotime(substr($parts[3], 1)));
+        if(strlen(substr($parts[3], 1)) < 14) {
+            $datetime = "";
+        }
+
         $type = $parts[5];
         $type = strpos($parts[5], "error") ? "Error" : "Informativa";
         if (strtoupper($type) == strtoupper($tipo)) {
             
-            $valid = validateDatesLogsFilter($desde, $hasta, $fechaDesde, $fechaHasta, $datetime);
+            
+            if($datetime == ""){
+                $valid = 0;
+            }else{
+                $valid = validateDatesLogsFilter($desde, $hasta, $fechaDesde, $fechaHasta, $datetime);
+            }
+            if($include_fecha == 1) $valid = 1;
 
 
             if ($valid > 0) {
@@ -198,7 +311,12 @@ foreach ($log_data as $line) {
         }
 
         if ($tipo == null || $tipo == "todos") {
-            $valid = validateDatesLogsFilter($desde, $hasta, $fechaDesde, $fechaHasta, $datetime);
+            if($datetime == ""){
+                $valid = 0;
+            }else{
+                $valid = validateDatesLogsFilter($desde, $hasta, $fechaDesde, $fechaHasta, $datetime);
+            }    
+            if($include_fecha == 1) $valid = 1;        
 
             if ($valid > 0) {
                 $description =$line;
@@ -257,6 +375,7 @@ function viewFormLogs2($smarty, $module_name, $local_templates_dir, &$pDB, $arrC
 
     $fecha_inicial = getParameter("fecha_inicial");
     $fecha_final = getParameter("fecha_final");
+    $include_fecha = getParameter("include_fecha");
 
     if($fecha_inicial == ""){
         // fecha final
@@ -272,6 +391,7 @@ function viewFormLogs2($smarty, $module_name, $local_templates_dir, &$pDB, $arrC
 
     $smarty->assign("fecha_inicial",$fecha_inicial);
     $smarty->assign("fecha_final",$fecha_final);    
+    $smarty->assign("include_fecha",$include_fecha);    
     $smarty->assign("modulo",$modulo);    
     $smarty->assign("tipo",$tipo);    
 
@@ -374,6 +494,7 @@ function getAction()
     $filter_value = getParameter("filter_value");
     $fecha_inicial = getParameter("fecha_inicial");
     $fecha_final = getParameter("fecha_final");        
+    $include_fecha = getParameter("include_fecha");        
     $tipo = getParameter("tipo");    
 
     //begin grid parameters
@@ -392,11 +513,12 @@ function getAction()
        $fecha_final = date('Y-m-d H:i', strtotime('now +1 day')); // fecha final
        $fecha_inicial = date('d/m/Y', strtotime('-30 days', strtotime($fecha_final)))." 00:00"; // fecha inicial
        $fecha_final = date('d/m/Y', strtotime('now +1 day'))." 00:00";
-   }     
+   }    
 
     $postFilter =array(
         "fecha_inicial" => $fecha_inicial,
         "fecha_final" => $fecha_final,
+        "include_fecha" => $include_fecha,
         "tipo" => $tipo,
         "modulo" => $modulo,
     );    
@@ -407,12 +529,14 @@ function getAction()
         "filter_value" =>  $filter_value,
         "fecha_inicial" => $fecha_inicial,
         "fecha_final" => $fecha_final,
+        "include_fecha" => $include_fecha,        
         "modulo" => $modulo,
         "tipo" => $tipo,
     );
 
     $smarty->assign("fecha_inicial",$fecha_inicial);
     $smarty->assign("fecha_final",$fecha_final);
+    $smarty->assign("include_fecha",$include_fecha);
     $smarty->assign("modulo",$modulo);
     $smarty->assign("tipo",$tipo);
       
@@ -484,6 +608,7 @@ function reportLogsFiles_Table($smarty, $module_name, $local_templates_dir, &$pD
     $filter_value = getParameter("filter_value");
     $fecha_inicial = getParameter("fecha_inicial");
     $fecha_final = getParameter("fecha_final");      
+    $include_fecha = getParameter("include_fecha");      
     $tipo = getParameter("tipo");    
 
     //begin grid parameters
@@ -498,6 +623,7 @@ function reportLogsFiles_Table($smarty, $module_name, $local_templates_dir, &$pD
     $postFilter =array(
         "fecha_inicial" => $fecha_inicial,
         "fecha_final" => $fecha_final,
+        "include_fecha" => $include_fecha,
         "tipo" => $tipo,
         "modulo" => $modulo,
     );    
@@ -508,12 +634,14 @@ function reportLogsFiles_Table($smarty, $module_name, $local_templates_dir, &$pD
         "filter_value" =>  $filter_value,
         "fecha_inicial" => $fecha_inicial,
         "fecha_final" => $fecha_final,
+        "include_fecha" => $include_fecha,
         "modulo" => $modulo,
         "tipo" => $tipo,
     );
 
     $smarty->assign("fecha_inicial",$fecha_inicial);
     $smarty->assign("fecha_final",$fecha_final);
+    $smarty->assign("include_fecha",$include_fecha);
     $smarty->assign("modulo",$modulo);
     $smarty->assign("tipo",$tipo);
       
@@ -531,6 +659,9 @@ function reportLogsFiles_Table($smarty, $module_name, $local_templates_dir, &$pD
     if($modulo == "asterisk"){
         $dataForTable = readErrorLogAsterisk($tipo, $fecha_inicial, $fecha_final);
     }
+    if($modulo == "mariadb"){
+        $dataForTable = readErrorLogMariadb($tipo, $fecha_inicial, $fecha_final);
+    }    
 
     $total   = $pLogs_Table->getNumLogsFile_Table($filter_field, $filter_value, $postFilter, count($dataForTable));
     

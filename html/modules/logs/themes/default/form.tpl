@@ -50,10 +50,17 @@
                     <!--<option value="asterisk" {if "asterisk" == $modulo}selected{/if}>Asterisk</option>-->
                     <option value="Auditorias" {if "Auditorias" == $modulo}selected{/if}>Auditorias</option>
                     <option value="conexionbd" {if "conexionbd" == $modulo}selected{/if}>Conexión a Base de datos</option>
+                    <option value="mariadb" {if "mariadb" == $modulo}selected{/if}>MariaDB</option>
                     <option value="cronjob" {if "cronjob" == $modulo}selected{/if}>Notificación Eventos</option>
                 </select>
             </td>
         </tr>
+            <tr class="letra12" id="trincludefecha" style="display:{if $modulo == 'apache' || $modulo == 'mariadb'}block{else}none{/if}">
+                <td align="left"><b>Incluir log Fecha:</b></td>
+                <td align="left">
+                    <input type="checkbox" id="include_fecha" name="include_fecha" value="1" {if "1" == $include_fecha}checked{/if}>
+                </td>
+            </tr>
         <tr class="letra12">
             <td colspan="4" align="right">
                 <input class="button" type="button" id="btnsearchlogs" name="save_new" value="Aceptar">
