@@ -210,13 +210,15 @@ function readErrorLogMariadb($tipo="", $desde= "", $hasta="")
             }
 
             if(strtoupper($type) == strtoupper($tipo)) {
-                if($datetime == "") {
+                if($datetime == ""){
                     $valid = 0;
+                }else{
+                    $valid = validateDatesLogsFilter($desde, $hasta, $fechaDesde, $fechaHasta, $datetime);
                 }
                 if($include_fecha == 1) {
                     $valid = 1;
                 }
-                if($valid ==1) {
+                if($valid > 0) {
                     $arrTmp[0] = $datetime;
                     $arrTmp[1] = $type;
                     $arrTmp[2] = $line;
@@ -228,13 +230,15 @@ function readErrorLogMariadb($tipo="", $desde= "", $hasta="")
 
             if ($tipo == null || $tipo == "todos") {
                 if (count($parts) > 3) {
-                    if($datetime == "") {
+                    if($datetime == ""){
                         $valid = 0;
+                    }else{
+                        $valid = validateDatesLogsFilter($desde, $hasta, $fechaDesde, $fechaHasta, $datetime);
                     }
                     if($include_fecha == 1) {
                         $valid = 1;
                     }
-                    if($valid == 1) {
+                    if($valid > 0) {
                         $arrTmp[0] = $datetime;
                         $arrTmp[1] = $type;
                         $arrTmp[2] = $line;
@@ -261,7 +265,7 @@ function readErrorLogApache($tipo="", $desde= "", $hasta=""){
     if($hasta != ""){
         $fechaHasta = DateTime::createFromFormat('d/m/Y H:i', $hasta);    
     }
-    
+
 
     $log_file = '/var/log/httpd/error_log';
     $linesToRead = 200;
@@ -383,9 +387,9 @@ function viewFormLogs2($smarty, $module_name, $local_templates_dir, &$pDB, $arrC
         // fecha final
        $fecha_inicial = date('d/m/Y', strtotime('-30 days', strtotime($fecha_final)));   
        
-       $fecha_final = date('Y-m-d H:i', strtotime('now +1 day')); // fecha final
-       $fecha_inicial = date('d/m/Y', strtotime('-30 days', strtotime($fecha_final)))." 00:00"; // fecha inicial
-       $fecha_final = date('d/m/Y', strtotime('now +1 day'))." 00:00";
+       $fecha_final = date('Y-m-d'); // fecha final
+       $fecha_inicial = date('d/m/Y', strtotime('-30 days', strtotime($fecha_final))); // fecha inicial
+       $fecha_final = date('d/m/Y');
    }     
    
     $tipo = getParameter("tipo");
@@ -512,9 +516,9 @@ function getAction()
         // fecha final
        $fecha_inicial = date('d/m/Y', strtotime('-30 days', strtotime($fecha_final)));   
        
-       $fecha_final = date('Y-m-d H:i', strtotime('now +1 day')); // fecha final
-       $fecha_inicial = date('d/m/Y', strtotime('-30 days', strtotime($fecha_final)))." 00:00"; // fecha inicial
-       $fecha_final = date('d/m/Y', strtotime('now +1 day'))." 00:00";
+       $fecha_final = date('Y-m-d'); // fecha final
+       $fecha_inicial = date('d/m/Y', strtotime('-30 days', strtotime($fecha_final))); // fecha inicial
+       $fecha_final = date('d/m/Y');
    }    
 
     $postFilter =array(
@@ -656,13 +660,13 @@ function reportLogsFiles_Table($smarty, $module_name, $local_templates_dir, &$pD
 
     $dataForTable = null;
     if($modulo == "apache"){
-        $dataForTable = readErrorLogApache($tipo, $fecha_inicial, $fecha_final);
+        $dataForTable = readErrorLogApache($tipo, $fecha_inicial." "."00:00", $fecha_final." "."23:59");
     }
     if($modulo == "asterisk"){
-        $dataForTable = readErrorLogAsterisk($tipo, $fecha_inicial, $fecha_final);
+        $dataForTable = readErrorLogAsterisk($tipo, $fecha_inicial." "."00:00", $fecha_final." "."23:59");
     }
     if($modulo == "mariadb"){
-        $dataForTable = readErrorLogMariadb($tipo, $fecha_inicial, $fecha_final);
+        $dataForTable = readErrorLogMariadb($tipo, $fecha_inicial." "."00:00", $fecha_final." "."23:59");
     }    
 
     $total   = $pLogs_Table->getNumLogsFile_Table($filter_field, $filter_value, $postFilter, count($dataForTable));

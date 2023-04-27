@@ -22,14 +22,22 @@ $(document).ready(function () {
     }
   });
 
-  $(".calendar-reports").datetimepicker({
+  $(".calendar-reports").datepicker({
     showOn: "button",
     firstDay: 1,
     buttonImageOnly: true,
     buttonImage: "images/calendar.gif",
     dateFormat: "dd/mm/yy",
-    timeFormat: "HH:mm",
+    // timeFormat: "HH:mm",
     changeMonth: true,
     showWeek: true,
   });
 });
+
+
+{/* <tr class="letra12" id="trincludefecha" style="display:{if $modulo == 'apache' || $modulo == 'mariadb'}block{else}none{/if}">
+<td align="left"><b>Filtrar sin fecha:</b></td>
+<td align="left">
+    <input type="checkbox" id="include_fecha" name="include_fecha" value="1" {if "1" == $include_fecha}checked{/if}>
+</td>  
+</tr> */}

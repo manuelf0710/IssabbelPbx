@@ -65,15 +65,16 @@ class paloSantoLogs_Table{
             $arrParam = array("$filter_value%");
         }*/
         if(!empty($postFilter)){
-
-            if($postFilter['fecha_inicial']!= ''){
-                $fechaInicial = $this->convertirToMysqlFormat($postFilter['fecha_inicial']);
-                $where .= " and fecha >= str_to_date('".$fechaInicial."', '%Y-%m-%d %H:%i')";
+            if($postFilter['include_fecha'] !== "1") {
+                if($postFilter['fecha_inicial']!= ''){
+                    $fechaInicial = $this->convertirToMysqlFormat($postFilter['fecha_inicial']." "."00:00:00");
+                    $where .= " and fecha >= str_to_date('".$fechaInicial."', '%Y-%m-%d %H:%i')";
+                }
+                if($postFilter['fecha_final']!= ''){
+                    $fechaFinal = $this->convertirToMysqlFormat($postFilter['fecha_final']." "."23:59:00");
+                    $where .= " and fecha <=  str_to_date('".$fechaFinal."', '%Y-%m-%d %H:%i')";
+                }
             }
-            if($postFilter['fecha_final']!= ''){
-                $fechaFinal = $this->convertirToMysqlFormat($postFilter['fecha_final']);
-                $where .= " and fecha <=  str_to_date('".$fechaFinal."', '%Y-%m-%d %H:%i')";
-            }   
             if($postFilter['tipo']!= '' && $postFilter['tipo']!= 'todos'){
                 $where .= " and tipo =  '".$postFilter['tipo']."'";
             } 
@@ -98,15 +99,16 @@ class paloSantoLogs_Table{
         $where    = "";
         $arrParam = null;
         if(!empty($postFilter)){
-
-            if($postFilter['fecha_inicial']!= ''){
-                $fechaInicial = $this->convertirToMysqlFormat($postFilter['fecha_inicial']);
-                $where .= " and fecha >= str_to_date('".$fechaInicial."', '%Y-%m-%d %H:%i')";
-            }
-            if($postFilter['fecha_final']!= ''){
-                $fechaFinal = $this->convertirToMysqlFormat($postFilter['fecha_final']);
-                $where .= " and fecha <=  str_to_date('".$fechaFinal."', '%Y-%m-%d %H:%i')";
-            }   
+            if($postFilter['include_fecha'] !== "1") {
+                if($postFilter['fecha_inicial']!= ''){
+                    $fechaInicial = $this->convertirToMysqlFormat($postFilter['fecha_inicial']." "."00:00:00");
+                    $where .= " and fecha >= str_to_date('".$fechaInicial."', '%Y-%m-%d %H:%i')";
+                }
+                if($postFilter['fecha_final']!= ''){
+                    $fechaFinal = $this->convertirToMysqlFormat($postFilter['fecha_final']." "."23:59:00");
+                    $where .= " and fecha <=  str_to_date('".$fechaFinal."', '%Y-%m-%d %H:%i')";
+                }  
+            } 
             if($postFilter['tipo']!= '' && $postFilter['tipo']!= 'todos'){
                 $where .= " and tipo =  '".$postFilter['tipo']."'";
             }  
