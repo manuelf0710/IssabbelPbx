@@ -73,11 +73,11 @@ class paloSantoAuditorias_Table{
         if(!empty($postFilter)){
 
             if($postFilter['fecha_inicial']!= ''){
-                $fechaInicial = $this->convertirToMysqlFormat($postFilter['fecha_inicial']);
+                $fechaInicial = $this->convertirToMysqlFormat($postFilter['fecha_inicial']." "."00:00:00");
                 $where .= " and fecha >= str_to_date('".$fechaInicial."', '%Y-%m-%d %H:%i')";
             }
             if($postFilter['fecha_final']!= ''){
-                $fechaFinal = $this->convertirToMysqlFormat($postFilter['fecha_final']);
+                $fechaFinal = $this->convertirToMysqlFormat($postFilter['fecha_final']." "."23:59:00");
                 $where .= " and fecha <=  str_to_date('".$fechaFinal."', '%Y-%m-%d %H:%i')";
             }        
         }
@@ -110,11 +110,11 @@ class paloSantoAuditorias_Table{
 
 
             if($postFilter['fecha_inicial']!= ''){
-                $fechaInicial = $this->convertirToMysqlFormat($postFilter['fecha_inicial']);
+                $fechaInicial = $this->convertirToMysqlFormat($postFilter['fecha_inicial']." "."00:00:00");
                 $where .= " and fecha >= str_to_date('".$fechaInicial."', '%Y-%m-%d %H:%i')";
             }
             if($postFilter['fecha_final']!= ''){
-                $fechaFinal = $this->convertirToMysqlFormat($postFilter['fecha_final']);
+                $fechaFinal = $this->convertirToMysqlFormat($postFilter['fecha_final']." "."23:59:00");
                 $where .= " and fecha <=  str_to_date('".$fechaFinal."', '%Y-%m-%d %H:%i')";
             }          
         }        

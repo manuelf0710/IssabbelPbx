@@ -128,9 +128,9 @@ function viewFormAuditorias2($smarty, $module_name, $local_templates_dir, &$pDB,
         // fecha final
        $fecha_inicial = date('d/m/Y', strtotime('-30 days', strtotime($fecha_final)));   
        
-       $fecha_final = date('Y-m-d H:i', strtotime('now +1 day')); // fecha final
-       $fecha_inicial = date('d/m/Y', strtotime('-30 days', strtotime($fecha_final)))." 00:00"; // fecha inicial
-       $fecha_final = date('d/m/Y', strtotime('now +1 day'))." 00:00";
+       $fecha_final = date('Y-m-d'); // fecha final
+       $fecha_inicial = date('d/m/Y', strtotime('-30 days', strtotime($fecha_final))); // fecha inicial
+       $fecha_final = date('d/m/Y');
    } 
 
 
@@ -244,9 +244,9 @@ function reportAuditorias_Table($smarty, $module_name, $local_templates_dir, &$p
         // fecha final
        $fecha_inicial = date('d/m/Y', strtotime('-30 days', strtotime($fecha_final)));   
        
-       $fecha_final = date('Y-m-d H:i', strtotime('now +1 day')); // fecha final
-       $fecha_inicial = date('d/m/Y', strtotime('-30 days', strtotime($fecha_final)))." 00:00"; // fecha inicial
-       $fecha_final = date('d/m/Y', strtotime('now +1 day'))." 00:00";
+       $fecha_final = date('Y-m-d'); // fecha final
+       $fecha_inicial = date('d/m/Y', strtotime('-30 days', strtotime($fecha_final))); // fecha inicial
+       $fecha_final = date('d/m/Y');
    }    
 
     $postFilter =array(

@@ -13,23 +13,25 @@ $(document).ready(function () {
     }
   });
 
-  $(".calendar-reports").datetimepicker({
+  $(".calendar-reports").datepicker({
     showOn: "button",
     firstDay: 1,
     buttonImageOnly: true,
     buttonImage: "images/calendar.gif",
     dateFormat: "dd/mm/yy",
-    timeFormat: "HH:mm",
+    // timeFormat: "HH:mm",
+    timePicker: false,
     changeMonth: true,
     showWeek: true,
   });
-  $("#fecha_inicial, #fecha_final, .hasDatepicker").datetimepicker({
+  $("#fecha_inicial, #fecha_final, .hasDatepicker").datepicker({
     showOn: "button",
     firstDay: 1,
     buttonImageOnly: true,
     buttonImage: "images/calendar.gif",
     dateFormat: "dd/mm/yy",
-    timeFormat: "HH:mm",
+    // timeFormat: "HH:mm",
+    timePicker: false,
     changeMonth: true,
     showWeek: true,
   });
