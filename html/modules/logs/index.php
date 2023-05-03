@@ -383,7 +383,8 @@ function viewFormLogs2($smarty, $module_name, $local_templates_dir, &$pDB, $arrC
     $fecha_final = getParameter("fecha_final");
     $include_fecha = getParameter("include_fecha");
 
-    if($fecha_inicial == ""){
+    if($fecha_inicial == "" && $include_fecha !="1"){
+        echo("entra 387");
         // fecha final
        $fecha_inicial = date('d/m/Y', strtotime('-30 days', strtotime($fecha_final)));   
        
@@ -512,7 +513,7 @@ function getAction()
     $oGrid->setNameFile_Export(_tr("Reporte_Logs"));
     $oGrid->setTplFile('themes/customTheme/_custom_list.tpl');
 
-    if($fecha_inicial == ""){
+    if($fecha_inicial == "" && $include_fecha != "1"){
         // fecha final
        $fecha_inicial = date('d/m/Y', strtotime('-30 days', strtotime($fecha_final)));   
        

@@ -15,11 +15,14 @@ $(document).ready(function () {
   });
 
   $("#btnsearchlogs").click(function () {
-    if ($("#fecha_inicial").val() != "" && $("#fecha_inicial").val() != "") {
-      document.form_logs.submit();
-    } else {
-      alert("debe ingresar los valores de fecha inicial y fecha final");
+    if ($("#include_fecha").prop("checked") == false) {
+      if ($("#fecha_inicial").val() != "" && $("#fecha_inicial").val() != "") {
+      } else {
+        alert("debe ingresar los valores de fecha inicial y fecha final");
+        return;
+      }
     }
+    document.form_logs.submit();
   });
 
   $(".calendar-reports").datepicker({
@@ -34,10 +37,11 @@ $(document).ready(function () {
   });
 });
 
-
-{/* <tr class="letra12" id="trincludefecha" style="display:{if $modulo == 'apache' || $modulo == 'mariadb'}block{else}none{/if}">
+{
+  /* <tr class="letra12" id="trincludefecha" style="display:{if $modulo == 'apache' || $modulo == 'mariadb'}block{else}none{/if}">
 <td align="left"><b>Filtrar sin fecha:</b></td>
 <td align="left">
     <input type="checkbox" id="include_fecha" name="include_fecha" value="1" {if "1" == $include_fecha}checked{/if}>
 </td>  
-</tr> */}
+</tr> */
+}
