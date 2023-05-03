@@ -136,13 +136,13 @@ function validateDatesLogsFilter($desde, $hasta, $fechaDesde, $fechaHasta, $date
 
     if ($desde != "") {
         $valid = 0;
-        if ( $fechaComparar->format('Y-m-d H:i:s') > $fechaDesde->format('Y-m-d H:i:s') ) {
+        if ( $fechaComparar->format('Y-m-d H:i') > $fechaDesde->format('Y-m-d H:i') ) {
             $valid = 2;
         }
     }
 
     if ($hasta != "") {
-        if ($fechaComparar->format('Y-m-d H:i:s') < $fechaHasta->format('Y-m-d H:i:s')) {
+        if ($fechaComparar->format('Y-m-d H:i') < $fechaHasta->format('Y-m-d H:i')) {
             $valid = 2;
         }else{
             $valid = 0;
