@@ -660,13 +660,13 @@ function reportLogsFiles_Table($smarty, $module_name, $local_templates_dir, &$pD
 
     $dataForTable = null;
     if($modulo == "apache"){
-        $dataForTable = readErrorLogApache($tipo, $fecha_inicial." "."00:00", $fecha_final." "."23:59");
+        $dataForTable = readErrorLogApache($tipo, $fecha_inicial !== "" ? $fecha_inicial." "."00:00" : "", $fecha_final !== "" ? $fecha_final." "."23:59" : "");
     }
     if($modulo == "asterisk"){
-        $dataForTable = readErrorLogAsterisk($tipo, $fecha_inicial." "."00:00", $fecha_final." "."23:59");
+        $dataForTable = readErrorLogAsterisk($tipo, $fecha_inicial !== "" ? $fecha_inicial." "."00:00" : "", $fecha_final !== "" ? $fecha_final." "."23:59" : "");
     }
     if($modulo == "mariadb"){
-        $dataForTable = readErrorLogMariadb($tipo, $fecha_inicial." "."00:00", $fecha_final." "."23:59");
+        $dataForTable = readErrorLogMariadb($tipo, $fecha_inicial !== "" ? $fecha_inicial." "."00:00" : "", $fecha_final !== "" ? $fecha_final." "."23:59" : "");
     }    
 
     $total   = $pLogs_Table->getNumLogsFile_Table($filter_field, $filter_value, $postFilter, count($dataForTable));
