@@ -384,7 +384,6 @@ function viewFormLogs2($smarty, $module_name, $local_templates_dir, &$pDB, $arrC
     $include_fecha = getParameter("include_fecha");
 
     if($fecha_inicial == "" && $include_fecha !="1"){
-        echo("entra 387");
         // fecha final
        $fecha_inicial = date('d/m/Y', strtotime('-30 days', strtotime($fecha_final)));   
        
