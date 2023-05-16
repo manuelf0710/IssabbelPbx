@@ -3,7 +3,7 @@
 <html>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF8" />
-        <title>Issabel</title>
+        <title>SpardCC</title>
 
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Noto+Sans:400,700,400italic">
     <link rel="stylesheet" href="{$WEBPATH}themes/{$THEMENAME}/css/bootstrap.css">
@@ -57,7 +57,7 @@
 
         <!-- Footer -->
         <footer class="main" style="margin-left:16px;">
-            <a href="http://www.issabel.org" style="color: #444; text-decoration: none;" target='_blank'>Issabel</a> {$ISSABEL_LICENSED} <a href="http://www.opensource.org/licenses/gpl-license.php" target='_blank' style="color: #445; text-decoration: none;" >GPL</a>. 2006 - {$currentyear}.
+            SpardCC {$ISSABEL_LICENSED} <a href="http://www.opensource.org/licenses/gpl-license.php" target='_blank' style="color: #445; text-decoration: none;" >GPL</a>. 2006 - {$currentyear}.
         </footer>
 
         {*<br />*}

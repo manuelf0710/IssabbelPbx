@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -9,7 +8,7 @@
 	<meta name="description" content="Neon Admin Panel" />
 	<meta name="author" content="" />
 
-	<title>Issabel - {$PAGE_NAME}</title>
+	<title>SpardCC - {$PAGE_NAME}</title>
 
 
 	<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Noto+Sans:400,700,400italic">
@@ -28,98 +27,86 @@
 		<script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
 	<![endif]-->
 
-	{$HEADER_LIBS_JQUERY}
+    {$HEADER_LIBS_JQUERY}
 </head>
-
 <body class="page-body login-page login-form-fall" data-url="http://neon.dev">
 
 
-	<!-- This is needed when you send requests via Ajax -->
-	<script type="text/javascript">
-		var baseurl = '';
-	</script>
+<!-- This is needed when you send requests via Ajax --><script type="text/javascript">
+var baseurl = '';
+</script>
 
-	<div class="login-container">
+<div class="login-container">
 
-		<div class="login-header login-caret">
+	<div class="login-header login-caret">
 
-			<div class="login-content">
+		<div class="login-content">
 
-				<img src="{$WEBPATH}themes/{$THEMENAME}/images/issabel_logo_mini.png" width="200" height="62"
-					alt="Issabel logo" />
+			<img src="{$WEBPATH}themes/{$THEMENAME}/images/logo_mini.png" alt="SpardCC logo" />
 
-				<p class="description"></p>
+			<p class="description"></p>
 
-				<!-- progress bar indicator -->
-				<div class="login-progressbar-indicator">
-					<h3>43%</h3>
-					<span>logging in...</span>
-				</div>
+			<!-- progress bar indicator -->
+			<div class="login-progressbar-indicator">
+				<h3>43%</h3>
+				<span>logging in...</span>
 			</div>
-
 		</div>
 
-		<div class="login-progressbar">
-			<div></div>
-		</div>
+	</div>
 
-		<div class="login-form">
+	<div class="login-progressbar">
+		<div></div>
+	</div>
 
-			<div class="login-content">
+	<div class="login-form">
 
-				{if !empty({$LOGIN_INCORRECT})}
-					<div class="form-login-error">
-						<h3>{$LOGIN_INCORRECT}</h3>
-					</div>
-					<script>
-						$('.form-login-error').show();
-					</script>
-				{/if}
+		<div class="login-content">
 
-				<form method="post">
+{if !empty({$LOGIN_INCORRECT})}
+			<div class="form-login-error"><h3>{$LOGIN_INCORRECT}</h3></div>
+			<script>$('.form-login-error').show();</script>
+{/if}
 
-					<div class="form-group">
+			<form method="post">
 
-						<div class="input-group">
-							<div class="input-group-addon">
-								<i class="entypo-user"></i>
-							</div>
+				<div class="form-group">
 
-							<input type="text" class="form-control" name="input_user" id="input_user"
-								placeholder="{$USERNAME}" autocomplete="off" />
+					<div class="input-group">
+						<div class="input-group-addon">
+							<i class="entypo-user"></i>
 						</div>
 
+						<input type="text" class="form-control" name="input_user" id="input_user" placeholder="{$USERNAME}" autocomplete="off" />
 					</div>
 
-					<div class="form-group">
-
-						<div class="input-group">
-							<div class="input-group-addon">
-								<i class="entypo-key"></i>
-							</div>
-
-							<input type="password" class="form-control" name="input_pass" placeholder="{$PASSWORD}"
-								autocomplete="off" />
-						</div>
-
-					</div>
-
-					<div class="form-group">
-						<button type="submit" class="btn btn-primary btn-block btn-login" name="submit_login">
-							<i class="entypo-login"></i>
-							{$SUBMIT}aaaaaa
-						</button>
-					</div>
-
-				</form>
-
-
-				<div class="login-bottom-links">
-
-					<a href="http://www.issabel.org" style="text-decoration: none;" target='_blank'>Issabel</a>
-					{$ISSABEL_LICENSED} <a href="http://www.opensource.org/licenses/gpl-license.php"
-						style="text-decoration: none;" target='_blank'>GPL</a>. 2006 - {$currentyear}.
 				</div>
+
+				<div class="form-group">
+
+					<div class="input-group">
+						<div class="input-group-addon">
+							<i class="entypo-key"></i>
+						</div>
+
+						<input type="password" class="form-control" name="input_pass" placeholder="{$PASSWORD}" autocomplete="off" />
+					</div>
+
+				</div>
+
+				<div class="form-group">
+					<button type="submit" class="btn btn-primary btn-block btn-login" name="submit_login">
+						<i class="entypo-login"></i>
+						{$SUBMIT}
+					</button>
+				</div>
+
+			</form>
+
+
+			<div class="login-bottom-links">
+
+				SpardCC {$ISSABEL_LICENSED} <a href="http://www.opensource.org/licenses/gpl-license.php" style="text-decoration: none;" target='_blank'>GPL</a>. 2006 - {$currentyear}.</div>
 
 			</div>
 
@@ -127,7 +114,7 @@
 
 	</div>
 
-	</div>
+</div>
 
 
 	<!-- Bottom Scripts -->
@@ -142,5 +129,4 @@
 	<script type='text/javascript' src="{$WEBPATH}themes/{$THEMENAME}/js/neon-demo.js"></script>
 
 </body>
-
 </html>
