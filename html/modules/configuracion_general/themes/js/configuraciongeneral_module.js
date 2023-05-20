@@ -1,11 +1,11 @@
 $(document).ready(function () {
-  $(".calendar-configgeneral").datetimepicker({
+  $(".calendar-configgeneral").datepicker({
     showOn: "button",
     firstDay: 1,
     buttonImageOnly: true,
     buttonImage: "images/calendar.gif",
     dateFormat: "yy-mm-dd",
-    timeFormat: "HH:mm:ss.l",
+    //timeFormat: "HH:mm:ss.l",
     changeMonth: true,
     showWeek: true,
   });

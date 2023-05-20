@@ -189,7 +189,7 @@ class paloSantoconfiguracionGeneral
                     '.$this->stateJob.' activo, 
                     cant_lineas, 
                     barridos, 
-                    fecha_busqueda,
+                    date_format(fecha_busqueda,"%Y-%m-%d") fecha_busqueda,
                     hora_inicial_notif,
                     date_format(hora_inicial_notif, "%H") horainicialnot,
                     date_format(hora_inicial_notif, "%i") minutoinicialnot,
@@ -300,7 +300,7 @@ public function updateNotificacionesConfiguracion($data)
         array(
             "cant_lineas"          =>  $this->_DB->DBCAMPO($data['cant_lineas']),
             "barridos"          =>  $this->_DB->DBCAMPO($data['barridos']),
-            "fecha_busqueda"          =>  $this->_DB->DBCAMPO($data['fecha_busqueda']),
+            "fecha_busqueda"          =>  $this->_DB->DBCAMPO($data['fecha_busqueda']." 00:00:00.000"),
             "activo"          =>  $this->_DB->DBCAMPO($data['activar_desactivar']),
             "hora_inicial_notif"   =>  $this->_DB->DBCAMPO($hora_inicial_notif),
             "hora_final_notif"         =>  $this->_DB->DBCAMPO($hora_final_notif),
