@@ -51,9 +51,9 @@
                     {/foreach}
                 </select>
             </td>
-            <td class="letra12 pl" width="250"><b>Fecha Búsqueda:</b><br>YYYY-mm-dd HH:MM:SS</td> 
+            <td class="letra12 pl" width="250"><b>Fecha Búsqueda:</b><br>YYYY-mm-dd</td> 
             <td>
-                <input class="calendar-configgeneral" type="text" id="fecha_busqueda" name="fecha_busqueda" value="{$dataForm.configuracionGeneral.fecha_busqueda}" readonly>                      
+                <input class="calendar-configgeneral" style="width: 85px;" type="text" id="fecha_busqueda" name="fecha_busqueda" value="{$dataForm.configuracionGeneral.fecha_busqueda}" readonly>                      
             </td>
         </tr>       
         <tr class="letra12">
