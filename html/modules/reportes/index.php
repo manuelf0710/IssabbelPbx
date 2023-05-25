@@ -412,7 +412,7 @@ function eventosTablaDetalle($smarty, $module_name, $local_templates_dir, &$pDB,
 	    $arrTmp[4] = $value['duracion'];
 	    $arrTmp[5] = $value['fecha_llamada'];
 	    $arrTmp[6] = $value['agente'];
-	    $arrTmp[7] = $value['grabacion'];
+	    $arrTmp[7] = '<a href="'.$value['grabacion'].'">Descargar</a>';
             $arrData[] = $arrTmp;
         }
     }
