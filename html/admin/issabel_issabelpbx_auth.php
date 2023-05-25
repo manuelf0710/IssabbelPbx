@@ -11,6 +11,7 @@ function showview($viewname, $parameters = false) {
 }
 
 $documentRoot = $_SERVER["DOCUMENT_ROOT"];
+include_once "$documentRoot/libs/misc.lib.php";
 include_once "$documentRoot/libs/paloSantoDB.class.php";
 include_once "$documentRoot/libs/paloSantoACL.class.php";
 
