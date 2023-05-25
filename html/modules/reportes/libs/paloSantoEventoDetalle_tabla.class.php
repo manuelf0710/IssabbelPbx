@@ -117,8 +117,8 @@ class paloSantoEventoDetalle_tabla{
         n1.estado resultado,
         ifnull(n1.duracion,'0') duracion,
         if(n1.fecha_llamada = '0000-00-00 00:00:00', nc.fecha, n1.fecha_llamada) fecha_llamada, 
-        'N/A' agente,
-        '' grabacion
+        agente,
+        grabacion
       FROM notificaciones_campania nc 
      inner join  notificaciones_llamadas n1 on nc.id = n1.campania_id
      where 1 $where LIMIT $limit OFFSET $offset";
