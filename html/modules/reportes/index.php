@@ -405,7 +405,6 @@ function eventosTablaDetalle($smarty, $module_name, $local_templates_dir, &$pDB,
 
     if(is_array($arrResult) && $total>0){
         foreach($arrResult as $key => $value){ 
-        var_dump($value);
 	    $arrTmp[0] = $value['uniqueid'];
 	    $arrTmp[1] = $value['nus'];
 	    $arrTmp[2] = $value['tel_marcado'];
