@@ -863,6 +863,46 @@ function generarDSNSistema($sNombreUsuario, $sNombreDB, $ruta_base='', $isadminL
     return NULL;
 }
 
+function generarDSNSistemaQstats($sNombreUsuario, $sNombreDB, $ruta_base='', $isadminLoggin='')
+{
+    $getConnectionAsterixk = getRemoteConexionData();
+    $dsn = "";
+
+    if (array_key_exists('message', $getConnectionAsterixk)) {
+        $html="
+            <div class='alert alert-danger'>
+            ".$getConnectionAsterixk['message']."
+            </div>
+        
+        ";
+        echo($html);
+    }else{
+        $dsn = 'mysql://'.$getConnectionAsterixk['user'].':'.$getConnectionAsterixk['password'].'@'.$getConnectionAsterixk['host'].'/'.'qstats';
+        if (array_key_exists('ssl', $getConnectionAsterixk)) {
+            $dsn .= '?ssl={"rejectUnauthorized":true}';
+        }
+    }
+   
+
+    $ruta_base = "/var/www/html/";
+    require_once $ruta_base.'libs/paloSantoConfig.class.php';
+    switch ($sNombreUsuario) {
+    case 'root':
+        $sClave = obtenerClaveConocidaMySQL($sNombreUsuario, $ruta_base);
+        if (is_null($sClave)) return NULL;
+        return 'mysql://root:'.$sClave.'@localhost/'.$sNombreDB;
+    case 'asteriskuser':
+        if(is_file("/etc/issabelpbx.conf")) {
+            return $dsn;            
+        } else if(is_file("/etc/freepbx.conf")) {
+            return $dsn; 
+        } else {
+            return $dsn; 
+        }
+    }
+    return NULL;
+}
+
 function isPostfixToIssabel2(){
     $pathImap    = "/etc/imapd.conf";
     $vitualDomain = "virtdomains: yes";

@@ -25,6 +25,36 @@
   $Id: index.php, Thu 02 Jan 2020 10:38:55 AM EST, nicolas@issabel.com
 */
 
+function asternick($user, $passwordTemp) {
+    $host = "localhost"; // Dirección del servidor de la base de datos
+    $dbname = "qstats"; // Nombre de la base de datos de Asternic
+    $username = $user; // Nombre de usuario de la base de datos
+    $password = $passwordTemp; // Contraseña del usuario de la base de datos
+    // Intentar establecer la conexión a la base de datos
+    try {
+        $conAsternic = new PDO("mysql:host=$host;dbname=$dbname", $username, $password);
+        $conAsternic->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+        return $conAsternic;
+    } catch(PDOException $e) {
+        echo "Error en la conexión a la base de datos: " . $e->getMessage();
+    }
+}
+
+function handleJob($url, $param){
+    $url ="http://localhost:3000/connection";
+
+    $curl = curl_init();
+    // Configurar las opciones de cURL
+    curl_setopt($curl, CURLOPT_URL, $url);
+    curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
+    
+    // Realizar la petición GET y obtener la respuesta
+    $response = curl_exec($curl);
+    curl_close($curl);
+
+    return $response;   
+}
+
 
 function spl_issabel_class_autoload($sNombreClase)
 {
@@ -170,10 +200,13 @@ foreach (new RecursiveIteratorIterator($it) as $file) {
 }
 
 $dsnAsterisk = generarDSNSistema('asteriskuser', 'asterisk');
+$dsnAsteriskqStats = generarDSNSistemaQstats('asteriskuser', 'qstats');
 
 //$pdbACL = new paloDB($arrConf['issabel_dsn']['acl']);
+$pdbACLQstats = new paloDB($dsnAsteriskqStats);
 $pdbACL = new paloDB($dsnAsterisk);
 $pACL = new paloACL($pdbACL);
+$pACLQstats = new paloACL($pdbACLQstats);
 
 if (!empty($pACL->errMsg)) {
     //echo "ERROR DE DB: $pACL->errMsg <br>";
@@ -242,14 +275,9 @@ if (isset($_POST['submit_login']) and !empty($_POST['input_user'])) {
         $pconfiguracion_general2 = new paloSantoconfiguracion_general2($pDB);
         $datos = $pconfiguracion_general2->getconfiguracion_general2Active();
 
-        
-        
         $objetoConnection = array();
 
         $passToSha256 = hash('sha256', $_POST['input_pass']);
-
-
-
 
             if($datos['motor']== 'Mysql' || $datos['motor']== 'MariaDB' || $datos['motor'] == 'SQLServer' || $datos['motor'] = 'PostgreSQL'){          
                 $objetoConnection = array(
@@ -273,57 +301,51 @@ if (isset($_POST['submit_login']) and !empty($_POST['input_user'])) {
                     ),
                     "connectString"=> $datos['servidor']."/".$datos['basedatos'],    
                     );
-            }   
-
-
+            }
             
-
+        /** Pendiente definir donde se hace la peticion para modificar la tabla users de qtats */    
+        // $resNode = handleJob();
+        // if(is_string($resNode)) {
+        //     $jsonTemp = json_decode($resNode);
+        //     asternick($jsonTemp->user, $jsonTemp->password);
+        // }
 
         $ingreso = $iauth->external_auth($_POST['input_user'], $passToSha256, $objetoConnection);  
 
-        //print_r($ingreso);
         if(!empty($ingreso) && !array_key_exists('message', $ingreso) && count($ingreso)>0   && array_key_exists('ROL_ID', $ingreso[0])){
             include_once("libs/IssabelExternalAuth.class.php"); 
 
             $id_user = $pACL->getIdUser($_POST['input_user']);
             $getRole = getMatchRole($ingreso[0]->ROL_ID);
+            echo $id_user;
+            if ($id_user !== false) {
+                $crearExtension = false;
 
-             //$tieneExtension = consultarUserExtension($dsnAsterisk,$_POST['input_user']);
-             
+                $r = $pACL->updateUser($id_user, $_POST['input_user'], $_POST['input_user'],$crearExtension !== false? $crearExtension : null);
 
-             //echo("tiene extension => ".json_encode($tieneExtension));
-             
+                list($access_token, $refresh_token) = $iauthIssabel->acquire_jwt_token($_POST['input_user'], $_POST['input_pass']); 
+                $usuarioFop2 = consultarExtensionUser($dsnAsterisk, $_POST['input_user'], $id_user );
+                if($usuarioFop2){
+                    $_SESSION['extension_pass'] = $usuarioFop2["secret"];
+                    $_SESSION['extension_user'] = $usuarioFop2["exten"];                          
+                }
+                $_SESSION['access_token']  = $access_token;
+                $_SESSION['refresh_token'] = $refresh_token;            
+                $_SESSION['issabel_user'] = $_POST['input_user'];
+                $_SESSION['issabel_pass'] = $pass_md5; 
+                $_SESSION['inicio'] = time();
+                $pACLQstats->createUserQstats($_POST['input_user'], $_POST['input_pass'], $ingreso[0]->ROL_ID);
+                header("Location: index.php");           
+            } else{
+                //$pACL->setUserExtension();
 
-                if ($id_user !== false) {
-                    //$crearExtension = crearActualizarExtension($dsnAsterisk, $_POST['input_user'], $id_user ); 
-                    $crearExtension = false;
-
-                    $r = $pACL->updateUser($id_user, $_POST['input_user'], $_POST['input_user'],$crearExtension !== false? $crearExtension : null);
-
-                    list($access_token, $refresh_token) = $iauthIssabel->acquire_jwt_token($_POST['input_user'], $_POST['input_pass']); 
-                    $usuarioFop2 = consultarExtensionUser($dsnAsterisk, $_POST['input_user'], $id_user );
-                    if($usuarioFop2){
-                        $_SESSION['extension_pass'] = $usuarioFop2["secret"];
-                        $_SESSION['extension_user'] = $usuarioFop2["exten"];                          
-                    }
-                    $_SESSION['access_token']  = $access_token;
-                    $_SESSION['refresh_token'] = $refresh_token;            
-                    $_SESSION['issabel_user'] = $_POST['input_user'];
-                    $_SESSION['issabel_pass'] = $pass_md5; 
-                    $_SESSION['inicio'] = time();                                                       
-                    header("Location: index.php");                
-
-
-
-                }else{
-                    //$pACL->setUserExtension();
-
-                   $r = $pACL->createUser($_POST['input_user'], $ingreso[0]->ROL_NOMBRE, $pass_md5, $extension = NULL);
-                   if (!is_null($id_user)) {
+                $r = $pACL->createUser($_POST['input_user'], $ingreso[0]->ROL_NOMBRE, $pass_md5, $extension = NULL);
+                
+                if (!is_null($id_user)) {
                     /* Versiones viejas del archivo acl.db tienen una fila con
-                     * una tupla que asocia al usuario inexistente con ID 2, con
-                     * el grupo 2 (Operadores). Se limpia cualquier membresía
-                     * extraña. */
+                    * una tupla que asocia al usuario inexistente con ID 2, con
+                    * el grupo 2 (Operadores). Se limpia cualquier membresía
+                    * extraña. */
                     $listaMembresia = $pACL->getMembership($id_user);
                     if (is_array($listaMembresia) && count($listaMembresia) > 0) {
                         foreach ($listaMembresia as $idGrupo) {
@@ -356,12 +378,11 @@ if (isset($_POST['submit_login']) and !empty($_POST['input_user'])) {
             
                     $_SESSION['issabel_user'] = $_POST['input_user'];
                     $_SESSION['issabel_pass'] = $pass_md5;  
-                    $_SESSION['inicio'] = time();                                     
-                    header("Location: index.php");         
-
-
+                    $_SESSION['inicio'] = time();
+                    $pACLQstats->createUserQstats($_POST['input_user'], $_POST['input_pass'], $ingreso[0]->ROL_ID);                      
+                    header("Location: index.php");  
                 }                   
-                }
+            }
             exit;
 
 

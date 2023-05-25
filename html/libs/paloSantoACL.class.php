@@ -1744,5 +1744,33 @@ SQL_CURRENT_GROUP_PRIVILEGES;
     }
 
 
-
+    function createUserQstats($user, $password, $rol) {
+        echo "<br>";
+        var_dump($user);
+        echo "<br>";
+        var_dump($password);
+        echo "<br>";
+        var_dump($rol);
+        echo "<br>";
+        $passwordnew = sha1($password);
+        if($rol === 3010 || $rol === 3011) {
+            if ($this->_DB->connStatus) {
+                return FALSE;
+            } else {
+                $sql = "SELECT * FROM users WHERE name = ".$user." ";
+                $arr = $this->_DB->getFirstRowQuery($sql, FALSE);
+                var_dump($arr);
+                if ($arr !== false) {
+                    $sqlAlter = "UPDATE users SET password = '".$passwordnew."' WHERE name = '".$user."'";
+                    $resultadoUpdateUser = $this->_DB->genQuery($sqlAlter);  
+                } else {
+                    $level = ($rol === 3010) ? 15 : 8;
+                    $sqlAlter = "insert into users
+                                 (login,password,name,level) values
+                                 ('".$user."','".$passwordnew."', '".$user."', '".$level."')";
+                    $resultadoInsert = $this->_DB->genQuery($sqlAlter);     
+                }
+            }
+        }
+    }
 }
