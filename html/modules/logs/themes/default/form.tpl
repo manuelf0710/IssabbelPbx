@@ -46,8 +46,8 @@
             <td align="left"><b>Módulo:</b></td>
             <td align="left">
                 <select name="modulo" id="modulo">
-                    <option value="apache" {if "apache" == $modulo}selected{/if}>Apache</option>
-                    <!--<option value="asterisk" {if "asterisk" == $modulo}selected{/if}>Asterisk</option>-->
+                    <option value="apache" {if "apache" == $modulo}selected{/if}>Apache Error Log</option>
+                    <option value="apacheAccess" {if "apacheAccess" == $modulo}selected{/if}>Apache Access Log</option>
                     <option value="Auditorias" {if "Auditorias" == $modulo}selected{/if}>Auditorias</option>
                     <option value="conexionbd" {if "conexionbd" == $modulo}selected{/if}>Conexión a Base de datos</option>
                     <option value="mariadb" {if "mariadb" == $modulo}selected{/if}>MariaDB</option>
