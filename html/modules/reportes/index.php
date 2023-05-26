@@ -402,7 +402,6 @@ function eventosTablaDetalle($smarty, $module_name, $local_templates_dir, &$pDB,
 
 
     $arrResult =$pevento_tabla->getevento_tabla($limit, $offset, $filter_field, $filter_value, $postFilter);
-
     if(is_array($arrResult) && $total>0){
         foreach($arrResult as $key => $value){ 
 	    $arrTmp[0] = $value['uniqueid'];
@@ -412,7 +411,7 @@ function eventosTablaDetalle($smarty, $module_name, $local_templates_dir, &$pDB,
 	    $arrTmp[4] = $value['duracion'];
 	    $arrTmp[5] = $value['fecha_llamada'];
 	    $arrTmp[6] = $value['agente'];
-	    $arrTmp[7] = ($value['grabacion'] && $value['grabacion'] != "N/A") ? '<a href="'.$value['grabacion'].'">Descargar</a>' : "N/A";
+	    $arrTmp[7] = ($value['grabacion'] && $value['grabacion'] != "N/A") ? '<a href="/modules/reportes/download.php?file='.$value['grabacion'].'" target="_blank">Descargar</a>' : "N/A";
             $arrData[] = $arrTmp;
         }
     }
@@ -710,7 +709,6 @@ function createFieldFilterOtros(){
                     );
     return $arrFormElements;
 }
-
 /*
 * end de funciones otros
 */
