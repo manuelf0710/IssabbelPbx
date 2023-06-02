@@ -86,7 +86,7 @@ class paloSantoConfiguracionIVRECS2{
         
         //echo "Archivo creado y guardado correctamente.";
     
-        $comando = 'asterisk -rx "dialplan reload"';
+        $comando = 'asterisk -rx "core reload"';
         $resultado = shell_exec($comando);  
     }    
 
