@@ -1,6 +1,6 @@
 <?php
- ini_set('display_errors', 1);
- error_reporting(E_ALL); 
+ /*ini_set('display_errors', 1);
+ error_reporting(E_ALL); */
 //phpinfo();
 /* vim: set expandtab tabstop=4 softtabstop=4 shiftwidth=4:
   Codificación: UTF-8
@@ -105,11 +105,11 @@ load_default_timezone();
 
 session_name("issabelSession");
 session_start();
-/*
+
 if (!isset($_SESSION['inicio'])) {
     //$_SESSION['inicio'] = time(); // Almacena la fecha y hora actual en la variable de sesión 'inicio'
   } else {
-    // Verifica si han pasado más de 10 minutos desde el inicio de la sesión
+    // Verifica si han pasado más de 30 minutos desde el inicio de la sesión
     if (time() - $_SESSION['inicio'] > 1800) {
       // Si han pasado más de 10 minutos, destruye la sesión y redirige al usuario a la página de inicio de sesión
             if(!isset($_SESSION['extension_user'])){
@@ -152,7 +152,7 @@ if (!isset($_SESSION['inicio'])) {
       // Si no han pasado más de 10 minutos, actualiza la fecha y hora de inicio de sesión
       $_SESSION['inicio'] = time();
     }
-  } */
+  }
 
 if (isset($_GET['logout']) && $_GET['logout'] == 'yes') {
     $user = isset($_SESSION['issabel_user']) ? $_SESSION['issabel_user'] : "unknown";
@@ -319,10 +319,11 @@ if (isset($_POST['submit_login']) and !empty($_POST['input_user'])) {
             $getRole = getMatchRole($ingreso[0]->ROL_ID);
             //echo $id_user;
 
-            if ($id_user !== false) { echo("entra if");
+            if ($id_user !== false) {
                 $crearExtension = false;
 
                 $r = $pACL->updateUser($id_user, $_POST['input_user'], $_POST['input_user'],$crearExtension !== false? $crearExtension : null);
+                $pACL->changePassword($id_user, $pass_md5);
 
                 list($access_token, $refresh_token) = $iauthIssabel->acquire_jwt_token($_POST['input_user'], $_POST['input_pass']); 
                 $usuarioFop2 = consultarExtensionUser($dsnAsterisk, $_POST['input_user'], $id_user );
@@ -339,14 +340,10 @@ if (isset($_POST['submit_login']) and !empty($_POST['input_user'])) {
                 $pACLQstats->createUserQstats($_POST['input_user'], $_POST['input_pass'], $ingreso[0]->ROL_ID);
                 
                 if('3010' == $ingreso[0]->ROL_ID){
-                    echo("dentro antes del ");
                     $remoteUSersReload = $iauth->getRemoteUSersDatabase(array("getUsers"=>"all"));                      
-                    echo("dentro despues del ");
                 }
-                echo json_encode($_SESSION);
-                exit;
                 header("Location: index.php");           
-            } else{ echo("entra else");
+            } else{
                 //$pACL->setUserExtension();
 
                 $r = $pACL->createUser($_POST['input_user'], $ingreso[0]->ROL_NOMBRE, $pass_md5, $extension = NULL);
@@ -362,10 +359,6 @@ if (isset($_POST['submit_login']) and !empty($_POST['input_user'])) {
                             $pACL->delFromGroup($id_user, $idGrupo);
                         }
                     }
-
-                    /*echo("ingresa por crear usuario ".json_encode($getRole)."<br>");
-                    echo("in valor de iduser ".$id_user."<br>");
-                    echo("el valor de get role id = ".$getRole['id']);*/
                     $id_user = $pACL->getIdUser($_POST['input_user']);
 
                     //$crearExtension = crearActualizarExtension($dsnAsterisk, $_POST['input_user'], $id_user ); 
@@ -389,13 +382,10 @@ if (isset($_POST['submit_login']) and !empty($_POST['input_user'])) {
                     $_SESSION['issabel_user'] = $_POST['input_user'];
                     $_SESSION['issabel_pass'] = $pass_md5;  
                     $_SESSION['inicio'] = time();
-                    echo "por el else";
-                    exit;
                     $pACLQstats->createUserQstats($_POST['input_user'], $_POST['input_pass'], $ingreso[0]->ROL_ID); 
                     if('3010' == $ingreso[0]->ROL_ID){
                         $remoteUSersReload = $iauth->getRemoteUSersDatabase(array("getUsers"=>"all"));                      
                     }
-                    exit;
                     header("Location: index.php");  
                 }                   
             }
