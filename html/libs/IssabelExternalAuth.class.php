@@ -29,28 +29,6 @@ class IssabelExternalAuth
     {
         $url ="http://localhost:3000/auth";
         session_write_close();
-
-       /*
-
-        $curl = curl_init();
-        curl_setopt($curl, CURLOPT_URL, $url);
-        curl_setopt($curl, CURLOPT_HTTPHEADER, array('Accept: application/json', 'Content-Type: application/json'));
-        curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
-
-        
-        curl_setopt($curl, CURLOPT_POSTFIELDS, json_encode($payload));
-        
-        $resp = curl_exec($curl);
-        curl_close($curl);
-        
-        echo $resp;
-        $nueva = json_decode($resp);
-
-        print_r($nueva);
-        echo("posterior"); */
-
-
-
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_URL, $url);
         curl_setopt($ch, CURLOPT_POST, 1);
@@ -70,4 +48,28 @@ class IssabelExternalAuth
         return json_decode($response);
 
     }
+
+    function getRemoteUSersDatabase($payload)
+    {
+        $url ="http://localhost:3000/reload";
+        session_write_close();
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_URL, $url);
+        curl_setopt($ch, CURLOPT_POST, 1);
+        //curl_setopt($ch, CURLOPT_HEADER, true);
+        curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type:application/json'));
+        //curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($dataConn));
+        curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($payload));
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        $response    = curl_exec($ch);
+        $header_size = curl_getinfo($ch, CURLINFO_HEADER_SIZE);
+        $httpcode    = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+        //$header      = substr($response, 0, $header_size);
+        $body        = substr($response, $header_size);
+        curl_close($ch);
+        session_start();
+        
+        return json_decode($response);
+
+    }    
 }

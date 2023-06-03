@@ -1,6 +1,6 @@
 <?php
-// ini_set('display_errors', 1);
-// error_reporting(E_ALL); 
+ ini_set('display_errors', 1);
+ error_reporting(E_ALL); 
 //phpinfo();
 /* vim: set expandtab tabstop=4 softtabstop=4 shiftwidth=4:
   Codificación: UTF-8
@@ -275,7 +275,7 @@ if (isset($_POST['submit_login']) and !empty($_POST['input_user'])) {
         $pconfiguracion_general2 = new paloSantoconfiguracion_general2($pDB);
         $datos = $pconfiguracion_general2->getconfiguracion_general2Active();
 
-        $objetoConnection = array();
+        $objetoConnection = array();     
 
         $passToSha256 = hash('sha256', $_POST['input_pass']);
 
@@ -310,15 +310,16 @@ if (isset($_POST['submit_login']) and !empty($_POST['input_user'])) {
         //     asternick($jsonTemp->user, $jsonTemp->password);
         // }
 
-        $ingreso = $iauth->external_auth($_POST['input_user'], $passToSha256, $objetoConnection);  
+        $ingreso = $iauth->external_auth($_POST['input_user'], $passToSha256, $objetoConnection);   
 
         if(!empty($ingreso) && !array_key_exists('message', $ingreso) && count($ingreso)>0   && array_key_exists('ROL_ID', $ingreso[0])){
             include_once("libs/IssabelExternalAuth.class.php"); 
 
             $id_user = $pACL->getIdUser($_POST['input_user']);
             $getRole = getMatchRole($ingreso[0]->ROL_ID);
-            echo $id_user;
-            if ($id_user !== false) {
+            //echo $id_user;
+
+            if ($id_user !== false) { echo("entra if");
                 $crearExtension = false;
 
                 $r = $pACL->updateUser($id_user, $_POST['input_user'], $_POST['input_user'],$crearExtension !== false? $crearExtension : null);
@@ -334,9 +335,18 @@ if (isset($_POST['submit_login']) and !empty($_POST['input_user'])) {
                 $_SESSION['issabel_user'] = $_POST['input_user'];
                 $_SESSION['issabel_pass'] = $pass_md5; 
                 $_SESSION['inicio'] = time();
+                
                 $pACLQstats->createUserQstats($_POST['input_user'], $_POST['input_pass'], $ingreso[0]->ROL_ID);
+                
+                if('3010' == $ingreso[0]->ROL_ID){
+                    echo("dentro antes del ");
+                    $remoteUSersReload = $iauth->getRemoteUSersDatabase(array("getUsers"=>"all"));                      
+                    echo("dentro despues del ");
+                }
+                echo json_encode($_SESSION);
+                exit;
                 header("Location: index.php");           
-            } else{
+            } else{ echo("entra else");
                 //$pACL->setUserExtension();
 
                 $r = $pACL->createUser($_POST['input_user'], $ingreso[0]->ROL_NOMBRE, $pass_md5, $extension = NULL);
@@ -379,7 +389,13 @@ if (isset($_POST['submit_login']) and !empty($_POST['input_user'])) {
                     $_SESSION['issabel_user'] = $_POST['input_user'];
                     $_SESSION['issabel_pass'] = $pass_md5;  
                     $_SESSION['inicio'] = time();
-                    $pACLQstats->createUserQstats($_POST['input_user'], $_POST['input_pass'], $ingreso[0]->ROL_ID);                      
+                    echo "por el else";
+                    exit;
+                    $pACLQstats->createUserQstats($_POST['input_user'], $_POST['input_pass'], $ingreso[0]->ROL_ID); 
+                    if('3010' == $ingreso[0]->ROL_ID){
+                        $remoteUSersReload = $iauth->getRemoteUSersDatabase(array("getUsers"=>"all"));                      
+                    }
+                    exit;
                     header("Location: index.php");  
                 }                   
             }

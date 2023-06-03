@@ -1752,7 +1752,6 @@ SQL_CURRENT_GROUP_PRIVILEGES;
             } else {
                 $sql = "SELECT * FROM users WHERE name = ".$user." ";
                 $arr = $this->_DB->getFirstRowQuery($sql, FALSE);
-                var_dump($arr);
                 if ($arr !== false) {
                     $sqlAlter = "UPDATE users SET password = '".$passwordnew."' WHERE name = '".$user."'";
                     $resultadoUpdateUser = $this->_DB->genQuery($sqlAlter);  
