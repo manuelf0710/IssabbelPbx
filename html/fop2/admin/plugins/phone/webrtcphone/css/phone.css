@@ -1,0 +1,231 @@
+body {
+  background-color: #fff;
+}
+
+.rowd {
+  margin: 0 auto;
+  _width: 280px;
+  clear: both;
+  text-align: center;
+  font-family: 'Exo';
+  display: table;
+}
+
+.digit,
+.dig {
+  float: left;
+  _padding: 5px 35px 5px 35px;
+  margin: 0 5px 0 5px;
+  width: 80px;
+  font-size: 3.5rem;
+  cursor: pointer;
+  display: table-cell;
+}
+
+.sub {
+  font-size: 1.2rem;
+  color: grey;
+  margin-top:-10px;
+  margin-bottom:10px;
+}
+
+.containerd {
+  background-color: white;
+  min-width: 290px;
+  margin: auto;
+  height: 92%;
+  width: 100%;
+  text-align: center;
+  padding-bottom:5rem;
+  margin:0;
+}
+
+.containerform {
+  background-color: white;
+  min-width: 300px;
+  padding: 20px;
+  margin: 30px auto;
+  height: 300px;
+  text-align: left;
+  box-shadow: 0 14px 28px rgba(0, 0, 0, 0.25), 0 10px 10px rgba(0, 0, 0, 0.22);
+}
+
+
+.output {
+  font-family: "Exo";
+  font-size: 3.5rem;
+  height: 60px;
+  font-weight: bold;
+  color: #1976d2;
+  _width: 265px;
+  _margin:auto;
+  overflow:hidden;
+  background-color: #f1f1f1;
+  _float:left;
+}
+
+.outputbot {
+  font-family: "Exo";
+  font-size: 1.2rem;
+  height: 60px;
+  font-weight: bold;
+  color: #1976d2;
+  overflow:hidden;
+  width:100%;
+  position:absolute;
+  height:5rem;
+  background-color: #f1f1f1;
+  padding: 10px;
+  bottom:0;
+  line-height: 0.9em;
+}
+
+
+.botbtntxt {
+  padding: 4px 4px;
+  margin: 10px;
+  color: white;
+  border-radius: 4px;
+  float: left;
+  cursor: pointer;
+  display: inline-block;
+  min-width: 73px;
+}
+
+
+.botbtn {
+   display:table-cell;
+  padding: 8px 27px;
+  margin: 10px;
+  color: white;
+  border-radius: 4px;
+  float: left;
+  cursor: pointer;
+  display: inline-block;
+  height:2.5em;
+}
+
+#hang {
+  background-color: #bb666a;
+}
+
+#call {
+  background-color: #66bb6a;
+}
+
+#bckback {
+  font-color: #333;
+}
+
+.botrowauto {
+  margin: 0;
+  clear: both;
+  text-align: center;
+  font-family: 'Exo';
+}
+
+.botrow {
+  margin: 0 auto;
+  display:table;
+  clear: both;
+  text-align: center;
+  font-family: 'Exo';
+}
+
+.digit:active,
+.dig:active {
+  background-color: #e6e6e6;
+}
+
+#call:hover {
+  background-color: #81c784;
+}
+
+#hang:hover {
+  background-color: #c78184;
+}
+.dig {
+  float: left;
+  padding: 10px 20px;
+  margin: 10px;
+  width: 30px;
+  cursor: pointer;
+}
+
+.close {
+  position: absolute;
+  top: 30px;
+  width: 295px;
+  text-align: right;
+  font-size: 1em;
+}
+
+.bck {
+  cursor: pointer;
+  position: absolute;
+  top:15px;
+  right:5px;
+  font-size:2em;
+  color:#555;
+}
+
+#backspace {
+display:none;
+}
+
+.contact {
+height:250px;
+margin-top:10px;
+}
+
+#callcontrols {
+display:table;
+}
+
+#contactimage {
+display:none;
+height:255px;
+margin-bottom:13px;
+}
+
+.toggle {margin:10px 8px 0px 8px; }
+
+#autoanswertext { font-size:0.8em; }
+
+.noselect {
+  -webkit-touch-callout: none; 
+    -webkit-user-select: none; 
+     -khtml-user-select: none; 
+       -moz-user-select: none; 
+        -ms-user-select: none; 
+            user-select: none; 
+}
+
+#wrap {
+position:relative;
+min-height:300px;
+}
+
+#autoansbtn { display:table-cell; float:left; width:85px; word-wrap: break-word; font-size:0.5.em; text-align:center; }
+
+#phonedialpad { min-height: 250px; }
+
+#dialpadicon {
+position: absolute;
+top: 10px;
+left: 20px;
+background-color: #82c3d8;
+padding: 5px;
+display:none;
+border-radius:50%;
+padding:10px;
+opacity: .6;
+cursor:pointer;
+}
+
+#callinfo {
+position: absolute;
+top: 40px;
+margin: auto;
+width: 100%;
+}

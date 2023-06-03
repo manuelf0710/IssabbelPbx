@@ -1,0 +1,35 @@
+<plugin>
+    <rawname>phone</rawname>
+    <name>WebRTC Browser Phone</name>
+    <version>1.0.1</version>
+    <description>This plugin includes a webrtc based phone so you can receive and make calls directly from your panel screen. Follow the webrtc setup guide in order to prepare your Asterisk server for this plugin to work.</description>
+    <global>0</global>
+    <help>http://www.fop2.com/docs/webrtc_guide.php</help>
+    <price>0</price>
+    <fop2minversion>023122</fop2minversion>
+    <additionalperm>phone</additionalperm>
+    <params>
+        <param>
+            <name>transfer_code</name>
+            <type>string</type>
+            <multi>no</multi>
+            <default>##</default>
+        </param>
+        <param>
+            <name>ws_port</name>
+            <type>number</type>
+            <multi>no</multi>
+            <default>8089</default>
+        </param>
+        <param>
+            <name>ws_server</name>
+            <type>string</type>
+            <multi>no</multi>
+            <default></default>
+        </param>
+    </params>
+    <changelog>
+        *1.0.1*   Add ws_port and ws_server configurable options to allow connections to remote servers/ports
+        *1.0.0*   Initial release
+    </changelog>
+</plugin>
