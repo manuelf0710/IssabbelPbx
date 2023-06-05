@@ -234,7 +234,6 @@ function createEditUser($pACL, $smarty, $module_name, $local_templates_dir, $id_
     $privileged, $plugins)
 {
     require_once("libs/paloSantoForm.class.php");
-
     $smarty->assign(array(
         "SAVE"              =>  _tr("Save"),
         "CANCEL"            =>  _tr("Cancel"),
@@ -398,6 +397,8 @@ function createEditUser($pACL, $smarty, $module_name, $local_templates_dir, $id_
 
 function createFormFields($arrGrupos)
 {
+    var_dump($_REQUEST['id_user']);
+    var_dump($_SESSION['issabel_user']);
     return array(
         "description" => array(
             "LABEL"                  => ""._tr('Name')." "._tr('(Ex. John Doe)')."",
@@ -405,7 +406,8 @@ function createFormFields($arrGrupos)
             "INPUT_TYPE"             => "TEXT",
             "INPUT_EXTRA_PARAM"      => "",
             "VALIDATION_TYPE"        => "text",
-            "VALIDATION_EXTRA_PARAM" => ""),
+            "VALIDATION_EXTRA_PARAM" => "",
+            "EDITABLE"               => ($_SESSION['issabel_user'] == "admin" && $_REQUEST['id_user'] == '1') ? "si" : "no"),
         "name"       => array(
             "LABEL"                   => _tr("Login"),
             "REQUIRED"               => "yes",
@@ -420,21 +422,25 @@ function createFormFields($arrGrupos)
             "INPUT_TYPE"             => "PASSWORD",
             "INPUT_EXTRA_PARAM"      => "",
             "VALIDATION_TYPE"        => "text",
-            "VALIDATION_EXTRA_PARAM" => ""),
+            "VALIDATION_EXTRA_PARAM" => "",
+            "EDITABLE"               => ($_SESSION['issabel_user'] == "admin" && $_REQUEST['id_user'] == '1') ? "si" : "no"),
         "password2"   => array(
             "LABEL"                  => _tr("Retype password"),
             "REQUIRED"               => "yes",
             "INPUT_TYPE"             => "PASSWORD",
             "INPUT_EXTRA_PARAM"      => "",
             "VALIDATION_TYPE"        => "text",
-            "VALIDATION_EXTRA_PARAM" => ""),
+            "VALIDATION_EXTRA_PARAM" => "",
+            "EDITABLE"               => ($_SESSION['issabel_user'] == "admin" && $_REQUEST['id_user'] == '1') ? "yes" : "no"),
          "group"       => array(
             "LABEL"                  => _tr("Group"),
             "REQUIRED"               => "no",
             "INPUT_TYPE"             => "SELECT",
             "INPUT_EXTRA_PARAM"      => $arrGrupos,
             "VALIDATION_TYPE"        => "text",
-            "VALIDATION_EXTRA_PARAM" => ""),
+            "VALIDATION_EXTRA_PARAM" => "",
+            "EDITABLE"               => ($_SESSION['issabel_user'] == "admin" && $_REQUEST['id_user'] == '1') ? "yes" : "no"),
+
     );
 }
 
