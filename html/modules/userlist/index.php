@@ -397,8 +397,6 @@ function createEditUser($pACL, $smarty, $module_name, $local_templates_dir, $id_
 
 function createFormFields($arrGrupos)
 {
-    var_dump($_REQUEST['id_user']);
-    var_dump($_SESSION['issabel_user']);
     return array(
         "description" => array(
             "LABEL"                  => ""._tr('Name')." "._tr('(Ex. John Doe)')."",
