@@ -86,7 +86,7 @@ class paloSantootros_tabla{
             
         } 
 
-        $query   = "SELECT COUNT(*) FROM notificaciones_llamadas where 1 $where";
+        $query   = "SELECT COUNT(*) FROM notificaciones_otros where 1 $where";
 
         
         $result=$this->_DB->getFirstRowQuery($query, false, $arrParam);
@@ -136,7 +136,7 @@ class paloSantootros_tabla{
                            if(fecha_llamada = '0000-00-00 00:00:00', '', fecha_llamada) fecha_llamada,
                            agente,
                            '' grabacion
-                     FROM notificaciones_llamadas where 1 $where order by campania_id desc LIMIT $limit OFFSET $offset";
+                     FROM notificaciones_otros where 1 $where order by campania_id desc LIMIT $limit OFFSET $offset";
 
                 
 
