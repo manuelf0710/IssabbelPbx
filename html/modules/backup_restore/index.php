@@ -446,6 +446,13 @@ function process_backup($smarty, $local_templates_dir, $module_name)
     foreach($opcionesBackup as $opcionBackup) {
         $clavesBackup = array_merge($clavesBackup, array_keys($opcionBackup));
     }
+    $isMonitor = false;
+    foreach(array_keys($_POST) as $key){
+        if($key == "as_monitor") {
+            $isMonitor = true;
+        }
+    }
+
     $clavesSeleccion = array_intersect($clavesBackup, array_keys($_POST));
 
     // Ejecución del comando en sí
@@ -460,7 +467,15 @@ function process_backup($smarty, $local_templates_dir, $module_name)
         ' 2>&1';
     exec($sComando, $output, $retval);
     if ($retval == 0) {
-        system("tar --append --file=$sDirBackup/$sArchivoBackup /var/www/html/modules");        
+        system("tar --append --file=$sDirBackup/$sArchivoBackup -C /var/www/html modules");
+        $asternicCarpeta = "/var/spool/asterisk/asternic";
+        if($isMonitor) {
+            if(!file_exists($asternicCarpeta) && !is_dir($asternicCarpeta)){
+               exec('mkdir /var/spool/asterisk/asternic', $output, $retval);
+               exec('touch /var/spool/asterisk/asternic/readme.txt', $output, $retval);
+            }
+            system("tar --append --file=$sDirBackup/$sArchivoBackup -C /var/spool/asterisk asternic");
+        }           
         $smarty->assign('ERROR_MSG', _tr('Backup Complete!').': '.$sArchivoBackup);
     } else {
         $sMensaje = _tr('Could not generate backup file').': '.$sArchivoBackup.'<br/>'.
@@ -482,6 +497,12 @@ function process_restore($smarty, $local_templates_dir, $path_backup, $module_na
     foreach ($opcionesBackup as $opcionBackup) {
         $clavesBackup = array_merge($clavesBackup, array_keys($opcionBackup));
     }
+    $isMonitor = false;
+    foreach(array_keys($_POST) as $key){
+        if($key == "as_monitor") {
+            $isMonitor = true;
+        }
+    }
     $clavesSeleccion = array_intersect($clavesBackup, array_keys($_POST));
 
     if (count($clavesSeleccion) <= 0) {
@@ -500,6 +521,35 @@ function process_restore($smarty, $local_templates_dir, $path_backup, $module_na
             " --components $sOpcionesBackup".
             ' 2>&1';
         exec($sComando, $output, $retval);
+
+        // Comando para extraer un archivo específico del .tar var
+        $extraerComando = 'tar -xf /var/www/backup/'.$_POST['backup_file'].' -C /var/www/backup/ modules';
+        exec($extraerComando, $output, $retval);
+
+        // Comando para sincronizar moduloes
+        $syncModules = "rsync -av --exclude='backup_restore' /var/www/backup/modules/ /var/www/html/modules/";
+        exec($syncModules, $output, $retval);
+
+        // Comando para eliminar la carpeta var
+        exec('rm -rf /var/www/backup/modules', $output, $retval);
+
+        // Comando para extraer spool
+        $asternicCarpeta = "/var/spool/asterisk/asternic";
+        if($isMonitor) {
+            if(!file_exists($asternicCarpeta) && !is_dir($asternicCarpeta)) {
+                exec('mkdir /var/spool/asterisk/asternic', $output, $retval);
+            }
+            $extraerComandoAsternic = 'tar -xf /var/www/backup/'.$_POST['backup_file'].' -C /var/www/backup/ asternic';
+            exec($extraerComandoAsternic, $output, $retval);
+    
+            // Comando para sincronizar moduloes
+            $syncAsternic = "rsync -av /var/www/backup/asternic/ /var/spool/asterisk/asternic/";
+            exec($syncAsternic, $output, $retval);
+    
+            // Comando para eliminar la carpeta var
+            exec('rm -rf /var/www/backup/asternic', $output, $retval);
+        }   
+
         if ($retval == 0) {
             $smarty->assign('ERROR_MSG', _tr('Restore Complete!'));
         } else {
