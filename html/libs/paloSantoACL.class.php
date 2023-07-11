@@ -1746,17 +1746,18 @@ SQL_CURRENT_GROUP_PRIVILEGES;
 
     function createUserQstats($user, $password, $rol) {
         $passwordnew = sha1($password);
-        if($rol === 3010 || $rol === 3011) {
+        if($rol == 3010 || $rol == 3011) {
             if ($this->_DB->connStatus) {
                 return FALSE;
             } else {
-                $sql = "SELECT * FROM users WHERE name = ".$user." ";
+                $sql = "SELECT * FROM users WHERE name = '".$user."'";
                 $arr = $this->_DB->getFirstRowQuery($sql, FALSE);
-                if ($arr !== false) {
-                    $sqlAlter = "UPDATE users SET password = '".$passwordnew."' WHERE name = '".$user."'";
+                if (is_array($arr) && count($arr) > 0) {
+                    $level = ($rol == 3010) ? 15 : 9;
+                    $sqlAlter = "UPDATE users SET password = '".$passwordnew."', level='".$level."' WHERE name = '".$user."'";
                     $resultadoUpdateUser = $this->_DB->genQuery($sqlAlter);  
                 } else {
-                    $level = ($rol === 3010) ? 15 : 9;
+                    $level = ($rol == 3010) ? 15 : 9;
                     $sqlAlter = "insert into users
                                  (login,password,name,level) values
                                  ('".$user."','".$passwordnew."', '".$user."', '".$level."')";
