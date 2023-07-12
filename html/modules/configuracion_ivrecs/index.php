@@ -155,7 +155,7 @@ function createFieldForm()
     $arrOptions = array(''=> 'Seleccione...','val1' => 'dato 1', 'val2' => 'Dato 2', 'val3' => 'Dato 3');
 
     $arrFields = array(
-            "ip_servidor_oms"   => array(      "LABEL"                  => _tr("IP Servidor OMS"),
+            "ip_servidor_oms"   => array(      "LABEL"                  => _tr("Dirección Servidor OMS"),
                                             "REQUIRED"               => "no",
                                             "INPUT_TYPE"             => "TEXT",
                                             "INPUT_EXTRA_PARAM"      => "",

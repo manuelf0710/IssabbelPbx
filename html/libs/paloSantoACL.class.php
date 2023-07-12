@@ -70,6 +70,7 @@ class paloACL {
             $sql .= ' WHERE id = ?';
             $param[] = $id;
         }
+        $sql .= ' ORDER BY name ASC ';
         $recordset = $this->_DB->fetchTable($sql, FALSE, $param);
         if (!is_array($recordset)) {
             $this->errMsg = $this->_DB->errMsg;
@@ -125,7 +126,7 @@ class paloACL {
         }
 
         $this->errMsg = "";
-        $sPeticionSQL = "SELECT id, name, description,extension FROM acl_user limit ? offset ?";
+        $sPeticionSQL = "SELECT id, name, description,extension FROM acl_user ORDER BY name limit ? offset ?";
         $param = array($limit, $offset);
 
         $arr_result = $this->_DB->fetchTable($sPeticionSQL, FALSE, $param);
