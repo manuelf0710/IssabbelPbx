@@ -12,6 +12,12 @@ $(document).ready(function () {
   const formulario = document.querySelector("#form_configuraciongeneral");
   const campos = formulario.querySelectorAll("input, select");
 
+  let fechaAhora = getFechaUTC($("#ahora").val());
+  let fechaFinalEvento = getFechaUTC($("#fecha_busqueda").val());
+  let fechaAnterior = getFechaUTC($("#fechafinpermitida").val());
+
+  destroyAndCreateDatepicker(fechaAnterior);
+
   // Bandera para indicar si ha habido cambios
   let haHabidoCambios = false;
 
@@ -56,6 +62,20 @@ $(document).ready(function () {
   //   });
   //   return counter;
   // }
+  function destroyAndCreateDatepicker(fechaAnterior) {
+    $("#fecha_busqueda").datepicker("destroy");
+    $("#fecha_busqueda").datepicker({
+      showOn: "button",
+      minDate: new Date(fechaAnterior),
+      firstDay: 1,
+      buttonImageOnly: true,
+      buttonImage: "images/calendar.gif",
+      dateFormat: "yy-mm-dd",
+      //timeFormat: "HH:mm:ss.l",
+      changeMonth: true,
+      showWeek: true,
+    });
+  }
 
   $("#btnguardardatos").click(function () {
     validarDestinos = validarformDestinos();
@@ -116,12 +136,32 @@ $(document).ready(function () {
       return;
     }
 
+    if ($("#fechafinpermitida").val() != "") {
+      let fechaAhora = getFechaUTC($("#ahora").val());
+      let fechaFinalEvento = getFechaUTC($("#fecha_busqueda").val());
+      let fechaAnterior = getFechaUTC($("#fechafinpermitida").val());
+      if (fechaFinalEvento > fechaAhora) {
+        alert("la fecha Finalización del evento no puede ser mayor a la fecha actual, " + $("#ahora").val());
+        return;
+      }
+      if (fechaFinalEvento < fechaAnterior) {
+        alert("la fecha Finalización del evento no puede ser menor a la fecha de dias habiles permitidos, " + $("#fechafinpermitida").val());
+        return;
+      }
+    }
+
     haHabidoCambios = false;
     window.removeEventListener("beforeunload", handleBeforeUnload);
 
     document.form_configuraciongeneral.action = "index.php?menu=configuracion_general&action=save";
     document.form_configuraciongeneral.submit();
   });
+
+  function getFechaUTC(fecha) {
+    let fechaFinalEvento = new Date(fecha);
+    let fechaFinalCorrecta = new Date(fechaFinalEvento.getUTCFullYear(), fechaFinalEvento.getUTCMonth(), fechaFinalEvento.getUTCDate());
+    return fechaFinalCorrecta;
+  }
 
   $(".chkivr").change(function () {
     let id = $(this).attr("id");

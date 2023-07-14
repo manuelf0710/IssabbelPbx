@@ -168,7 +168,8 @@
                         {$ivr.description}</option>
                 {/foreach}
             </select>
-            <input type="text" name="fechafinpermitida" id="fechafinpermitida" value="{$dataForm.configuracionGeneral.fechaminpermitida}">
+            <input type="hidden" name="fechafinpermitida" id="fechafinpermitida" value="{$dataForm.configuracionGeneral.fechaminpermitida}">
+            <input type="hidden" name="ahora" id="ahora" value="{$dataForm.configuracionGeneral.ahora}">
         </td>        
         </tr> 
     </table>

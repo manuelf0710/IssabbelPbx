@@ -327,7 +327,8 @@ class paloSantoconfiguracionGeneral
                     ivr_programado,
                     activar_programado,
                     timegroup,
-                    "'.$dateMinValid.'" fechaminpermitida, 
+                    "'.$dateMinValid.'" fechaminpermitida,
+                    date_format(sysdate(), "%Y-%m-%d") ahora,
                     timeout,
                     (
                         select nt.id from notificaciones_troncales nt where estado = 1 limit 1
