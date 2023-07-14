@@ -74,6 +74,7 @@ function _moduleContent(&$smarty, $module_name)
     //$outgoingRouteList = $modelOutgoingRoutes->index();
     //$outgoingRouteList = $configuracionNotificaciones->getTrunksDialPatern();
     $dialplanAndRouteList = $configuracionNotificaciones->getTrunksConfig();
+    $timeGroupList = $configuracionNotificaciones->getTimeGroups();
 
     $arrOptionsDias = array(
         "1" => "Lunes",
@@ -94,7 +95,7 @@ function _moduleContent(&$smarty, $module_name)
     }       
 
     $infoToView = array("ivrLista" => $IvrList, "outgoingRouteList" => $dialplanAndRouteList, 
-    "conexionesLista" => $conexionesLista, "diasLista" => $arrOptionsDias, "optionsHours" => $optionsHours, 
+    "timeGroupList" => $timeGroupList,"conexionesLista" => $conexionesLista, "diasLista" => $arrOptionsDias, "optionsHours" => $optionsHours, 
     "optionsMins" => $optionsMins
     );
 

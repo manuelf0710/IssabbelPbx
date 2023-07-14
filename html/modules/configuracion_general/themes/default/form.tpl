@@ -155,7 +155,22 @@
                 </select>
             </td>
 
-        </tr>  
+        </tr> 
+        <tr class="letra12">
+        <td><b>Grupo Hora:</b></td>
+        <td  align="right" width="150">                       
+            <select name="timegroup" id="timegroup">
+
+                <option value="">Seleccione...</option>
+                {foreach $configListas['timeGroupList'] as $ivr}
+                    <option value="{$ivr.id}"
+                        {if $ivr.id == $dataForm.configuracionGeneral.timegroup}selected{/if}>
+                        {$ivr.description}</option>
+                {/foreach}
+            </select>
+            <input type="text" name="fechafinpermitida" id="fechafinpermitida" value="{$dataForm.configuracionGeneral.fechaminpermitida}">
+        </td>        
+        </tr> 
     </table>
 </fieldset>
 <table style="width:90%; margin-top:20px;">

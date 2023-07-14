@@ -69,7 +69,20 @@ class paloSantoconfiguracionGeneral
         }
     
         return $response_array;
-    }   
+    }  
+    
+    public function getTimeGroups(){
+        $query = 'select id, description from timegroups_groups';
+        $result = $this->_DB->fetchTable($query, true);
+
+        if ($result == false) {
+        $this->errMsg = $this->_DB->errMsg;
+        insertLogToDB($this->_DB->errMsg, "Notificaciones_reportes", "Error", "getTimeGroups"); 
+        return null;
+        }
+
+        return $result;         
+    }
 
     public function getTrunksConfig(){
                     $query = 'SELECT nt.id,
@@ -170,8 +183,115 @@ class paloSantoconfiguracionGeneral
 
         $dataa = json_decode($response, true);
         return $dataa;
+    }
 
-           
+    public function getTimeGroupDetails($groupID){
+        //$hoy = date("Y-m-d H:i:s");
+        $hoy = date("Y-m-d");
+        $daymont = date("m-d");
+        //$daysArray=['mon','tue','wed','thu','fri','sat','sun'];
+        $daysArray = array(
+            "mon" => array("short"=>"mon", "name"=>"Lunes"),
+            "tue" => array("short"=>"mon", "name"=>"Lunes"),
+            "wed" => array("short"=>"mon", "name"=>"Lunes"),
+            "thu" => array("short"=>"mon", "name"=>"Lunes"),
+            "fri" => array("short"=>"mon", "name"=>"Lunes"),
+            "sat" => array("short"=>"mon", "name"=>"Lunes"),
+            "sun" => array("short"=>"mon", "name"=>"Lunes")
+        );
+
+        $monthArrayBk = array(
+            array("short"=>"jan", "name"=>"Enero", "numberm"=>"01"),
+            array("short"=>"feb", "name"=>"Febrero", "numberm"=>"02"),
+            array("short"=>"mar", "name"=>"Marzo", "numberm"=>"03"),
+            array("short"=>"apr", "name"=>"Abril", "numberm"=>"04"),
+            array("short"=>"may", "name"=>"Mayo", "numberm"=>"05"),
+            array("short"=>"jun", "name"=>"Junio", "numberm"=>"06"),
+            array("short"=>"jul", "name"=>"Julio", "numberm"=>"07"),
+            array("short"=>"aug", "name"=>"Agosto", "numberm"=>"08"),
+            array("short"=>"sep", "name"=>"Septiembre", "numberm"=>"09"),
+            array("short"=>"oct", "name"=>"Octubre", "numberm"=>"10"),
+            array("short"=>"nov", "name"=>"Noviembre", "numberm"=>"11"),
+            array("short"=>"dec", "name"=>"Diciembre", "numberm"=>"12"),
+        );
+
+        $monthArray = array(
+            "jan" => array("short" => "jan", "name" => "Enero", "numberm" => "01"),
+            "feb" => array("short" => "feb", "name" => "Febrero", "numberm" => "02"),
+            "mar" => array("short" => "mar", "name" => "Marzo", "numberm" => "03"),
+            "apr" => array("short" => "apr", "name" => "Abril", "numberm" => "04"),
+            "may" => array("short" => "may", "name" => "Mayo", "numberm" => "05"),
+            "jun" => array("short" => "jun", "name" => "Junio", "numberm" => "06"),
+            "jul" => array("short" => "jul", "name" => "Julio", "numberm" => "07"),
+            "aug" => array("short" => "aug", "name" => "Agosto", "numberm" => "08"),
+            "sep" => array("short" => "sep", "name" => "Septiembre", "numberm" => "09"),
+            "oct" => array("short" => "oct", "name" => "Octubre", "numberm" => "10"),
+            "nov" => array("short" => "nov", "name" => "Noviembre", "numberm" => "11"),
+            "dec" => array("short" => "dec", "name" => "Diciembre", "numberm" => "12")
+        );        
+
+        $query = "select * from timegroups_details where timegroupid='".$groupID."'";
+        $result = $this->_DB->fetchTable($query, true);
+
+        $dataDays = array();
+        if($result && count($result)){
+            foreach($result as $item){
+                $data = explode("|",$item["time"]);
+                $monthData = $monthArray["".$data[3]];
+                $dayData = $daysArray["".$data[1]];
+
+                $addData = array(
+                    "id" => $item["id"],
+                    "name" => $item["name"],
+                    "time" => $item["time"],
+                    "monthdata"=> $monthData,
+                    "daydata" => $dayData,
+                    "hour" => $data[0],
+                    "day" => $data[1],
+                    "daynumber" => $data[2],
+                    "monthshort" => $data[3],
+                    "daymonth" => $monthData["numberm"]."-".$data[2]
+
+                );
+                array_push($dataDays,$addData);
+            }
+        }
+
+        return $dataDays;
+    }
+
+    function findDayGroup($dataDays, $dayMonth) {
+        $found = true;
+        foreach ($dataDays as $data) {
+            if ($data["daymonth"] == $dayMonth) {
+                $found = false; // El dato se encontró
+            }
+        }
+        return $found;
+    }
+
+
+    public function getBussinesDays($groupID, $days = 5){
+        $hoy = date("Y-m-d");
+        $daymont = date("m-d");
+        $dataDays = $this->getTimeGroupDetails($groupID);
+        
+        //echo json_encode($dataDays);
+
+        /*$found = $this->findDayGroup($dataDays, "07-11");
+        echo "el registro fue encontrado => ".$found;*/
+
+        while ($days > 0) {
+            $hoy = date("Y-m-d", strtotime($hoy . " -1 day"));
+            $getMonthDay = explode("-",$hoy);
+            $dia_semana = strtolower(date("D", strtotime($hoy)));
+            /*echo("valor => ".$getMonthDay[1]."-".$getMonthDay[2]."</br>");
+            echo "el boolean => ".$this->findDayGroup($dataDays, $getMonthDay[1]."-".$getMonthDay[2]."<br>");*/
+            if ($dia_semana != "sun" && $this->findDayGroup($dataDays, $getMonthDay[1]."-".$getMonthDay[2])) {
+                $days--;
+            }
+        }
+        return $hoy;        
     }
 
 
@@ -182,9 +302,9 @@ class paloSantoconfiguracionGeneral
         if($estadoJob != ""){
             $this->stateJob = $estadoJob["message"] == "Activo" ? '1' : '0';     /* 1 activo 0 inactivo */            
         }
-        
-        
 
+        $dateMinValid = $this->getBussinesDays(1,5);
+        
         $query = 'SELECT id, 
                     '.$this->stateJob.' activo, 
                     cant_lineas, 
@@ -206,6 +326,8 @@ class paloSantoconfiguracionGeneral
                     activar_cancelado,
                     ivr_programado,
                     activar_programado,
+                    timegroup,
+                    "'.$dateMinValid.'" fechaminpermitida, 
                     timeout,
                     (
                         select nt.id from notificaciones_troncales nt where estado = 1 limit 1
@@ -254,6 +376,7 @@ public function updateNotificacionesConfiguracion($data)
     $activar_cancelado = array_key_exists("chkivr_cancelado", $data) ? 1 : 0;
     $ivr_programado = array_key_exists("ivrprogramado", $data) ? $data['ivrprogramado'] : null;
     $activar_programado = array_key_exists("chkivr_programado", $data) ? 1 : 0;
+    $timegroup = array_key_exists("timegroup", $data) ? $data['timegroup'] : null;
     $timeout = $data['timeout'];
     $notificacion_troncal = $data["notificacion_troncal"];
 
@@ -314,6 +437,7 @@ public function updateNotificacionesConfiguracion($data)
             "activar_cancelado"         =>  $this->_DB->DBCAMPO($activar_cancelado),
             "ivr_programado"         =>  $ivr_programado,
             "activar_programado"         =>  $this->_DB->DBCAMPO($activar_programado),
+            "timegroup"         =>  $this->_DB->DBCAMPO($timegroup),
             "timeout"         =>  $this->_DB->DBCAMPO($timeout),
         ),
         array(

@@ -111,6 +111,11 @@ $(document).ready(function () {
       return;
     }
 
+    if ($("#timegroup").val() == "") {
+      alert("Debe seleccionar un grupo hora");
+      return;
+    }
+
     haHabidoCambios = false;
     window.removeEventListener("beforeunload", handleBeforeUnload);
 
