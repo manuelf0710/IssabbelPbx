@@ -303,7 +303,13 @@ class paloSantoconfiguracionGeneral
             $this->stateJob = $estadoJob["message"] == "Activo" ? '1' : '0';     /* 1 activo 0 inactivo */            
         }
 
-        $dateMinValid = $this->getBussinesDays(1,5);
+        $query2 = 'SELECT id,
+        timegroup
+            FROM notificaciones_configuracion
+        WHERE id =1';
+        $result2 = $this->_DB->getFirstRowQuery($query2, true);
+
+        $dateMinValid = $this->getBussinesDays($result2["timegroup"],5);
         
         $query = 'SELECT id, 
                     '.$this->stateJob.' activo, 
