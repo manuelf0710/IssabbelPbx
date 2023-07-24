@@ -336,6 +336,7 @@ class paloSantoconfiguracionGeneral
                     "'.$dateMinValid.'" fechaminpermitida,
                     date_format(sysdate(), "%Y-%m-%d") ahora,
                     timeout,
+                    campania_simultaneo,
                     (
                         select nt.id from notificaciones_troncales nt where estado = 1 limit 1
                     ) notificacion_troncal
@@ -385,6 +386,7 @@ public function updateNotificacionesConfiguracion($data)
     $activar_programado = array_key_exists("chkivr_programado", $data) ? 1 : 0;
     $timegroup = array_key_exists("timegroup", $data) ? $data['timegroup'] : null;
     $timeout = $data['timeout'];
+    $campania_simultaneo = $data['campania_simultaneo'];
     $notificacion_troncal = $data["notificacion_troncal"];
 
     $this->createIvrFile($ivr_restaurado);
@@ -446,6 +448,7 @@ public function updateNotificacionesConfiguracion($data)
             "activar_programado"         =>  $this->_DB->DBCAMPO($activar_programado),
             "timegroup"         =>  $this->_DB->DBCAMPO($timegroup),
             "timeout"         =>  $this->_DB->DBCAMPO($timeout),
+            "campania_simultaneo"         =>  $this->_DB->DBCAMPO($campania_simultaneo),
         ),
         array(
             "id"  => $id

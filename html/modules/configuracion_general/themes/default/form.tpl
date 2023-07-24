@@ -170,7 +170,17 @@
             </select>
             <input type="hidden" name="fechafinpermitida" id="fechafinpermitida" value="{$dataForm.configuracionGeneral.fechaminpermitida}">
             <input type="hidden" name="ahora" id="ahora" value="{$dataForm.configuracionGeneral.ahora}">
-        </td>        
+        </td> 
+            <td class="pl"><b>Campania Simultáneo</b></td>       
+            <td>
+                <select name="campania_simultaneo" id="campania_simultaneo">
+                    <option value="">Seleccione...</option>
+                    {foreach from=[1,2,3] item=num}
+                    <option value="{$num}" {if $num == $dataForm.configuracionGeneral.campania_simultaneo}selected{/if}>{$num}
+                    </option>
+                {/foreach}                   
+                </select>
+            </td>
         </tr> 
     </table>
 </fieldset>
