@@ -484,7 +484,7 @@ function eventosTabla($smarty, $module_name, $local_templates_dir, &$pDB, $arrCo
     );
     $oGrid->setURL($url);
 
-    $arrColumns = array(_tr("ID Evento"),_tr("Fecha llamada"),_tr("Barridos"),_tr("Cant Usuarios"),_tr("Informados"),_tr("Fallidos"),_tr("Destino"),_tr("Campaña"));
+    $arrColumns = array(_tr("ID Evento"),_tr("Fecha llamada"),_tr("Barridos"),_tr("Cant Usuarios"),_tr("Informados"),_tr("Fallidos"),_tr("Destino"),_tr("Estado"),_tr("Campaña"));
     $oGrid->setColumns($arrColumns);
    
 
@@ -522,7 +522,8 @@ function eventosTabla($smarty, $module_name, $local_templates_dir, &$pDB, $arrCo
 	    $arrTmp[4] = $value['informados'];
 	    $arrTmp[5] = $value['fallidos'];
 	    $arrTmp[6] = $value['destino'];
-	    $arrTmp[7] = $value['campania'];
+        $arrTmp[7] = $value['estado'];
+	    $arrTmp[8] = $value['campania'];
             $arrData[] = $arrTmp;
         }
     }

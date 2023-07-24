@@ -155,7 +155,8 @@ class paloSantoevento_tabla{
          
 	   ) fallidos,
         'IVR' destino,
-        nc.id campania
+        nc.id campania,
+        nc.estado
       FROM notificaciones_campania nc 
      inner join  notificaciones_llamadas n1 on nc.id = n1.campania_id
      where 1 $where group by n1.campania_id, n1.eve_id order by campania_id desc LIMIT $limit OFFSET $offset";
