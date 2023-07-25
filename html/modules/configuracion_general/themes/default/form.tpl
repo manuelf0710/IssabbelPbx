@@ -171,7 +171,7 @@
             <input type="hidden" name="fechafinpermitida" id="fechafinpermitida" value="{$dataForm.configuracionGeneral.fechaminpermitida}">
             <input type="hidden" name="ahora" id="ahora" value="{$dataForm.configuracionGeneral.ahora}">
         </td> 
-            <td class="pl"><b>Campania Simultáneo</b></td>       
+            <td class="pl"><b>Campañas Simultáneas</b></td>       
             <td>
                 <select name="campania_simultaneo" id="campania_simultaneo">
                     <option value="">Seleccione...</option>
