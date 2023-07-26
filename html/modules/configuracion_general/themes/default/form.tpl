@@ -81,7 +81,7 @@
             </td>
         </tr>       
         <tr class="letra12">
-            <td ><b>{$barridos.LABEL}: <span class="required">*</span></b></td>
+            <td ><b>{$barridos.LABEL}:</b></td>
             <td align="right">
                 <select name="barridos" id="barridos" style>
 
@@ -157,7 +157,7 @@
 
         </tr> 
         <tr class="letra12">
-        <td><b>Grupo Hora:</b></td>
+        <td><b>Días Feriados:</b></td>
         <td  align="right" width="150">                       
             <select name="timegroup" id="timegroup">
 
@@ -182,6 +182,20 @@
                 </select>
             </td>
         </tr> 
+        <tr class="letra12">
+            <td><b>Plazo en días permitidos</b></td>
+            <td align="right">
+                <input type="number" name="plazo_dias" id="plazo_dias" value="{$dataForm.configuracionGeneral.plazo_dias}">
+            </td>
+            <td class="pl"><b>Notificar en Feriados<b></td>
+            <td>
+                <select name="validar_feriados" id="validar_feriados">
+                    <option value="">Seleccione...</option>
+                    <option value="1" {if '1' == $dataForm.configuracionGeneral.validar_feriados}selected{/if}>Si</option>
+                    <option value="2" {if '2' == $dataForm.configuracionGeneral.validar_feriados}selected{/if}>No</option>
+                </select>
+            </td>
+        </tr>
     </table>
 </fieldset>
 <table style="width:90%; margin-top:20px;">

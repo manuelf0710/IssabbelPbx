@@ -14,7 +14,8 @@ fieldset legend {
 
 #tabla_vista,
 #cant_lineas,
-#timeout {
+#timeout,
+#plazo_dias {
   width: 120px;
 }
 

@@ -337,6 +337,8 @@ class paloSantoconfiguracionGeneral
                     date_format(sysdate(), "%Y-%m-%d") ahora,
                     timeout,
                     campania_simultaneo,
+                    plazo_dias,
+                    validar_feriados,
                     (
                         select nt.id from notificaciones_troncales nt where estado = 1 limit 1
                     ) notificacion_troncal
@@ -387,6 +389,9 @@ public function updateNotificacionesConfiguracion($data)
     $timegroup = array_key_exists("timegroup", $data) ? $data['timegroup'] : null;
     $timeout = $data['timeout'];
     $campania_simultaneo = $data['campania_simultaneo'];
+    $plazo_dias = $data['plazo_dias'];
+    $validar_feriados = $data['validar_feriados'];
+
     $notificacion_troncal = $data["notificacion_troncal"];
 
     $this->createIvrFile($ivr_restaurado);
@@ -449,6 +454,8 @@ public function updateNotificacionesConfiguracion($data)
             "timegroup"         =>  $this->_DB->DBCAMPO($timegroup),
             "timeout"         =>  $this->_DB->DBCAMPO($timeout),
             "campania_simultaneo"         =>  $this->_DB->DBCAMPO($campania_simultaneo),
+            "plazo_dias"         =>  $this->_DB->DBCAMPO($plazo_dias),
+            "validar_feriados"         =>  $this->_DB->DBCAMPO($validar_feriados),
         ),
         array(
             "id"  => $id
