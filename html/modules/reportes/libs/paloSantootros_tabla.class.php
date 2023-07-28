@@ -49,7 +49,7 @@ class paloSantootros_tabla{
     function convertirToMysqlFormat($fecha){
         $getDateAndTime = explode(" ",$fecha);
         $dateFecha = explode("/",$getDateAndTime[0]);
-        $timeFecha = $getDateAndTime[1];
+        $timeFecha = '00:00';
         $newFecha = array_reverse($dateFecha);
         $newFecha = join("-",$newFecha);
         return $newFecha.' '.$timeFecha;
@@ -87,8 +87,6 @@ class paloSantootros_tabla{
         } 
 
         $query   = "SELECT COUNT(*) FROM notificaciones_otros where 1 $where";
-
-        
         $result=$this->_DB->getFirstRowQuery($query, false, $arrParam);
 
         if($result==FALSE){

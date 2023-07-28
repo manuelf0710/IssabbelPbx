@@ -68,11 +68,11 @@ class paloSantoevento_tabla{
         if(!empty($postFilter)){
 
             if($postFilter['fecha_inicial']!= ''){
-                $fechaInicial = $this->convertirToMysqlFormat($postFilter['fecha_inicial']);
+                $fechaInicial = $this->convertirToMysqlFormat($postFilter['fecha_inicial']." "."00:00:00");
                 $where .= " and fecha_llamada >= str_to_date('".$fechaInicial."', '%Y-%m-%d %H:%i')";
             }
             if($postFilter['fecha_final']!= ''){
-                $fechaFinal = $this->convertirToMysqlFormat($postFilter['fecha_final']);
+                $fechaFinal = $this->convertirToMysqlFormat($postFilter['fecha_final']." "."23:59:00");
                 $where .= " and fecha_llamada <=  str_to_date('".$fechaFinal."', '%Y-%m-%d %H:%i')";
             } 
             if($postFilter['id_evento']!= ''){
@@ -113,12 +113,12 @@ class paloSantoevento_tabla{
         if(!empty($postFilter)){
 
             if($postFilter['fecha_inicial']!= ''){
-                $fechaInicial = $this->convertirToMysqlFormat($postFilter['fecha_inicial']);
-                $where .= " and fecha_llamada >= str_to_date('".$fechaInicial."', '%Y-%m-%d %H:%i')";
+                $fechaInicial = $this->convertirToMysqlFormat($postFilter['fecha_inicial']." "."00:00:00");
+                $where .= " and nc.fecha >= str_to_date('".$fechaInicial."', '%Y-%m-%d %H:%i')";
             }
             if($postFilter['fecha_final']!= ''){
-                $fechaFinal = $this->convertirToMysqlFormat($postFilter['fecha_final']);
-                $where .= " and fecha_llamada <=  str_to_date('".$fechaFinal."', '%Y-%m-%d %H:%i')";
+                $fechaFinal = $this->convertirToMysqlFormat($postFilter['fecha_final']." "."23:59:00");
+                $where .= " and nc.fecha <=  str_to_date('".$fechaFinal."', '%Y-%m-%d %H:%i')";
             } 
             if($postFilter['id_evento']!= ''){
                 $where .= " and eve_id =  '".$postFilter['id_evento']."'";
@@ -160,7 +160,6 @@ class paloSantoevento_tabla{
       FROM notificaciones_campania nc 
      inner join  notificaciones_llamadas n1 on nc.id = n1.campania_id
      where 1 $where group by n1.campania_id, n1.eve_id order by campania_id desc LIMIT $limit OFFSET $offset";
-
         $result=$this->_DB->fetchTable($query, true, $arrParam);
 
         if($result==FALSE){
