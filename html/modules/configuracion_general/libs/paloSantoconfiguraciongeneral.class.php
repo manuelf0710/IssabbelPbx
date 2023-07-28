@@ -192,12 +192,12 @@ class paloSantoconfiguracionGeneral
         //$daysArray=['mon','tue','wed','thu','fri','sat','sun'];
         $daysArray = array(
             "mon" => array("short"=>"mon", "name"=>"Lunes"),
-            "tue" => array("short"=>"mon", "name"=>"Lunes"),
-            "wed" => array("short"=>"mon", "name"=>"Lunes"),
-            "thu" => array("short"=>"mon", "name"=>"Lunes"),
-            "fri" => array("short"=>"mon", "name"=>"Lunes"),
-            "sat" => array("short"=>"mon", "name"=>"Lunes"),
-            "sun" => array("short"=>"mon", "name"=>"Lunes")
+            "tue" => array("short"=>"tue", "name"=>"martes"),
+            "wed" => array("short"=>"wed", "name"=>"miercoles"),
+            "thu" => array("short"=>"thu", "name"=>"jueves"),
+            "fri" => array("short"=>"fri", "name"=>"viernes"),
+            "sat" => array("short"=>"sat", "name"=>"sabado"),
+            "sun" => array("short"=>"sun", "name"=>"domngo")
         );
 
         $monthArrayBk = array(
@@ -237,8 +237,13 @@ class paloSantoconfiguracionGeneral
         if($result && count($result)){
             foreach($result as $item){
                 $data = explode("|",$item["time"]);
-                $monthData = $monthArray["".$data[3]];
-                $dayData = $daysArray["".$data[1]];
+                //echo(json_encode($data)."</br>");
+                $monthData = $data[3] == '*' ? '*' : $monthArray["".$data[3]];
+                $dayData = $data[1] == '*' ? '*' : $daysArray["".$data[1]];
+
+                $day = $data[2]=='*' ? '*' : $data[2];
+                //$month = $data[3]=='*' ? '*' : $data[3];
+
 
                 $addData = array(
                     "id" => $item["id"],
@@ -250,7 +255,7 @@ class paloSantoconfiguracionGeneral
                     "day" => $data[1],
                     "daynumber" => $data[2],
                     "monthshort" => $data[3],
-                    "daymonth" => $monthData["numberm"]."-".$data[2]
+                    "daymonth" => $data[3] == '*' ? '*' : $monthData["numberm"]."-".$day
 
                 );
                 array_push($dataDays,$addData);
@@ -260,12 +265,46 @@ class paloSantoconfiguracionGeneral
         return $dataDays;
     }
 
-    function findDayGroup($dataDays, $dayMonth) {
+    function findDayGroupBk($dataDays, $dayMonth) {
         $found = true;
         foreach ($dataDays as $data) {
             if ($data["daymonth"] == $dayMonth) {
-                $found = false; // El dato se encontró
+                $found = false;
+
             }
+        }
+        return $found;
+    }   
+    
+    function createDayMonth($data, $dayMonth, $dayWeek){
+        $partData = explode("-",$dayMonth);
+        $newDateMonth = $data["daymonth"];
+        if(strpos($newDateMonth, "*") === false && $data["daynumber"]=="*"){
+            $newDateMonth = $data["daynumber"]."-".$partData[1];
+        }
+        //echo"valor de newDateMonth(1) (".$dayMonth.")=> ".$newDateMonth."</br>";
+        if(strpos($newDateMonth, "*") === false) return $newDateMonth;
+        //echo"valor de newDateMonth(2) (".$dayMonth.")=> ".$newDateMonth."</br>";
+        if(strpos($newDateMonth, "*") !== false && $dayWeek == $data["day"]) return $dayMonth;
+        
+        return "*";
+    }
+
+    function findDayGroup($dataDays, $dayMonth, $dayWeek) {
+        $found = true;
+        $partData = explode("-",$dayMonth);
+        foreach ($dataDays as $data) {
+            $newDayMonth = $this->createDayMonth($data,$dayMonth,$dayWeek);
+
+            if(strpos($newDayMonth, "*") === false && $found){
+                if ($newDayMonth == $dayMonth) {
+                    $found = false;                               
+                }
+            } elseif($data["day"] != "*"){
+                if ($data["day"] == $partData[0] && $found) {
+                    $found = false;                  
+                }
+            }         
         }
         return $found;
     }
@@ -280,14 +319,15 @@ class paloSantoconfiguracionGeneral
 
         /*$found = $this->findDayGroup($dataDays, "07-11");
         echo "el registro fue encontrado => ".$found;*/
-
+        $iterator=0;
         while ($days > 0) {
             $hoy = date("Y-m-d", strtotime($hoy . " -1 day"));
             $getMonthDay = explode("-",$hoy);
             $dia_semana = strtolower(date("D", strtotime($hoy)));
             /*echo("valor => ".$getMonthDay[1]."-".$getMonthDay[2]."</br>");
             echo "el boolean => ".$this->findDayGroup($dataDays, $getMonthDay[1]."-".$getMonthDay[2]."<br>");*/
-            if ($dia_semana != "sun" && $this->findDayGroup($dataDays, $getMonthDay[1]."-".$getMonthDay[2])) {
+            $iterator++;
+            if ($dia_semana != "sun" && $this->findDayGroup($dataDays, $getMonthDay[1]."-".$getMonthDay[2],$dia_semana)) {
                 $days--;
             }
         }
@@ -304,12 +344,13 @@ class paloSantoconfiguracionGeneral
         }
 
         $query2 = 'SELECT id,
-        timegroup
+        timegroup,
+        plazo_dias
             FROM notificaciones_configuracion
         WHERE id =1';
         $result2 = $this->_DB->getFirstRowQuery($query2, true);
 
-        $dateMinValid = $this->getBussinesDays($result2["timegroup"],5);
+        $dateMinValid = $this->getBussinesDays($result2["timegroup"], $result2["plazo_dias"]);
         
         $query = 'SELECT id, 
                     '.$this->stateJob.' activo, 
