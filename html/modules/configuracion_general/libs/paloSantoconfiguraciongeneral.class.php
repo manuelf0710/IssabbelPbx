@@ -279,14 +279,15 @@ class paloSantoconfiguracionGeneral
     function createDayMonth($data, $dayMonth, $dayWeek){
         $partData = explode("-",$dayMonth);
         $newDateMonth = $data["daymonth"];
-        if(strpos($newDateMonth, "*") === false && $data["daynumber"]=="*"){
-            $newDateMonth = $data["daynumber"]."-".$partData[1];
-        }
-        //echo"valor de newDateMonth(1) (".$dayMonth.")=> ".$newDateMonth."</br>";
-        if(strpos($newDateMonth, "*") === false) return $newDateMonth;
-        //echo"valor de newDateMonth(2) (".$dayMonth.")=> ".$newDateMonth."</br>";
-        if(strpos($newDateMonth, "*") !== false && $dayWeek == $data["day"]) return $dayMonth;
         
+        
+        if(strpos($newDateMonth, "*") === false) return $newDateMonth;
+        
+        if(strpos($newDateMonth, "*") !== false && $data["daynumber"]!="*"){
+            $newDateMonth = $partData[0]."-".$data["daynumber"];
+            return $newDateMonth;
+        }
+        if(strpos($newDateMonth, "*") !== false && $dayWeek == $data["day"]) return $dayMonth;
         return "*";
     }
 
@@ -329,6 +330,8 @@ class paloSantoconfiguracionGeneral
             $iterator++;
             if ($dia_semana != "sun" && $this->findDayGroup($dataDays, $getMonthDay[1]."-".$getMonthDay[2],$dia_semana)) {
                 $days--;
+                //echo("dia HABIL =============================>".$dia_semana." => ".$getMonthDay[1]."-".$getMonthDay[2]."<br>");
+            }else{
             }
         }
         return $hoy;        
