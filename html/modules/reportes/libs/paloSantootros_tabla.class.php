@@ -133,8 +133,8 @@ class paloSantootros_tabla{
                            estado resultado,
                            if(fecha_llamada = '0000-00-00 00:00:00', '', fecha_llamada) fecha_llamada,
                            agente,
-                           '' grabacion
-                     FROM notificaciones_otros where 1 $where order by campania_id desc LIMIT $limit OFFSET $offset";
+                           grabacion
+                     FROM notificaciones_otros where 1 $where order by fecha_llamada desc LIMIT $limit OFFSET $offset";
 
                 
 

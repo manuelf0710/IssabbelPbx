@@ -658,7 +658,7 @@ function otrosTabla($smarty, $module_name, $local_templates_dir, &$pDB, $arrConf
 	    $arrTmp[4] = $value['id_evento'];
 	    $arrTmp[5] = $value['fecha_llamada'];
 	    $arrTmp[6] = $value['agente'];
-	    $arrTmp[7] = $value['grabacion'];
+        $arrTmp[7] = ($value['grabacion'] && $value['grabacion'] != "N/A") ? '<a href="/modules/reportes/download.php?file='.$value['grabacion'].'" target="_blank">Descargar</a>' : "N/A";
             $arrData[] = $arrTmp;
         }
     }
