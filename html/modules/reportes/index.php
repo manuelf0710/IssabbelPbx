@@ -1,4 +1,4 @@
-<?php
+|<?php
 ini_set('display_errors',1);
 error_reporting(E_ALL);
   /* vim: set expandtab tabstop=4 softtabstop=4 shiftwidth=4:
@@ -101,6 +101,11 @@ function _moduleContent(&$smarty, $module_name)
             if($criterioActive == 'otros'){
                 $content .= otrosTabla($smarty, $module_name, $local_templates_dir, $pDB, $arrConf, $infoToView);
             }			
+            if($criterioActive == 'text2speech'){
+                $content.="<div id='divcontent_eventos'>";
+                $content .= text2SpeechTabla($smarty, $module_name, $local_templates_dir, $pDB, $arrConf, $infoToView);
+                $content.="</div>";
+            }			
             break;
         case "isReport":
             $module = "Reportes >>".$criterioActive;
@@ -115,7 +120,13 @@ function _moduleContent(&$smarty, $module_name)
             }
             if($criterioActive == 'otros'){
                 $content .= otrosTabla($smarty, $module_name, $local_templates_dir, $pDB, $arrConf, $infoToView);
+            }
+            if($criterioActive == 'text2speech'){
+                $content.="<div id='divcontent_eventos'>";
+                $content .= text2SpeechTabla($smarty, $module_name, $local_templates_dir, $pDB, $arrConf, $infoToView);
+                $content.="</div>";
             }  
+            break;            
         case "isDetailEvent" :
               $content = eventosTablaDetalle($smarty, $module_name, $local_templates_dir, $pDB, $arrConf, $infoToView);
             break;
@@ -129,7 +140,12 @@ function _moduleContent(&$smarty, $module_name)
             }
             if($criterioActive == 'otros'){
                 $content .= otrosTabla($smarty, $module_name, $local_templates_dir, $pDB, $arrConf, $infoToView);
-            }               
+            }  
+            if($criterioActive == 'text2speech'){
+                $content.="<div id='divcontent_eventos'>";
+                $content .= text2SpeechTabla($smarty, $module_name, $local_templates_dir, $pDB, $arrConf, $infoToView);
+                $content.="</div>";
+            }                          
             break;
     }
     return $content;
@@ -485,6 +501,109 @@ function eventosTabla($smarty, $module_name, $local_templates_dir, &$pDB, $arrCo
     $oGrid->setURL($url);
 
     $arrColumns = array(_tr("ID Evento"),_tr("Fecha llamada"),_tr("Barridos"),_tr("Cant Usuarios"),_tr("Informados"),_tr("Fallidos"),_tr("Destino"),_tr("Estado"),_tr("Campaña"));
+    $oGrid->setColumns($arrColumns);
+   
+
+    $total   = $pevento_tabla->getNumevento_tabla($filter_field, $filter_value, $postFilter);
+
+
+    $arrData = null;
+    if($oGrid->isExportAction()){
+        $limit  = $total; // max number of rows.
+        $offset = 0;      // since the start.
+    }
+    else{
+        $limit  = 20;
+        $oGrid->setLimit($limit);
+        $oGrid->setTotal($total);
+        $offset = $oGrid->calculateOffset();
+    }
+
+    $first_record = $offset + 1;
+    $last_record = $offset + $limit;
+    if($last_record > $total) {
+        $last_record = $total;
+        }
+
+
+
+    $arrResult =$pevento_tabla->getevento_tabla($limit, $offset, $filter_field, $filter_value, $postFilter);
+
+    if(is_array($arrResult) && $total>0){
+        foreach($arrResult as $key => $value){ 
+	    $arrTmp[0] = $value['eve_id'];
+	    $arrTmp[1] = $value['fecha_llamada'];
+	    $arrTmp[2] = $value['barridos'];
+	    $arrTmp[3] = $value['cant_usuario'];
+	    $arrTmp[4] = $value['informados'];
+	    $arrTmp[5] = $value['fallidos'];
+	    $arrTmp[6] = $value['destino'];
+        $arrTmp[7] = $value['estado'];
+	    $arrTmp[8] = $value['campania'];
+            $arrData[] = $arrTmp;
+        }
+    }
+    $oGrid->setData($arrData);
+
+    //begin section filter
+    $oFilterForm = new paloForm($smarty, createFieldFilterEvento());
+    $smarty->assign("SHOW", _tr("Show"));
+    $htmlFilter  = $oFilterForm->fetchForm("$local_templates_dir/filter.tpl","",$_POST);
+    //end section filter
+
+    //$oGrid->showFilter(trim($htmlFilter));
+    
+    $content = "<div style='margin-top:10px;'>Mostrando $first_record a $last_record de $total registros</div>";
+    $content .= $oGrid->fetchGrid();
+    //end grid parameters
+
+    return $content;
+}
+/*
+* funciones para crear la tabla de eventos
+ */
+function text2SpeechTabla($smarty, $module_name, $local_templates_dir, &$pDB, $arrConf, $infoToView)
+{
+    $pevento_tabla = new paloSantospeech_tabla($pDB);
+    $filter_field = getParameter("filter_field");
+    $filter_value = getParameter("filter_value");
+    $fecha_inicial = getParameter("fecha_inicial");
+    $fecha_final = getParameter("fecha_final");
+    $id_evento = getParameter("id_evento");
+    $tipo_evento = getParameter("tipo_evento");
+    $criterio = getParameter("criterio");
+
+    //begin grid parameters
+    $oGrid  = new paloSantoGrid($smarty);
+    $oGrid->setTitle(_tr("eventoTabla"));
+    $oGrid->pagingShow(true); // show paging section.
+
+    $oGrid->enableExport();   // enable export.
+    $oGrid->setNameFile_Export(_tr("eventoTabla"));
+    $oGrid->setTplFile('themes/customTheme/_custom_list.tpl');
+
+    $postFilter =array(
+        "fecha_inicial" => $fecha_inicial,
+        "fecha_final" => $fecha_final,
+        "id_evento" => $id_evento,
+        "tipo_evento" => $tipo_evento
+    );    
+
+    $url = array(
+        "menu"         =>  $module_name,
+        "filter_field" =>  $filter_field,
+        "filter_value" =>  $filter_value,
+        "fecha_inicial" => $fecha_inicial,
+        "fecha_final" => $fecha_final,
+        "id_evento" => $id_evento,
+        "tipo_evento" => $tipo_evento,
+        "criterio" => $criterio
+
+    
+    );
+    $oGrid->setURL($url);
+
+    $arrColumns = array(_tr("ID Evento speech"),_tr("Fecha llamada"),_tr("Barridos"),_tr("Cant Usuarios"),_tr("Informados"),_tr("Fallidos"),_tr("Destino"),_tr("Estado"),_tr("Campaña"));
     $oGrid->setColumns($arrColumns);
    
 
