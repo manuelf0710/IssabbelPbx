@@ -1,4 +1,4 @@
-|<?php
+<?php
 ini_set('display_errors',1);
 error_reporting(E_ALL);
   /* vim: set expandtab tabstop=4 softtabstop=4 shiftwidth=4:
@@ -100,7 +100,7 @@ function _moduleContent(&$smarty, $module_name)
             }
             if($criterioActive == 'otros'){
                 $content .= otrosTabla($smarty, $module_name, $local_templates_dir, $pDB, $arrConf, $infoToView);
-            }			
+            }	
             if($criterioActive == 'text2speech'){
                 $content.="<div id='divcontent_eventos'>";
                 $content .= text2SpeechTabla($smarty, $module_name, $local_templates_dir, $pDB, $arrConf, $infoToView);
@@ -125,8 +125,8 @@ function _moduleContent(&$smarty, $module_name)
                 $content.="<div id='divcontent_eventos'>";
                 $content .= text2SpeechTabla($smarty, $module_name, $local_templates_dir, $pDB, $arrConf, $infoToView);
                 $content.="</div>";
-            }  
-            break;            
+            }
+            break;
         case "isDetailEvent" :
               $content = eventosTablaDetalle($smarty, $module_name, $local_templates_dir, $pDB, $arrConf, $infoToView);
             break;
@@ -140,12 +140,12 @@ function _moduleContent(&$smarty, $module_name)
             }
             if($criterioActive == 'otros'){
                 $content .= otrosTabla($smarty, $module_name, $local_templates_dir, $pDB, $arrConf, $infoToView);
-            }  
+            }
             if($criterioActive == 'text2speech'){
                 $content.="<div id='divcontent_eventos'>";
                 $content .= text2SpeechTabla($smarty, $module_name, $local_templates_dir, $pDB, $arrConf, $infoToView);
                 $content.="</div>";
-            }                          
+            }         
             break;
     }
     return $content;
@@ -559,6 +559,7 @@ function eventosTabla($smarty, $module_name, $local_templates_dir, &$pDB, $arrCo
 
     return $content;
 }
+
 /*
 * funciones para crear la tabla de eventos
  */

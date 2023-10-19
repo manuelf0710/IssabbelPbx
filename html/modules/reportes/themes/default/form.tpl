@@ -72,6 +72,7 @@
                 <p style="margin-top:1em">Registros relacionados con ID evento {$id_evento}</p>
         {/if}
     {/if}
+    
     {if $criterioActive eq 'eventos'}
 
         <fieldset style="border-radius: 5px; padding: 5px; min-height:150px;">
