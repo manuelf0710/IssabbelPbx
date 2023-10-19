@@ -59,114 +59,98 @@ class paloSantospeech_tabla{
 
     function getNumevento_tabla($filter_field, $filter_value, $postFilter)
     {
-        $where    = "";
-        $arrParam = null;
-        /*if(isset($filter_field) & $filter_field !=""){
-            $where    = "where $filter_field like ?";
-            $arrParam = array("$filter_value%");
-        } */
+        $url ="http://localhost:3000/reportcount";
+        session_write_close();
+        $payload = array("start" => "asdf");
         if(!empty($postFilter)){
 
             if($postFilter['fecha_inicial']!= ''){
                 $fechaInicial = $this->convertirToMysqlFormat($postFilter['fecha_inicial']." "."00:00:00");
-                $where .= " and fecha_llamada >= str_to_date('".$fechaInicial."', '%Y-%m-%d %H:%i')";
+                $payload["fecha_inicial"] = $fechaInicial;
             }
             if($postFilter['fecha_final']!= ''){
                 $fechaFinal = $this->convertirToMysqlFormat($postFilter['fecha_final']." "."23:59:00");
-                $where .= " and fecha_llamada <=  str_to_date('".$fechaFinal."', '%Y-%m-%d %H:%i')";
+                $payload["fecha_final"] = $fechaFinal;
             } 
             if($postFilter['id_evento']!= ''){
-                $where .= " and eve_id =  '".$postFilter['id_evento']."'";
+                $payload["fecha_final"] = $postFilter['id_evento'];
             }  
             
             if($postFilter['tipo_evento']!= ''){
-                $where .= " and tipo_evento =  '".$postFilter['tipo_evento']."'";
+                $payload["tipo_evento"] = $postFilter['tipo_evento'];
             }             
             
-        }        
+        }         
+            
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_URL, $url);
+        curl_setopt($ch, CURLOPT_POST, 1);
+        //curl_setopt($ch, CURLOPT_HEADER, true);
+        curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type:application/json'));
+        //curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($dataConn));
+        curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($payload));
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        $response    = curl_exec($ch);
+        $header_size = curl_getinfo($ch, CURLINFO_HEADER_SIZE);
+        $httpcode    = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+        //$header      = substr($response, 0, $header_size);
+        $body        = substr($response, $header_size);
+        curl_close($ch);
+        session_start();
 
-        $query   = "select count(*) 
-        from 
-        (SELECT count(*)
-              FROM notificaciones_campania nc 
-             inner join  notificaciones_llamadas n1 on nc.id = n1.campania_id
-             where 1 $where  group by n1.campania_id, n1.eve_id ) a";
-
-        $result=$this->_DB->getFirstRowQuery($query, false, $arrParam);
-
-        if($result==FALSE){
-            $this->errMsg = $this->_DB->errMsg;
-            return 0;
-        }
-        return $result[0];
+        $dataa = json_decode($response, true);
+        return $dataa[0]['TOTAL_FILAS'];
     }
 
     function getevento_tabla($limit, $offset, $filter_field, $filter_value, $postFilter)
     {
-        $where    = "";
-        $arrParam = null;
-        /*if(isset($filter_field) & $filter_field !=""){
-            $where    = "where $filter_field like ?";
-            $arrParam = array("$filter_value%");
-        } */
 
+        $url ="http://localhost:3000/report";
+        session_write_close();
+        $payload = array("start" => "asdf");
         if(!empty($postFilter)){
 
             if($postFilter['fecha_inicial']!= ''){
                 $fechaInicial = $this->convertirToMysqlFormat($postFilter['fecha_inicial']." "."00:00:00");
-                $where .= " and nc.fecha >= str_to_date('".$fechaInicial."', '%Y-%m-%d %H:%i')";
+                $payload["fecha_inicial"] = $fechaInicial;
             }
             if($postFilter['fecha_final']!= ''){
                 $fechaFinal = $this->convertirToMysqlFormat($postFilter['fecha_final']." "."23:59:00");
-                $where .= " and nc.fecha <=  str_to_date('".$fechaFinal."', '%Y-%m-%d %H:%i')";
+                $payload["fecha_final"] = $fechaFinal;
             } 
             if($postFilter['id_evento']!= ''){
-                $where .= " and eve_id =  '".$postFilter['id_evento']."'";
+                $payload["fecha_final"] = $postFilter['id_evento'];
             }  
             
             if($postFilter['tipo_evento']!= ''){
-                $where .= " and tipo_evento =  '".$postFilter['tipo_evento']."'";
-            }             
+                $payload["tipo_evento"] = $postFilter['tipo_evento'];
+            }  
             
-        }  
+            
+            $payload["limit"] = $limit;
+            $payload["offset"] = $offset;
+            
+            
+        }         
+            
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_URL, $url);
+        curl_setopt($ch, CURLOPT_POST, 1);
+        //curl_setopt($ch, CURLOPT_HEADER, true);
+        curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type:application/json'));
+        //curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($dataConn));
+        curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($payload));
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        $response    = curl_exec($ch);
+        $header_size = curl_getinfo($ch, CURLINFO_HEADER_SIZE);
+        $httpcode    = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+        //$header      = substr($response, 0, $header_size);
+        $body        = substr($response, $header_size);
+        curl_close($ch);
+        session_start();
 
-
-        $query   = "SELECT 
-        n1.eve_id,
-        n1.tipo_evento tipo,
-        nc.fecha fecha_llamada,
-        count(nc.id) barridos,
-        nc.cantidad cant_usuario,
-        (select count(distinct n2.nus)
-		  from notificaciones_llamadas n2
-          where n2.estado = 'EXITOSA'
-          and n2.campania_id = n1.campania_id
-	   ) informados,
-	   (select count(distinct n2.nus)
-		  from notificaciones_llamadas n2
-          where n2.estado NOT IN('EXITOSA')
-          and n2.campania_id = n1.campania_id
-          and n2.nus not in (
-		select distinct n3.nus
-		  from notificaciones_llamadas n3
-          where n3.estado = 'EXITOSA'
-          and n3.campania_id = n2.campania_id          
-          )
-         
-	   ) fallidos,
-        'IVR' destino,
-        nc.id campania,
-        nc.estado
-      FROM notificaciones_campania nc 
-     inner join  notificaciones_llamadas n1 on nc.id = n1.campania_id
-     where 1 $where group by n1.campania_id, n1.eve_id order by campania_id desc LIMIT $limit OFFSET $offset";
-        $result=$this->_DB->fetchTable($query, true, $arrParam);
-
-        if($result==FALSE){
-            $this->errMsg = $this->_DB->errMsg;
-            return array();
-        }
-        return $result;
+        $dataa = json_decode($response, true);
+        return $dataa;
     }
 
     function getevento_tablaById($id)

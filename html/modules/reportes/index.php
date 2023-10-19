@@ -26,6 +26,7 @@ error_reporting(E_ALL);
 //include issabel framework
 include_once "libs/paloSantoGrid.class.php";
 include_once "libs/paloSantoForm.class.php";
+include_once "modules/reportes/libs/paloSantoGridReportes.class.php";
 //global $criterioActive;
 
 function _moduleContent(&$smarty, $module_name)
@@ -102,7 +103,7 @@ function _moduleContent(&$smarty, $module_name)
                 $content .= otrosTabla($smarty, $module_name, $local_templates_dir, $pDB, $arrConf, $infoToView);
             }	
             if($criterioActive == 'text2speech'){
-                $content.="<div id='divcontent_eventos'>";
+                $content.="<div id='divcontent_speech' style='width:100% !important; overflow-x:auto !important'>";
                 $content .= text2SpeechTabla($smarty, $module_name, $local_templates_dir, $pDB, $arrConf, $infoToView);
                 $content.="</div>";
             }			
@@ -122,7 +123,7 @@ function _moduleContent(&$smarty, $module_name)
                 $content .= otrosTabla($smarty, $module_name, $local_templates_dir, $pDB, $arrConf, $infoToView);
             }
             if($criterioActive == 'text2speech'){
-                $content.="<div id='divcontent_eventos'>";
+                $content.="<div id='divcontent_speech' style='width:100% !important; overflow-x:auto !important'>";
                 $content .= text2SpeechTabla($smarty, $module_name, $local_templates_dir, $pDB, $arrConf, $infoToView);
                 $content.="</div>";
             }
@@ -142,7 +143,7 @@ function _moduleContent(&$smarty, $module_name)
                 $content .= otrosTabla($smarty, $module_name, $local_templates_dir, $pDB, $arrConf, $infoToView);
             }
             if($criterioActive == 'text2speech'){
-                $content.="<div id='divcontent_eventos'>";
+                $content.="<div id='divcontent_speech' style='width:100% !important; overflow-x:auto !important'>";
                 $content .= text2SpeechTabla($smarty, $module_name, $local_templates_dir, $pDB, $arrConf, $infoToView);
                 $content.="</div>";
             }         
@@ -575,12 +576,12 @@ function text2SpeechTabla($smarty, $module_name, $local_templates_dir, &$pDB, $a
     $criterio = getParameter("criterio");
 
     //begin grid parameters
-    $oGrid  = new paloSantoGrid($smarty);
-    $oGrid->setTitle(_tr("eventoTabla"));
+    $oGrid  = new paloSantoGridReportes($smarty);
+    $oGrid->setTitle(_tr("speechTabla"));
     $oGrid->pagingShow(true); // show paging section.
 
     $oGrid->enableExport();   // enable export.
-    $oGrid->setNameFile_Export(_tr("eventoTabla"));
+    $oGrid->setNameFile_Export(_tr("speechTabla"));
     $oGrid->setTplFile('themes/customTheme/_custom_list.tpl');
 
     $postFilter =array(
@@ -604,11 +605,17 @@ function text2SpeechTabla($smarty, $module_name, $local_templates_dir, &$pDB, $a
     );
     $oGrid->setURL($url);
 
-    $arrColumns = array(_tr("ID Evento speech"),_tr("Fecha llamada"),_tr("Barridos"),_tr("Cant Usuarios"),_tr("Informados"),_tr("Fallidos"),_tr("Destino"),_tr("Estado"),_tr("Campaña"));
+    $arrColumns = array(_tr("NRORECLAMO"),_tr("FECHA_A_NOTIFICAR"),_tr("NOMBRE"),_tr("TITULO"),_tr("MENSAJE"),_tr("IDSUMINISTRO"),_tr("TELEFONO"),_tr("ESTADO"),
+                        _tr("FECHA_INSERT") ,_tr("FECHA_ACTUALIZACION"), _tr("OBSERVACIONES"), _tr("TIPO DE DOMICILIO"),
+                        _tr("DATOS DEL DOMICILIO"), _tr("TIPO DE RECLAMO"), _tr("FECHA Y HORA APERTURA DEL RECLAMO"), _tr("FECHA Y HORA CIERRE RECLAMO"),
+                        _tr("PRONUNCIAMIENTO"), _tr("DETALLE"), _tr("DETALLE_FULL"));
     $oGrid->setColumns($arrColumns);
    
 
     $total   = $pevento_tabla->getNumevento_tabla($filter_field, $filter_value, $postFilter);
+
+    //echo $total;
+    
 
 
     $arrData = null;
@@ -629,21 +636,32 @@ function text2SpeechTabla($smarty, $module_name, $local_templates_dir, &$pDB, $a
         $last_record = $total;
         }
 
-
-
-    $arrResult =$pevento_tabla->getevento_tabla($limit, $offset, $filter_field, $filter_value, $postFilter);
+    //$arrResult =$pevento_tabla->getevento_tabla($limit, $offset, $filter_field, $filter_value, $postFilter);
+    $arrResult =$pevento_tabla->getevento_tabla($last_record, $first_record, $filter_field, $filter_value, $postFilter);
+    
 
     if(is_array($arrResult) && $total>0){
         foreach($arrResult as $key => $value){ 
-	    $arrTmp[0] = $value['eve_id'];
-	    $arrTmp[1] = $value['fecha_llamada'];
-	    $arrTmp[2] = $value['barridos'];
-	    $arrTmp[3] = $value['cant_usuario'];
-	    $arrTmp[4] = $value['informados'];
-	    $arrTmp[5] = $value['fallidos'];
-	    $arrTmp[6] = $value['destino'];
-        $arrTmp[7] = $value['estado'];
-	    $arrTmp[8] = $value['campania'];
+	    $arrTmp[0] = $value['NRORECLAMO'];
+	    $arrTmp[1] = $value['FECHA_A_NOTIFICAR'];
+	    $arrTmp[2] = $value['NOMBRE'];
+	    $arrTmp[3] = $value['TITULO'];
+	    $arrTmp[4] = $value['MENSAJE'];
+	    /*$arrTmp[4] = "Estimado usuario, elfec le informa que el reclamo presentado por ".$value['NOMBRE'].", el ".$value['FECHA_APERTURA']." fue cerrado ".$value['PRONUNCIAMIENTO'].", verificándose que ".$value['DETALLE_FULL'].". Y en caso de no estar conforme con la atención brindada a su reclamo tiene 15 días hábiles administrativos, desde el día de mañana, para presentar su reclamación administrativa ante la AETN, llamando a la línea gratuita 800 10 24 07.";*/
+	    $arrTmp[5] = $value['IDSUMINISTRO'];
+	    $arrTmp[6] = $value['TELEFONO'];
+        $arrTmp[7] = $value['ESTADO'];
+	    $arrTmp[8] = $value['FECHA_INSERT'];
+	    $arrTmp[9] = $value['FECHA_ACTUALIZACION'];
+	    $arrTmp[10] = $value['OBSERVACIONES'];
+	    $arrTmp[11] = $value['TIPO_DE_DOMICILIO'];
+	    $arrTmp[12] = $value['DATOS_DEL_DOMICILIO'];
+	    $arrTmp[13] = $value['TIPO_DE_RECLAMO'];
+	    $arrTmp[14] = $value['FECHA_APERTURA'];
+	    $arrTmp[15] = $value['FECHA_CIERRE'];
+	    $arrTmp[16] = $value['PRONUNCIAMIENTO'];
+	    $arrTmp[17] = $value['DETALLE'];
+	    $arrTmp[18] = $value['DETALLE_FULL'];
             $arrData[] = $arrTmp;
         }
     }

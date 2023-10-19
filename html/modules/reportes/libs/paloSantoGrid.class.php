@@ -21,7 +21,7 @@
   +----------------------------------------------------------------------+
   $Id: paloSantoGrid.class.php, bmacias@palosanto.com Exp $ */
 
-class paloSantoGridReportes {
+class paloSantoGrid {
 
     private $title;
     private $icon;
@@ -229,7 +229,7 @@ class paloSantoGridReportes {
         "up-thin",
     );
 
-    public function paloSantoGridReportes($smarty)
+    public function paloSantoGrid($smarty)
     {
         $this->title  = "";
         $this->icon   = "images/list.png";

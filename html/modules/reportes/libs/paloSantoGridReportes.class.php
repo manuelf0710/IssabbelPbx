@@ -19,7 +19,7 @@
   +----------------------------------------------------------------------+
   | The Initial Developer of the Original Code is PaloSanto Solutions    |
   +----------------------------------------------------------------------+
-  $Id: paloSantoGrid.class.php, bmacias@palosanto.com Exp $ */
+  $Id: paloSantoGridReportes.class.php, bmacias@palosanto.com Exp $ */
 
 class paloSantoGridReportes {
 
@@ -275,7 +275,7 @@ class paloSantoGridReportes {
      * parámetro $msg, y una equis correspondiente al hipervínculo en sí.
      *
      * La secuencia de operaciones esperada por los módulos de grilla es:
-     * - creación de nuevo paloSantoGrid
+     * - creación de nuevo paloSantoGridReportes
      * - se recogen las variables de petición en $arrData, usando getParameter()
      * - se llama sucesivamente a addFilterControl para cada control a quitar
      * - se llama showFilter() con el formulario y las variables de $arrData
@@ -591,7 +591,12 @@ class paloSantoGridReportes {
 
     function fetchGridCSV($arrGrid=array(), $arrData=array())
     {
-        if(isset($arrGrid["columns"]) && count($arrGrid["columns"]) > 0)
+/*echo json_encode($arrGrid); echo("<br><br>");
+echo json_encode($arrData); echo("<br><br>");
+echo json_encode($this->getColumns()); echo("<br><br>");
+echo json_encode($this->getData()); echo("<br><br>"); */
+        
+        /*if(isset($arrGrid["columns"]) && count($arrGrid["columns"]) > 0)
             $this->arrHeaders = $arrGrid["columns"];
         if(isset($arrData) && count($arrData) > 0)
             $this->arrData = $arrData;
@@ -606,7 +611,53 @@ class paloSantoGridReportes {
         $this->smarty->assign("header",     $this->getColumns());
         $this->smarty->assign("arrData",    $this->getData());
 
-        return $this->smarty->fetch("_common/listcsv.tpl");
+        return $this->smarty->fetch("_common/listcsv.tpl"); */
+        $headers = $this->getColumns();
+        $data = $this->getData();
+
+        /** PHPExcel */
+        include 'PHPExcel-1.8/Classes/PHPExcel.php';
+        
+        /** PHPExcel_Writer_Excel2007 */
+        include 'PHPExcel-1.8/Classes/PHPExcel/Writer/Excel2007.php';        
+// Crear un objeto PHPExcel
+// Crea el objeto PHPExcel y configura los datos
+$objPHPExcel = new PHPExcel();
+
+$objPHPExcel->createSheet();
+$sheet = $objPHPExcel->getActiveSheet();
+
+foreach($headers as $i => $header){
+    $sheet->setCellValueByColumnAndRow($i, 1, $header["name"]);
+}  
+
+$row = 2; // Comienza desde la fila 2
+foreach ($data as $row_data) {
+    $column = 'A'; // Comienza desde la columna A
+    foreach ($row_data as $cell) {
+        $sheet->setCellValue($column . $row, $cell);
+        $column++;
+    }
+    $row++;
+} 
+
+// Crea el objeto Writer para CSV
+$objWriter = PHPExcel_IOFactory::createWriter($objPHPExcel, 'CSV');
+$objWriter->setDelimiter(',');
+$objWriter->setEnclosure('');
+
+// Configura las cabeceras HTTP para la descarga del archivo CSV
+//header('Content-Type: application/csv');
+header("Content-Type: text/csv; charset=UTF-8");
+header('Content-Disposition: attachment; filename="reporte_speech.csv"');
+header('Cache-Control: max-age=0');
+
+// Salida del archivo CSV
+$objWriter->save('php://output');
+
+// Finaliza la ejecución del script
+exit();
+     
     }
 
     function fetchGridPDF()
@@ -621,7 +672,7 @@ class paloSantoGridReportes {
 
     function fetchGridXLS()
     {
-        header ("Cache-Control: private");
+        /*header ("Cache-Control: private");
         header ("Pragma: cache");    // Se requiere para HTTPS bajo IE6
         header ('Content-Disposition: attachment; filename="'."{$this->nameFile_Export}.xls".'"');
         header ("Content-Type: application/vnd.ms-excel; charset=UTF-8");
@@ -640,7 +691,52 @@ class paloSantoGridReportes {
             }
         }
         $tmp .= $this->xlsEOF();
-        echo $tmp;
+        echo $tmp;*/
+
+        /** PHPExcel */
+        include 'PHPExcel-1.8/Classes/PHPExcel.php';
+        
+        /** PHPExcel_Writer_Excel2007 */
+        include 'PHPExcel-1.8/Classes/PHPExcel/Writer/Excel2007.php';
+        $headers = $this->getColumns();
+        $data = $this->getData();
+
+        $objPHPExcel = new PHPExcel();
+        $objPHPExcel->setActiveSheetIndex(0);
+        $sheet = $objPHPExcel->getActiveSheet();
+         
+        foreach($headers as $i => $header){
+            $sheet->setCellValueByColumnAndRow($i, 1, $header["name"]);
+        }  
+        
+        $row = 2; // Comienza desde la fila 2
+        foreach ($data as $row_data) {
+            $column = 'A'; // Comienza desde la columna A
+            foreach ($row_data as $cell) {
+                $sheet->setCellValue($column . $row, $cell);
+                $column++;
+            }
+            $row++;
+        }        
+
+
+        $excelWriter = PHPExcel_IOFactory::createWriter($objPHPExcel, 'Excel2007'); // Para formato .xlsx
+        ob_start();
+        $excelWriter->save('php://output');
+        $excelData = ob_get_clean();
+        
+        // Definir cabeceras HTTP para la descarga del archivo
+        header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+        header('Content-Disposition: attachment; filename="reporte_text2speech.xlsx"');
+        header('Cache-Control: max-age=0');
+        
+        // Imprimir el contenido del archivo Excel en el flujo de salida
+        echo $excelData;
+        
+        // Finalizar la ejecución del script
+        exit();        
+
+
     }
 
     function fetchGridHTML($arrLang=array())

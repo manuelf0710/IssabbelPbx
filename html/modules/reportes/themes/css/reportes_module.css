@@ -16,3 +16,7 @@ fieldset legend {
 #divcontent_eventos table tbody tr td:last-child:hover {
   cursor: pointer;
 }
+
+.issabel-standard-table {
+  width: auto !important;
+}
