@@ -28,7 +28,7 @@
                 <option value="" >Seleccione...</option>
                 <option value="eventos" {if 'eventos' == $criterioActive}selected{/if}>Eventos</option>
                 <option value="otros" {if 'otros' == $criterioActive}selected{/if}>Otros</option>
-                <option value="text2speech" {if 'text2speech' == $criterioActive}selected{/if}>text2speech</option>
+                <option value="text2speech" {if 'text2speech' == $criterioActive}selected{/if}>Notificaciones de llamadas</option>
             </select>
 
                 <span class="letra12" style="margin-left:3em"><span class="required">*</span> {$REQUIRED_FIELD}</span>
@@ -42,7 +42,7 @@
     {if $criterioActive eq 'text2speech'}
 
         <fieldset style="border-radius: 5px; padding: 5px; min-height:150px;">
-            <legend><span> Text2speech </span> </legend>
+            <legend><span> Notificaciones de llamadas </span> </legend>
             <td style="margin: 0tdx">Realice la búsqueda con cualquiera de los <br> siguientes criterios:</p>
             <table class="tabForm" cellpading="10" width="700" style="margin-top:2em">
                 <tr class="letra12">
